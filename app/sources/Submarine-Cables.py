@@ -12,6 +12,14 @@ import pandas as pd
 import geopandas as gpd
 
 
+# ---------------------------------------------------------------------------- #
+#                             Library Configuration                            #
+# ---------------------------------------------------------------------------- #
+
+# Disable chained assignments warning on pandas.
+pd.options.mode.chained_assignment = None 
+
+
 def submarine():
     '''
     Reading, Filtering, Extracting Data from Telegeography's Submarine Cable Map Repo.
@@ -147,7 +155,7 @@ def submarine():
     df_car = df_car[df_car.columns.drop(list(df_car.filter(regex='is_tbd')))]
     df_int = df_int[df_int.columns.drop(list(df_int.filter(regex='id')))]
     df_int = df_int[df_int.columns.drop(list(df_int.filter(regex='is_tbd')))]
-
+    
 
     # ----------------------------- Submarine Cables ----------------------------- #
 
@@ -157,14 +165,155 @@ def submarine():
         [any(i) for i in zip(* [df_sub_['id'] == word for word in id_]) ]
         ].sort_values("id")
 
-    # Remove columns called 'name', 'feature_id' and 'color' from 'df_crd'.
-    df_crd = df_crd[df_crd.columns.drop(list(df_crd.filter(regex='name')))]
-    df_crd = df_crd[df_crd.columns.drop(list(df_crd.filter(regex='color')))]
-    df_crd = df_crd[df_crd.columns.drop(list(df_crd.filter(regex='feature_id')))]
 
-    # Remove columns called 'notes' and 'rfs_year' from 'df_sub'.
-    df_sub = df_sub[df_sub.columns.drop(list(df_sub.filter(regex='rfs_year')))]
-    df_sub = df_sub[df_sub.columns.drop(list(df_sub.filter(regex='notes')))]
+    # -------------------------- Submarine JSON Creation ------------------------- #
+    
+    # 'df_crd' has 4 headers that corresponds to a JSON format.
+    # One column is called 'geometry' which stores MULTILINESTRING classes.
+    # 'geometry' must remain as a MULTILINESTRING to be read properly.
+    # Storing 'geometry' into a spreadsheet or text file changes the data type to string which is undesirable.
+    # The logical goal remains to create a JSON file.
+    # Main issues is that 'df_crd' has multiple IDs of same name, but different geometries.
+    # The goal is to merge the geometries under one ID.
+    # It is difficult to merge MULTILINESTRING classes.
+    # Instead, convert them into a string and merge using string operations which can be added to a JSON format.
+    
+    # This process has 4 parts:
+    # 1. Extracting geometry from 'df_crd'.
+    # 2. Extracting geometry details from 'df_sub'.
+    # 3. Merging Steps 1 and 2 into a JSON format.
+    # 4. Writing JSON file.
+    
+    
+    # ---------------------------------- Step 1 ---------------------------------- #
+
+    # 'geo_id' = Stores MULTILINESTRINGs for unique geometry IDs in 'df_crd'.
+    # 'j' = index interator.
+    # 'tog' = condition used to determine when to merge geometries into a single ID.
+    geo_id = []
+    j = 1
+    tog = 0
+
+    # Loops over 'df_crd's geometry and compares to indices at a time.
+    # If the indice values are different, then add the first index value to 'geo_id'.
+    # If the indice values are the same, then do not add the first index value to 'geo_id'.
+    # Instead, replace the value of the first index value with a new value.
+    # This new value comprises of the MULTILINESTRING of the first index and the second index joined together.
+    # The second index value will not get added to the 'geo_id' list as it will already be merged to the first index value.
+    # 'geo_id' will be used to create the geometry part of the JSON file shown below.
+    while (True):
+        # If 'tog' == 0 (values are different), then add first index [j-1] values to 'geo_id'.
+        if tog == 0:
+            geo_id.append(str(df_crd.iloc[j-1]['geometry']))
+
+        # Resets 'tog' to 0 if 'tog' is not at '0'.
+        tog = 0
+
+        # If 'j' (current iterator), exceeds maximum iteration limit (lenge of 'df_crd'),
+        # then exit the loop.
+        if j == len(df_crd):
+            break
+
+        # 'first' = first index value. Note j-1 th term.
+        # 'second' = second index value. Note j th term.
+        first = df_crd.iloc[j-1]['id']
+        second = df_crd.iloc[j]['id']
+
+        # If the index values are the same.
+        if second == first:
+            # 'k' is used to ensure that all index references to 'geo_id' are valid and exists in 'geo_id'.
+            k = j-1
+            while k >= len(geo_id):
+                k -= 1
+
+            # 'first_mod' = modifies geometry in 'first' by removing end of MULTILINESTRING.
+            # 'sec_mod' = modifies geometry in 'second' by removing MULTILINESTRING header.
+            # 'merge' = merges 'first_mod' and 'sec_mod' by 'first_mod' + 'sec_mod'.
+            # 'merge' stores the MULTILINE representation of 'first' and 'second' combined.
+            first_mod = str(df_crd.iloc[j-1]['geometry']).replace('))', '), ')
+            sec_mod = str(df_crd.iloc[j]['geometry']).replace('MULTILINESTRING (', '')
+            merge = first_mod + sec_mod
+            
+            # Replaces value of the first index value with the new merged value.
+            # 'k' points to first index at this line.
+            geo_id[k] = str(merge)
+
+            # 'tog' is set to 1 to indicate that in the next iteration not to append new values.
+            tog = 1
+        # Increment iterator 'j'.
+        j += 1
+
+
+    # ---------------------------------- Step 2 ---------------------------------- #
+
+    # Step 2 deals with extracting cable geometry details from 'df_sub' to add to JSON file with
+    # geometries from 'df_crd'. Unlike 'df_crd', 'df_sub' contains unique IDs without repitition.
+    # This means little string manipulation will be required.
+    # Firstly, loop over 'df_sub' and to extract geometry details.
+    # Then format MULTILINESTRING in 'geo_id' in a JSON array format.
+    # Pandas store as a MULTILINESTRING instead of an array format so string manipulation is required.
+    # Finally, format geometry details into JSON format.
+
+    # 'feat' = stores JSON features of all cable details and geometries.
+    feat = ''
+    # Loop over 'df_sub' and extract details.
+    # The manipulate format of 'geo_id' into JSON format.
+    # Format geometry details into JSON format.
+    # Add both formats above into a JSON properties ('prop').
+    # Add all JSON features to together in 'feat'.
+    # Add JSON features into a feature collection ('coll').
+    # Write feature collection to a JSON file.
+    for j in range(len(df_sub)):
+        # Extracting geometry details.
+        src_id = df_sub.iloc[j]['id']
+        stat = df_sub.iloc[j]['is_planned']
+        lnd = df_sub.iloc[j]['landing_points']
+        name = df_sub.iloc[j]['name']
+        len_ = df_sub.iloc[j]['length']
+        rfs = df_sub.iloc[j]['rfs']
+        sup = df_sub.iloc[j]['suppliers']
+        own = df_sub.iloc[j]['owners']
+        url = df_sub.iloc[j]['url']
+
+        # Manipulate 'geo_id' geometries into JSON array format stored into 'geo'.
+        geo = geo_id[j]
+        geo = geo.replace('MULTILINESTRING ', '')
+        geo = geo.replace('(', '[[')
+        geo = geo.replace(')', ']]')
+        geo = geo.replace(' ', ', ')
+        geo = geo.replace(',,', ' ], [')
+        geo = geo.replace('] ], [', '],')
+        geo = geo.replace('[[[[', '[[')
+        geo = geo.replace(']]]]', ']]')
+
+
+        # ---------------------------------- Step 3 ---------------------------------- #
+
+        # Creating cable JSON properties.
+        prop = f'{{"type": "Feature", "properties": {{"id": "{src_id}", "name": "{name}", "stat": "{stat}", "lnd": "{lnd}", "len_": "{len_}", "rfs": "{rfs}", "sup": "{sup}", "own": "{own}", "url": "{url}"}}, "geometry": {{"type": "MultiLineString", "coordinates": [{geo}] }} }}'
+        
+        # Adding all properties into one feature.
+        if j == len(df_sub) - 1:
+            feat += prop + f'''
+'''
+        else:
+            feat += prop + f''',
+'''
+    
+    # 'coll' = stores feature collection.
+    coll = f'''{{
+        "type": "FeatureCollection", 
+        "features": [
+            {feat}
+            ]
+            }}'''
+
+
+    # ---------------------------------- Step 4 ---------------------------------- #
+
+    # Write feature collection to a JSON file.
+    with open('./app/static/json/submarine.json', 'w') as f:
+        f.write(coll)
 
 
     # ---------------------------------------------------------------------------- #
@@ -198,39 +347,3 @@ def submarine():
         # Add 'lat' to database
         # Add 'lon' to database
         # Add 'ctry' to database
-
-
-    # -------------------------- Submarine Cable Details ------------------------- #
-
-    # Loop over 'df_sub' and add data to 'sub_det' database table.
-    for j in range(len(df_sub)):
-        src_id = df_sub.iloc[j]['id']
-        stat = df_sub.iloc[j]['is_planned']
-        lnd = df_sub.iloc[j]['landing_points']
-        name = df_sub.iloc[j]['name']
-        len_ = df_sub.iloc[j]['length']
-        rfs = df_sub.iloc[j]['rfs']
-        sup = df_sub.iloc[j]['suppliers']
-        own = df_sub.iloc[j]['owners']
-        url = df_sub.iloc[j]['url']
-
-        # Add 'src_id to database
-        # Add 'stat' to database
-        # Add 'lnd' to database
-        # Add 'name to database
-        # Add 'len_' to database
-        # Add 'rfs' to database
-        # Add 'sup to database
-        # Add 'own' to database
-        # Add 'url' to database
-
-
-    # ------------------------ Submarine Cable Geometries ------------------------ #
-
-    # Loop over 'df_crd' and add data to 'sub_geo' database table.
-    for j in range(len(df_crd)):
-        src_id = df_crd.iloc[j]['id']
-        geo = df_crd.iloc[j]['geometry']
-
-        # Add 'src_id to database
-        # Add 'geo' to database
