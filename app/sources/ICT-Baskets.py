@@ -15,7 +15,7 @@ import pandas as pd
 #                             Library Configuration                            #
 # ---------------------------------------------------------------------------- #
 
-# Disable chained assignments.
+# Disable chained assignments warning on pandas.
 pd.options.mode.chained_assignment = None 
 
 def baskets():
@@ -111,11 +111,11 @@ def baskets():
     # Loop over 'gni_pc' and add data to 'GNI' database table.
     for j in range(len(gni_pc)):
         ctry = gni_pc.iloc[j]['EntityName']
-        year = gni_pc.iloc[j]['DataYear']
-        fix = gni_pc.iloc[j]['Fixed broadband 5GB']
-        mob = gni_pc.iloc[j]['Mobile broadband data only 1.5 GB']
-        low = gni_pc.iloc[j]['Mobile Data and Voice Low Usage']
-        high = gni_pc.iloc[j]['Mobile Data and Voice High Usage']
+        year = int(gni_pc.iloc[j]['DataYear'])
+        fix = float(gni_pc.iloc[j]['Fixed broadband 5GB'])
+        mob = float(gni_pc.iloc[j]['Mobile broadband data only 1.5 GB'])
+        low = float(gni_pc.iloc[j]['Mobile Data and Voice Low Usage'])
+        high = float(gni_pc.iloc[j]['Mobile Data and Voice High Usage'])
 
         # Add 'ctry' to the database.
         # Add 'year' to the database.
@@ -130,11 +130,11 @@ def baskets():
     # Loop over 'ppp' and add data to 'PPP' database table.
     for j in range(len(ppp)):
         ctry = ppp.iloc[j]['EntityName']
-        year = ppp.iloc[j]['DataYear']
-        fix = ppp.iloc[j]['Fixed broadband 5GB']
-        mob = ppp.iloc[j]['Mobile broadband data only 1.5 GB']
-        low = ppp.iloc[j]['Mobile Data and Voice Low Usage']
-        high = ppp.iloc[j]['Mobile Data and Voice High Usage']
+        year = int(ppp.iloc[j]['DataYear'])
+        fix = float(ppp.iloc[j]['Fixed broadband 5GB'])
+        mob = float(ppp.iloc[j]['Mobile broadband data only 1.5 GB'])
+        low = float(ppp.iloc[j]['Mobile Data and Voice Low Usage'])
+        high = float(ppp.iloc[j]['Mobile Data and Voice High Usage'])
 
         # Add 'ctry' to the database.
         # Add 'year' to the database.
@@ -149,12 +149,12 @@ def baskets():
     # Loop over 'usd' and add data to 'USD' database table.
     for j in range(len(usd)):
         ctry = usd.iloc[j]['EntityName']
-        year = usd.iloc[j]['DataYear']
-        fix = usd.iloc[j]['Fixed broadband 5GB']
-        mob = usd.iloc[j]['Mobile broadband data only 1.5 GB']
-        low = usd.iloc[j]['Mobile Data and Voice Low Usage']
-        high = usd.iloc[j]['Mobile Data and Voice High Usage']
-        
+        year = int(usd.iloc[j]['DataYear'])
+        fix = float(usd.iloc[j]['Fixed broadband 5GB'])
+        mob = float(usd.iloc[j]['Mobile broadband data only 1.5 GB'])
+        low = float(usd.iloc[j]['Mobile Data and Voice Low Usage'])
+        high = float(usd.iloc[j]['Mobile Data and Voice High Usage'])
+ 
         # Add 'ctry' to the database.
         # Add 'year' to the database.
         # Add 'fix' to the database.

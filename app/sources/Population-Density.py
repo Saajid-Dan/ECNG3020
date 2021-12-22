@@ -78,7 +78,7 @@ def density():
 
         # 'dir_' = output directory + filename of TIF file.
         # output directory is located in project directory.
-        dir_ = './app/other/images/' + j + '.tif'
+        dir_ = './app/other/images/Population-Density/' + j + '.tif'
 
 
         # -------------------------- Download to File System ------------------------- #
@@ -96,3 +96,6 @@ def density():
     # 'pop_yr' = year of population density TIF files.
     updt = json_pop.iloc[-1]['data']['date']
     pop_yr = json_pop.iloc[-1]['data']['popyear']
+
+    print(type(updt))
+    print(type(pop_yr))

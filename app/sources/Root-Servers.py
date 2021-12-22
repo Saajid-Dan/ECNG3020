@@ -197,7 +197,8 @@ def root():
             # ---------------------------------------------------------------------------- #
             #                               Store to Database                              #
             # ---------------------------------------------------------------------------- #
-
+            
+            # Store to 'root_srv' database table. 
             # Add 'name' to database
             # Add 'ctry' to database
             # Add 'loc' to database

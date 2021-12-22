@@ -133,6 +133,10 @@ def ixp():
     
     # ------------------------------- IXP Directory ------------------------------ #
 
+    df_dir.to_excel('./app/other/spreadsheets/ixp_dir.xlsx', index=None)
+    df_sub.to_excel('./app/other/spreadsheets/ixp_sub.xlsx', index=None)
+    # df_mem.to_excel('./app/other/spreadsheets/ixp_mem.xlsx', index=None)
+
     # Loop over 'df_dir' and add data to 'ixp_dir' database table
     for j in range(len(df_dir)):
         ctry = df_dir.iloc[j]['ctry']
@@ -149,7 +153,7 @@ def ixp():
         ipv4_pk = df_dir.iloc[j]['trgh']
         ipv6_avg = df_dir.iloc[j]['ipv6_avg']
         updt = df_dir.iloc[j]['updt']
-        
+
         # Add 'ctry' to database
         # Add 'cit' to database
         # Add 'name' to database
@@ -194,6 +198,7 @@ def ixp():
 
     # ------------------------- IXP Subnet Member Details ------------------------ #
 
+    df_exp = pd.DataFrame(columns=['ctry', 'ip', 'fqdn', 'ping', 'asn', 'org', 'peering_policy', 'prefixes', 'IPv4', 'IPv6'])
     # Loop over 'df_mem' and add data to 'ixp_mem' database table
     for j in range(len(df_mem)):
         # 'v4' = IPv4 data.
@@ -207,25 +212,30 @@ def ixp():
                 # Add data to database
                 ctry = df_mem.iloc[j]['ctry']
                 ip = v['ip']
-                fdqn = v['fqdn']
                 ping = v['ping']
                 asn = v['asn']
                 org = v['org']
-                peer = v['peering_policy']
                 prfs = v['prefixes']
                 ipv4 = True
                 ipv6 = False
+
+                row = [ctry, ip, ping, asn, org, prfs, ipv4, ipv6]
+                df_exp = df_exp.append(pd.Series(row, index=['ctry', 'ip', 'ping', 'asn', 'org', 'prefixes', 'IPv4', 'IPv6']), ignore_index=True)
+
         # Checks if IPv6 data is not a NaN
         elif type(v6) != float:
             for v in v6.values():
                 # add data to database
                 ctry = df_mem.iloc[j]['ctry']
                 ip = v['ip']
-                fdqn = v['fqdn']
                 ping = v['ping']
                 asn = v['asn']
                 org = v['org']
-                peer = v['peering_policy']
                 prfs = v['prefixes']
                 ipv4 = False
                 ipv6 = True
+
+                row = [ctry, ip, ping, asn, org, prfs, ipv4, ipv6]
+                df_exp = df_exp.append(pd.Series(row, index=['ctry', 'ip', 'ping', 'asn', 'org', 'prefixes', 'IPv4', 'IPv6']), ignore_index=True)
+
+    df_exp.to_excel('./app/other/spreadsheets/ixp_mem.xlsx', index=None)

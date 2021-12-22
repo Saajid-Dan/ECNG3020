@@ -114,121 +114,121 @@ def indicators():
 
     # Loop over 'df_fix' and 'yrs_fix' and add data to database.
     for j in range(len(yrs_fix)):
-        # Add year of subscription to database
+        # Add year of subscription to 'ICT_fix' database
         yrs = yrs_fix[j]
 
         # Add fixed broadband subscriptions for each country to database.
         # Note that the variables are entited by 2 letter country codes.
-        ai = df_fix.iloc[0, j+1]
-        ag = df_fix.iloc[1, j+1]
-        bs = df_fix.iloc[2, j+1]
-        bb = df_fix.iloc[3, j+1]
-        bz = df_fix.iloc[4, j+1]
-        bm = df_fix.iloc[5, j+1]
-        vg = df_fix.iloc[6, j+1]
-        ky = df_fix.iloc[7, j+1]
-        dm = df_fix.iloc[8, j+1]
-        gd = df_fix.iloc[9, j+1]
-        gy = df_fix.iloc[10, j+1]
-        ht = df_fix.iloc[11, j+1]
-        jm = df_fix.iloc[12, j+1]
-        ms = df_fix.iloc[13, j+1]
-        kn = df_fix.iloc[14, j+1]
-        lc = df_fix.iloc[15, j+1]
-        vc = df_fix.iloc[16, j+1]
-        sr = df_fix.iloc[17, j+1]
-        tt = df_fix.iloc[18, j+1]
-        tc = df_fix.iloc[19, j+1]
+        ai = float(df_fix.iloc[0, j+1])
+        ag = float(df_fix.iloc[1, j+1])
+        bs = float(df_fix.iloc[2, j+1])
+        bb = float(df_fix.iloc[3, j+1])
+        bz = float(df_fix.iloc[4, j+1])
+        bm = float(df_fix.iloc[5, j+1])
+        vg = float(df_fix.iloc[6, j+1])
+        ky = float(df_fix.iloc[7, j+1])
+        dm = float(df_fix.iloc[8, j+1])
+        gd = float(df_fix.iloc[9, j+1])
+        gy = float(df_fix.iloc[10, j+1])
+        ht = float(df_fix.iloc[11, j+1])
+        jm = float(df_fix.iloc[12, j+1])
+        ms = float(df_fix.iloc[13, j+1])
+        kn = float(df_fix.iloc[14, j+1])
+        lc = float(df_fix.iloc[15, j+1])
+        vc = float(df_fix.iloc[16, j+1])
+        sr = float(df_fix.iloc[17, j+1])
+        tt = float(df_fix.iloc[18, j+1])
+        tc = float(df_fix.iloc[19, j+1])
 
 
     # ----------------------- Mobile Broadband subscription ---------------------- #
 
-    # Loop over 'df_mob' and 'yrs_mob' and add data to database.
+    # Loop over 'df_mob' and 'yrs_mob' and add data to 'ICT_mob' database.
     for j in range(len(yrs_mob)):
         # Add year of subscription to database
         yrs = yrs_mob[j]
 
         # Add mobile broadband subscriptions for each country to database.
         # Note that the variables are entited by 2 letter country codes.
-        ai = df_mob.iloc[0, j+1]
-        ag = df_mob.iloc[1, j+1]
-        bs = df_mob.iloc[2, j+1]
-        bb = df_mob.iloc[3, j+1]
-        bz = df_mob.iloc[4, j+1]
-        bm = df_mob.iloc[5, j+1]
-        vg = df_mob.iloc[6, j+1]
-        ky = df_mob.iloc[7, j+1]
-        dm = df_mob.iloc[8, j+1]
-        gd = df_mob.iloc[9, j+1]
-        gy = df_mob.iloc[10, j+1]
-        ht = df_mob.iloc[11, j+1]
-        jm = df_mob.iloc[12, j+1]
-        ms = df_mob.iloc[13, j+1]
-        kn = df_mob.iloc[14, j+1]
-        lc = df_mob.iloc[15, j+1]
-        vc = df_mob.iloc[16, j+1]
-        sr = df_mob.iloc[17, j+1]
-        tt = df_mob.iloc[18, j+1]
-        tc = df_mob.iloc[19, j+1]
+        ai = float(df_mob.iloc[0, j+1])
+        ag = float(df_mob.iloc[1, j+1])
+        bs = float(df_mob.iloc[2, j+1])
+        bb = float(df_mob.iloc[3, j+1])
+        bz = float(df_mob.iloc[4, j+1])
+        bm = float(df_mob.iloc[5, j+1])
+        vg = float(df_mob.iloc[6, j+1])
+        ky = float(df_mob.iloc[7, j+1])
+        dm = float(df_mob.iloc[8, j+1])
+        gd = float(df_mob.iloc[9, j+1])
+        gy = float(df_mob.iloc[10, j+1])
+        ht = float(df_mob.iloc[11, j+1])
+        jm = float(df_mob.iloc[12, j+1])
+        ms = float(df_mob.iloc[13, j+1])
+        kn = float(df_mob.iloc[14, j+1])
+        lc = float(df_mob.iloc[15, j+1])
+        vc = float(df_mob.iloc[16, j+1])
+        sr = float(df_mob.iloc[17, j+1])
+        tt = float(df_mob.iloc[18, j+1])
+        tc = float(df_mob.iloc[19, j+1])
 
 
     # ------------------ Percent of Individuals using the Internet ------------------ #
 
-    # Loop over 'df_per' and 'yrs_per' and add data to database.
+    # Loop over 'df_per' and 'yrs_per' and add data to 'ICT_per' database.
     for j in range(len(yrs_per)):
         # Add year of percentages to database
         yrs = yrs_per[j]
 
         # Add percent of internet users for each country to database.
         # Note that the variables are entited by 2 letter country codes.
-        ai = df_per.iloc[0, j+1]
-        ag = df_per.iloc[1, j+1]
-        bs = df_per.iloc[2, j+1]
-        bb = df_per.iloc[3, j+1]
-        bz = df_per.iloc[4, j+1]
-        bm = df_per.iloc[5, j+1]
-        vg = df_per.iloc[6, j+1]
-        ky = df_per.iloc[7, j+1]
-        dm = df_per.iloc[8, j+1]
-        gd = df_per.iloc[9, j+1]
-        gy = df_per.iloc[10, j+1]
-        ht = df_per.iloc[11, j+1]
-        jm = df_per.iloc[12, j+1]
-        ms = df_per.iloc[13, j+1]
-        kn = df_per.iloc[14, j+1]
-        lc = df_per.iloc[15, j+1]
-        vc = df_per.iloc[16, j+1]
-        sr = df_per.iloc[17, j+1]
-        tt = df_per.iloc[18, j+1]
-        tc = df_per.iloc[19, j+1]
+        ai = float(df_per.iloc[0, j+1])
+        ag = float(df_per.iloc[1, j+1])
+        bs = float(df_per.iloc[2, j+1])
+        bb = float(df_per.iloc[3, j+1])
+        bz = float(df_per.iloc[4, j+1])
+        bm = float(df_per.iloc[5, j+1])
+        vg = float(df_per.iloc[6, j+1])
+        ky = float(df_per.iloc[7, j+1])
+        dm = float(df_per.iloc[8, j+1])
+        gd = float(df_per.iloc[9, j+1])
+        gy = float(df_per.iloc[10, j+1])
+        ht = float(df_per.iloc[11, j+1])
+        jm = float(df_per.iloc[12, j+1])
+        ms = float(df_per.iloc[13, j+1])
+        kn = float(df_per.iloc[14, j+1])
+        lc = float(df_per.iloc[15, j+1])
+        vc = float(df_per.iloc[16, j+1])
+        sr = float(df_per.iloc[17, j+1])
+        tt = float(df_per.iloc[18, j+1])
+        tc = float(df_per.iloc[19, j+1])
 
 
     # ---------------------- International Bandwidth in Mbps --------------------- #
 
-    # Loop over 'df_bw' and 'yrs_bw' and add data to database.
+    # Loop over 'df_bw' and 'yrs_bw' and add data to 'ICT_bw' database.
     for j in range(len(yrs_bw)):
         # Add year of bandwidths to database
         yrs = yrs_bw[j]
 
         # Add bandwidth usage for each country to database.
         # Note that the variables are entited by 2 letter country codes.
-        ai = df_bw.iloc[0, j+1]
-        ag = df_bw.iloc[1, j+1]
-        bs = df_bw.iloc[2, j+1]
-        bb = df_bw.iloc[3, j+1]
-        bz = df_bw.iloc[4, j+1]
-        bm = df_bw.iloc[5, j+1]
-        vg = df_bw.iloc[6, j+1]
-        ky = df_bw.iloc[7, j+1]
-        dm = df_bw.iloc[8, j+1]
-        gd = df_bw.iloc[9, j+1]
-        gy = df_bw.iloc[10, j+1]
-        ht = df_bw.iloc[11, j+1]
-        jm = df_bw.iloc[12, j+1]
-        ms = df_bw.iloc[13, j+1]
-        kn = df_bw.iloc[14, j+1]
-        lc = df_bw.iloc[15, j+1]
-        vc = df_bw.iloc[16, j+1]
-        sr = df_bw.iloc[17, j+1]
-        tt = df_bw.iloc[18, j+1]
-        tc = df_bw.iloc[19, j+1]
+        ai = float(df_bw.iloc[0, j+1])
+        ag = float(df_bw.iloc[1, j+1])
+        bs = float(df_bw.iloc[2, j+1])
+        bb = float(df_bw.iloc[3, j+1])
+        bz = float(df_bw.iloc[4, j+1])
+        bm = float(df_bw.iloc[5, j+1])
+        vg = float(df_bw.iloc[6, j+1])
+        ky = float(df_bw.iloc[7, j+1])
+        dm = float(df_bw.iloc[8, j+1])
+        gd = float(df_bw.iloc[9, j+1])
+        gy = float(df_bw.iloc[10, j+1])
+        ht = float(df_bw.iloc[11, j+1])
+        jm = float(df_bw.iloc[12, j+1])
+        ms = float(df_bw.iloc[13, j+1])
+        kn = float(df_bw.iloc[14, j+1])
+        lc = float(df_bw.iloc[15, j+1])
+        vc = float(df_bw.iloc[16, j+1])
+        sr = float(df_bw.iloc[17, j+1])
+        tt = float(df_bw.iloc[18, j+1])
+        tc = float(df_bw.iloc[19, j+1])

@@ -55,8 +55,3 @@ updt_ipb = str(df_s4.iloc[-1]['Unnamed: 2'])
 updt_ipb = updt_ipb.split()[0]
 print(updt_ipb)
 
-
-# ----------------------------- OOKLA Speed Index ---------------------------- #
-
-# 'updt_spd' = date speed indexes were last updated.
-updt_spd = 'October 01, 2021'
