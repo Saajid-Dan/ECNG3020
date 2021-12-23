@@ -32,9 +32,13 @@ def ixp():
     #                                 Read Sources                                 #
     # ---------------------------------------------------------------------------- #
 
-    # 'df_dir' = Contains PCH's IXP directory
-    df_dir = pd.read_json("https://www.pch.net/api/ixp/directory/Active")
-
+    try:
+        # 'df_dir' = Contains PCH's IXP directory
+        df_dir = pd.read_json(url_dir)
+    except Exception as e:
+        error = "Source: " + url_dir + "\nError: " + str(e)
+        return error
+        
 
     # ---------------------------------------------------------------------------- #
     #                            Filter and Extract Data                           #
@@ -101,25 +105,39 @@ def ixp():
     for i, j in enumerate(df_dir['id']):
         # 'json_sub' = reads JSON file at directory - 'url_sub' + 'j'.
         # 'json_mem' = reads JSON file at directory - 'url_mem' + 'j'. 
-        json_sub = pd.read_json( url_sub +  str(j) )
-        json_mem = pd.read_json( url_mem +  str(j) )
+        
+        try:
+            json_sub = pd.read_json( url_sub + str(j) )
+        except Exception as e:
+            error = "Source: " + url_sub + str(j) + "\nError: " + str(e)
+            return error
 
-        # Checks for errored data in 'json_mem'
-        if 'error' not in json_mem:
-            # Add columns 'id' and 'ctry' to 'mem' dataframe.
+        try:
+            json_mem = pd.read_json( url_mem + str(j) )
+        except Exception as e:
+            error = "Source: " + url_mem + str(j) + "\nError: " + str(e)
+            return error
+        
+        try:
+            # Checks for errored data in 'json_mem'
+            if 'error' not in json_mem:
+                # Add columns 'id' and 'ctry' to 'mem' dataframe.
+                # Used to link 'json_mem' for reference.
+                # json_mem = json_mem.assign(id = j)
+                json_mem = json_mem.assign(ctry = df_dir.iloc[i]['ctry'])
+                
+                # Append subnet member details to 'df_mem'.
+                df_mem = df_mem.append(json_mem)
+
+            # Add columns 'ctry' to 'json_sub' dataframe.
             # Used to link 'json_mem' for reference.
-            # json_mem = json_mem.assign(id = j)
-            json_mem = json_mem.assign(ctry = df_dir.iloc[i]['ctry'])
-            
-            # Append subnet member details to 'df_mem'.
-            df_mem = df_mem.append(json_mem)
+            json_sub = json_sub.assign(ctry = df_dir.iloc[i]['ctry'])
 
-        # Add columns 'ctry' to 'json_sub' dataframe.
-        # Used to link 'json_mem' for reference.
-        json_sub = json_sub.assign(ctry = df_dir.iloc[i]['ctry'])
-
-        # Append subnets to 'df_sub'.
-        df_sub = df_sub.append(json_sub)
+            # Append subnets to 'df_sub'.
+            df_sub = df_sub.append(json_sub)
+        except Exception as e:
+            error = "Error extracting Subnet and Subnet Member data.\nError: " + str(e)
+            return error
 
     # Remove columns with 'id', 'traffic_graph_url', or 'subnet_num' from 'df_sub'.
     df_sub = df_sub[df_sub.columns.drop(list(df_sub.filter(regex='id')))]
@@ -127,62 +145,105 @@ def ixp():
     df_sub = df_sub[df_sub.columns.drop(list(df_sub.filter(regex='subnet_num')))]
 
 
+    # ------------------------- Cleaning IXP Member Details ------------------------ #
+
+    # 'df_mem' stores data under IPv4 and IPv6 headers as a dictionary of data with same keys.
+    # The database cannot store data as a dict object.
+    # The values in these dicts must be extracted as strings to create a cleaner table (or dataframe).
+
+    try:
+        # 'df_det' = New dataframe with column headers to match the keys in 'df_mem' dict objects.
+        df_det = pd.DataFrame(columns=['ctry', 'ip', 'fqdn', 'ping', 'asn', 'org', 'peer', 'prfs', 'ipv4', 'ipv6'])
+        
+        # Loop over 'df_mem' to extract values from dict key:value pairs and add to 'df_det' dataframe.
+        for j in range(len(df_mem)):
+            # 'v4' = IPv4 data.
+            # 'v6' = IPv6 data.
+            v4 = df_mem.iloc[j]['IPv4']
+            v6 = df_mem.iloc[j]['IPv6']
+
+            # Checks if IPv4 data is not a NaN
+            if type(v4) != float:
+                for v in v4.values():
+                    ctry = str(df_mem.iloc[j]['ctry'])
+                    ip = str(v['ip'])
+                    fqdn = str(v['fqdn'])
+                    ping = str(v['ping'])
+                    asn = str(v['asn'])
+                    org = str(v['org'])
+                    peer = str(v['peering_policy'])
+                    prfs = str(v['prefixes'])
+                    ipv4 = "Yes"
+                    ipv6 = "No"
+
+                    # 'row' = stores values from key:value pairs into a list to be added to 'df_det'.
+                    row = [ctry, ip, fqdn, ping, asn, org, peer, prfs, ipv4, ipv6]
+                    
+                    # Add 'row' data to 'df_det'.
+                    df_det = df_det.append(pd.Series(row, index=['ctry', 'ip', 'fqdn', 'ping', 'asn', 'org', 'peer', 'prfs', 'ipv4', 'ipv6']), ignore_index=True)
+
+            # Checks if IPv6 data is not a NaN
+            elif type(v6) != float:
+                for v in v6.values():
+                    ctry = str(df_mem.iloc[j]['ctry'])
+                    ip = str(v['ip'])
+                    fqdn = str(v['fqdn'])
+                    ping = str(v['ping'])
+                    asn = str(v['asn'])
+                    org = str(v['org'])
+                    peer = str(v['peering_policy'])
+                    prfs = str(v['prefixes'])
+                    ipv4 = "Yes"
+                    ipv6 = "No"
+
+                    # 'row' = stores values from key:value pairs into a list to be added to 'df_det'.
+                    row = [ctry, ip, fqdn, ping, asn, org, peer, prfs, ipv4, ipv6]
+                    
+                    # Add 'row' data to 'df_det'.
+                    df_det = df_det.append(pd.Series(row, index=['ctry', 'ip', 'fqdn', 'ping', 'asn', 'org', 'peer', 'prfs', 'ipv4', 'ipv6']), ignore_index=True)
+    except Exception as e:
+        error = 'Error Cleaning Subnet Member Data\nError: ' + str(e)
+        return error
+
+
     # ---------------------------------------------------------------------------- #
-    #                              Storing to Database                             #
+    #                              Store to Database                               #
     # ---------------------------------------------------------------------------- #
     
     # ------------------------------- IXP Directory ------------------------------ #
 
-    df_dir.to_excel('./app/other/spreadsheets/ixp_dir.xlsx', index=None)
-    df_sub.to_excel('./app/other/spreadsheets/ixp_sub.xlsx', index=None)
-    # df_mem.to_excel('./app/other/spreadsheets/ixp_mem.xlsx', index=None)
-
     # Loop over 'df_dir' and add data to 'ixp_dir' database table
     for j in range(len(df_dir)):
-        ctry = df_dir.iloc[j]['ctry']
-        cit = df_dir.iloc[j]['cit']
-        name = df_dir.iloc[j]['name']
-        url = df_dir.iloc[j]['url']
-        stat = df_dir.iloc[j]['stat']
-        date = df_dir.iloc[j]['date']
-        prfs = df_dir.iloc[j]['prfs']
-        lat = df_dir.iloc[j]['lat']
-        lon = df_dir.iloc[j]['lon']
-        prts = df_dir.iloc[j]['prts']
-        ipv4_avg = df_dir.iloc[j]['avg']
-        ipv4_pk = df_dir.iloc[j]['trgh']
-        ipv6_avg = df_dir.iloc[j]['ipv6_avg']
-        updt = df_dir.iloc[j]['updt']
-
-        # Add 'ctry' to database
-        # Add 'cit' to database
-        # Add 'name' to database
-        # Add 'url' to database
-        # Add 'stat' to database
-        # Add 'date' to database
-        # Add 'prfs' to database
-        # Add 'lat' to database
-        # Add 'lon' to database
-        # Add 'prts' to database
-        # Add 'ipv4_avg' to database
-        # Add 'ipv4_pk' to database
-        # Add 'ipv6_avg' to database
+        ctry = str(df_dir.iloc[j]['ctry'])
+        cit = str(df_dir.iloc[j]['cit'])
+        name = str(df_dir.iloc[j]['name'])
+        url = str(df_dir.iloc[j]['url'])
+        stat = str(df_dir.iloc[j]['stat'])
+        date = str(df_dir.iloc[j]['date'])
+        prfs = str(df_dir.iloc[j]['prfs'])
+        lat = str(df_dir.iloc[j]['lat'])
+        lon = str(df_dir.iloc[j]['lon'])
+        prts = str(df_dir.iloc[j]['prts'])
+        ipv4_avg = str(df_dir.iloc[j]['avg'])
+        ipv4_pk = str(df_dir.iloc[j]['trgh'])
+        ipv6_avg = str(df_dir.iloc[j]['ipv6_avg'])
+        updt = str(df_dir.iloc[j]['updt'])
 
 
     # -------------------------------- IXP Subnets ------------------------------- #
 
     # Loop over 'df_sub' and add data to 'ixp_sub' database table
     for j in range(len(df_sub)):
-        ctry = df_sub.iloc[j]['ctry']
-        stat = df_sub.iloc[j]['status']
-        name = df_sub.iloc[j]['short_name']
-        ver = df_sub.iloc[j]['version']
-        sub = df_sub.iloc[j]['subnet']
-        mlpa = df_sub.iloc[j]['mlpa']
-        traf = df_sub.iloc[j]['traffic']
-        prts = df_sub.iloc[j]['participants']
-        est = df_sub.iloc[j]['established']
-        url_traf = df_sub.iloc[j]['traffic_url']
+        ctry = str(df_sub.iloc[j]['ctry'])
+        stat = str(df_sub.iloc[j]['status'])
+        name = str(df_sub.iloc[j]['short_name'])
+        ver = str(df_sub.iloc[j]['version'])
+        sub = str(df_sub.iloc[j]['subnet'])
+        mlpa = str(df_sub.iloc[j]['mlpa'])
+        traf = str(df_sub.iloc[j]['traffic'])
+        prts = str(df_sub.iloc[j]['participants'])
+        est = str(df_sub.iloc[j]['established'])
+        url_traf = str(df_sub.iloc[j]['traffic_url'])
 
         # Add 'ctry' to database
         # Add 'stat' to database
@@ -198,44 +259,26 @@ def ixp():
 
     # ------------------------- IXP Subnet Member Details ------------------------ #
 
-    df_exp = pd.DataFrame(columns=['ctry', 'ip', 'fqdn', 'ping', 'asn', 'org', 'peering_policy', 'prefixes', 'IPv4', 'IPv6'])
-    # Loop over 'df_mem' and add data to 'ixp_mem' database table
-    for j in range(len(df_mem)):
-        # 'v4' = IPv4 data.
-        # 'v6' = IPv6 data.
-        v4 = df_mem.iloc[j]['IPv4']
-        v6 = df_mem.iloc[j]['IPv6']
+    # Loop over 'df_det' and add data to 'ixp_mem' database table
+    for j in range(len(df_det)):
+        ctry = str(df_det.iloc[j]['ctry'])
+        ip = str(df_det.iloc[j]['ip'])
+        fqdn = str(df_det.iloc[j]['fqdn'])
+        ping = str(df_det.iloc[j]['ping'])
+        asn = str(df_det.iloc[j]['asn'])
+        org = str(df_det.iloc[j]['org'])
+        peer = str(df_det.iloc[j]['peer'])
+        prfs = str(df_det.iloc[j]['prfs'])
+        ipv4 = str(df_det.iloc[j]['ipv4'])
+        ipv6 = str(df_det.iloc[j]['ipv6'])
 
-        # Checks if IPv4 data is not a NaN
-        if type(v4) != float:
-            for v in v4.values():
-                # Add data to database
-                ctry = df_mem.iloc[j]['ctry']
-                ip = v['ip']
-                ping = v['ping']
-                asn = v['asn']
-                org = v['org']
-                prfs = v['prefixes']
-                ipv4 = True
-                ipv6 = False
-
-                row = [ctry, ip, ping, asn, org, prfs, ipv4, ipv6]
-                df_exp = df_exp.append(pd.Series(row, index=['ctry', 'ip', 'ping', 'asn', 'org', 'prefixes', 'IPv4', 'IPv6']), ignore_index=True)
-
-        # Checks if IPv6 data is not a NaN
-        elif type(v6) != float:
-            for v in v6.values():
-                # add data to database
-                ctry = df_mem.iloc[j]['ctry']
-                ip = v['ip']
-                ping = v['ping']
-                asn = v['asn']
-                org = v['org']
-                prfs = v['prefixes']
-                ipv4 = False
-                ipv6 = True
-
-                row = [ctry, ip, ping, asn, org, prfs, ipv4, ipv6]
-                df_exp = df_exp.append(pd.Series(row, index=['ctry', 'ip', 'ping', 'asn', 'org', 'prefixes', 'IPv4', 'IPv6']), ignore_index=True)
-
-    df_exp.to_excel('./app/other/spreadsheets/ixp_mem.xlsx', index=None)
+        # Add 'ctry' to database
+        # Add 'ip' to database
+        # Add 'fqdn' to database
+        # Add 'ping' to database
+        # Add 'asn' to database
+        # Add 'org' to database
+        # Add 'peer' to database
+        # Add 'prfs' to database
+        # Add 'ipv4' to database
+        # Add 'ipv6' to database

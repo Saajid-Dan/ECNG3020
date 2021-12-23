@@ -31,6 +31,7 @@ class GNI(db.Model):
     mob = db.Column(db.Float, index=True)
     low = db.Column(db.Float, index=True)
     high = db.Column(db.Float, index=True)
+    updt = db.Column(db.String, index=True)
 
 class PPP(db.Model):
     id = db.Column(db.Integer, primary_key=True)
@@ -40,6 +41,7 @@ class PPP(db.Model):
     mob = db.Column(db.Float, index=True)
     low = db.Column(db.Float, index=True)
     high = db.Column(db.Float, index=True)
+    updt = db.Column(db.String, index=True)
 
 class USD(db.Model):
     id = db.Column(db.Integer, primary_key=True)
@@ -49,6 +51,7 @@ class USD(db.Model):
     mob = db.Column(db.Float, index=True)
     low = db.Column(db.Float, index=True)
     high = db.Column(db.Float, index=True)
+    updt = db.Column(db.String, index=True)
 
 
 # ------------------------------ ICT-Indicators ------------------------------ #
@@ -76,6 +79,7 @@ class ICT_fix(db.Model):
     sr = db.Column(db.Float, index=True)
     tt = db.Column(db.Float, index=True)
     tc = db.Column(db.Float, index=True)
+    updt = db.Column(db.String, index=True)
     
 class ICT_mob(db.Model):
     id = db.Column(db.Integer, primary_key=True)
@@ -100,6 +104,7 @@ class ICT_mob(db.Model):
     sr = db.Column(db.Float, index=True)
     tt = db.Column(db.Float, index=True)
     tc = db.Column(db.Float, index=True)
+    updt = db.Column(db.String, index=True)
 
 class ICT_per(db.Model):
     id = db.Column(db.Integer, primary_key=True)
@@ -124,6 +129,7 @@ class ICT_per(db.Model):
     sr = db.Column(db.Float, index=True)
     tt = db.Column(db.Float, index=True)
     tc = db.Column(db.Float, index=True)
+    updt = db.Column(db.String, index=True)
 
 class ICT_bw(db.Model):
     id = db.Column(db.Integer, primary_key=True)
@@ -148,6 +154,53 @@ class ICT_bw(db.Model):
     sr = db.Column(db.Float, index=True)
     tt = db.Column(db.Float, index=True)
     tc = db.Column(db.Float, index=True)
+    updt = db.Column(db.String, index=True)
+
+
+# ------------------------- Internet Exchange Points: ------------------------ #
+
+class Ixp_dir(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    ctry = db.Column(db.String, index=True)
+    city = db.Column(db.String, index=True)
+    name = db.Column(db.String, index=True)
+    url = db.Column(db.String, index=True)
+    stat = db.Column(db.String, index=True)
+    date = db.Column(db.String, index=True)
+    prfs = db.Column(db.String, index=True)
+    lat = db.Column(db.String, index=True)
+    lon = db.Column(db.String, index=True)
+    prts = db.Column(db.String, index=True)
+    ipv4_avg = db.Column(db.String, index=True)
+    ipv4_pk = db.Column(db.String, index=True)
+    ipv6_avg = db.Column(db.String, index=True)
+    updt = db.Column(db.String, index=True)
+    
+class Ixp_sub(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    ctry = db.Column(db.String, index=True)
+    stat = db.Column(db.String, index=True)
+    name = db.Column(db.String, index=True)
+    ver = db.Column(db.String, index=True)
+    sub = db.Column(db.String, index=True)
+    mlpa = db.Column(db.String, index=True)
+    traf = db.Column(db.String, index=True)
+    prts = db.Column(db.String, index=True)
+    est = db.Column(db.String, index=True)
+    url_traf = db.Column(db.String, index=True)
+
+class Ixp_mem(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    ctry = db.Column(db.String, index=True)
+    ip = db.Column(db.String, index=True)
+    fqdn = db.Column(db.String, index=True)
+    ping = db.Column(db.String, index=True)
+    asn = db.Column(db.String, index=True)
+    org = db.Column(db.String, index=True)
+    peer = db.Column(db.String, index=True)
+    prfs = db.Column(db.String, index=True)
+    ipv4 = db.Column(db.String, index=True)
+    ipv6 = db.Column(db.String, index=True)
 
 
 # ---------------------------- Population-Density ---------------------------- #
@@ -176,14 +229,6 @@ class Root_srv(db.Model):
     peer = db.Column(db.String, index=True)
     id_root = db.Column(db.String, index=True)
     id_nc = db.Column(db.String, index=True)
-    sub = db.Column(db.String, index=True)
-
-
-# ------------------------------- Sources-Dates ------------------------------ #
-
-class Src_updt(db.Model):
-    id = db.Column(db.Integer, primary_key=True)
-    src = db.Column(db.String, index=True)
     updt = db.Column(db.String, index=True)
 
 
@@ -210,19 +255,14 @@ class Fixed_br(db.Model):
 
 # ----------------------------- Submarine-Cables ----------------------------- #
 
-class Car_land(db.Model):
+class Land(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String, index=True)
     lat = db.Column(db.Float, index=True)
     lon = db.Column(db.Float, index=True)
     ctry = db.Column(db.String, index=True)
-
-class Int_land(db.Model):
-    id = db.Column(db.Integer, primary_key=True)
-    name = db.Column(db.String, index=True)
-    lat = db.Column(db.Float, index=True)
-    lon = db.Column(db.Float, index=True)
-    ctry = db.Column(db.String, index=True)
+    car = db.Column(db.String, index=True)
+    updt = db.Column(db.String, index=True)
 
 
 # ----------------------------- Top-Level-Domains ---------------------------- #
@@ -235,5 +275,3 @@ class Tld(db.Model):
     tch_con = db.Column(db.String, index=True)
     nm_svr = db.Column(db.String, index=True)
     reg = db.Column(db.String, index=True)
-
-#

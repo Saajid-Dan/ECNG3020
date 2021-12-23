@@ -28,15 +28,23 @@ def root():
     #                                  Read Source                                 #
     # ---------------------------------------------------------------------------- #
 
-    # Read HTML to 'html_root' from URL in 'url_root'.
-    html_root = requests.get(url_root).text
+    try:
+        # Read HTML to 'html_root' from URL in 'url_root'.
+        html_root = requests.get(url_root).text
 
-    # Pass HTML to BeautifulSoup with an XML parser.
-    soup = BeautifulSoup(html_root, 'lxml')
+        # Pass HTML to BeautifulSoup with an XML parser.
+        soup = BeautifulSoup(html_root, 'lxml')
+
+        if soup.text.find('404 Not Found') != -1:
+            raise Exception("HTTP Error 404: NOT FOUND")
+    except Exception as e:
+        error = "Source: " + url_root + "\nError: " + str(e)
+        return error
 
     # Loop over <a> tags in 'soup' and store the text into 'sub'.
     # 'sub' = subdirectory of 'url_root'.
-    # After looping, the most recent server URL is stored into 'sub'.
+    # After looping, the most recent server subdirectory is stored into 'sub'.
+    # 'sub' is also equal to the last updated date of server data.
     for j in soup.find_all('a'):
         sub = j.text
 
@@ -64,11 +72,19 @@ def root():
         # 'j.text' is the subdirectory domain name.
         url_server = url_root + j.text
 
-        # Read HTML to 'html_server' from URL in 'url_server'
-        html_server = requests.get(url_server).text
+        try:
+            # Read HTML to 'html_server' from URL in 'url_server'
+            html_server = requests.get(url_server).text
 
-        # Pass HTML to BeautifulSoup with an XML parser 
-        soup_server = BeautifulSoup(html_server, 'lxml')
+            # Pass HTML to BeautifulSoup with an XML parser 
+            soup_server = BeautifulSoup(html_server, 'lxml')
+
+            if soup_server.text.find('404 Not Found') != -1:
+                raise Exception("HTTP Error 404: NOT FOUND")
+        except Exception as e:
+            error = "Source: " + url_server + "\nError: " + str(e)
+            return error
+
 
         # --------------------- Read Root Server Data --------------------- #
         

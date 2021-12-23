@@ -82,11 +82,18 @@ def tld():
         # 'index' = current index of loop.
         # 'url' = URL in 'urls' at an index.
         
-        # Read HTML to 'source' from URL in 'url'.
-        source = requests.get(url).text
+        try:
+            # Read HTML to 'source' from URL in 'url'.
+            source = requests.get(url).text
 
-        # Pass HTML to BeautifulSoup with an XML parser.
-        soup = BeautifulSoup(source, 'lxml')
+            # Pass HTML to BeautifulSoup with an XML parser.
+            soup = BeautifulSoup(source, 'lxml')
+
+            if soup.text.find('This page does not exist.') != -1:
+                raise Exception("HTTP Error 404: NOT FOUND")
+        except Exception as e:
+            error = "Source: " + url + "\nError: " + str(e)
+            return error
 
         # 'x' = stores HTML in 'soup' as a string object.
         x = str(soup)

@@ -9,6 +9,7 @@ Project Title:
 # ---------------------------------------------------------------------------- #
 
 import pandas as pd
+from urllib.request import urlopen
 
 
 # ---------------------------------------------------------------------------- #
@@ -30,17 +31,34 @@ def baskets():
     # 'url_ipb' = URL to ITU's Price Basket workbook.
     url_ipb = "https://www.itu.int/en/ITU-D/Statistics/Documents/publications/prices2020/ITU_ICTPriceBaskets_2008-2020.xlsx"
 
-
+    
     # ---------------------------------------------------------------------------- #
     #                                 Read Sources                                 #
     # ---------------------------------------------------------------------------- #
 
-    # 'df_s1' = Read sheet 1 of the 'url_ipb' into 'df_s1' dataframe.
-    df_s1 = pd.read_excel(url_ipb, sheet_name=0)
+    try:
+        # 'df_s1' = Read sheet 1 of the 'url_ipb' into 'df_s1' dataframe.
+        # Sheet 1 has baskets data from 2008-2017.
+        df_s1 = pd.read_excel(url_ipb, sheet_name=0)
+        
+        # 'df_s2' = Read sheet 2 of the 'url_ipb' into 'df_s2' dataframe.
+        # Sheet 2 has baskets data from 2018-2020.
+        df_s2 = pd.read_excel(url_ipb, sheet_name=1)
 
-    # 'df_s2' = Read sheet 2 of the 'url_ipb' into 'df_s1' dataframe.
-    df_s2 = pd.read_excel(url_ipb, sheet_name=1)
+        # 'df_s4' = Read sheet 4 of the 'url_ipb' into 'df_s4' dataframe.
+        # Sheet 4 has info on data's source and last updated date.
+        df_s4 = pd.read_excel(url_ipb, sheet_name=3)
 
+        # Opens 'url_ipb' to retrieve last modified date to 'updt'.
+        with urlopen(url_ipb) as f:
+            updt = dict(f.getheaders())['Last-Modified']
+            updt = updt[5:16]
+            # dict(f.getheaders()) gives all headers.
+            
+    except Exception as e:
+        error = "Source: " + url_ipb + "\nError: " + str(e)
+        return error
+    
 
     # ---------------------------------------------------------------------------- #
     #                            Filter and Extract Data                           #
@@ -70,36 +88,43 @@ def baskets():
         'Turks & Caicos Is.'
     ]
 
-    # Filter 'df_s1' for Caribbean countries.
-    # Filter 'df_s2' for Caribbean countries.
-    # 'EntityName' is a header that contains countries.
-    df_s1 = df_s1.loc[ [ any(i) for i in zip(*[df_s1['EntityName'] == word for word in ctry])] ]
-    df_s2 = df_s2.loc[ [ any(i) for i in zip(*[df_s2['EntityName'] == word for word in ctry])] ]
+    try:
+        # Filter 'df_s1' for Caribbean countries.
+        # Filter 'df_s2' for Caribbean countries.
+        # 'EntityName' is a header that contains countries.
+        df_s1 = df_s1.loc[ [ any(i) for i in zip(*[df_s1['EntityName'] == word for word in ctry])] ]
+        df_s2 = df_s2.loc[ [ any(i) for i in zip(*[df_s2['EntityName'] == word for word in ctry])] ]
 
 
-    # ---------------------------- Cleaning Dataframes --------------------------- #
+        # ---------------------------- Cleaning Dataframes --------------------------- #
 
-    # Remove Cols/Rows with 'ITU', 'IsoCode' and 'Mobile-cellular basket' from 'df_s1'.
-    df_s1 = df_s1[df_s1.columns.drop(list(df_s1.filter(regex='ITU')))]
-    df_s1 = df_s1[df_s1.columns.drop(list(df_s1.filter(regex='IsoCode')))]
-    df_s1 = df_s1.loc[df_s1['Basket'] != "Mobile-cellular basket"]
+        # Remove Cols/Rows with 'ITU', 'IsoCode' and 'Mobile-cellular basket' from 'df_s1'.
+        df_s1 = df_s1[df_s1.columns.drop(list(df_s1.filter(regex='ITU')))]
+        df_s1 = df_s1[df_s1.columns.drop(list(df_s1.filter(regex='IsoCode')))]
+        df_s1 = df_s1.loc[df_s1['Basket'] != "Mobile-cellular basket"]
 
-    # Remove Cols/Rows with 'ITU', 'IsoCode', and 'Cellular' in 'df_s2'.
-    df_s2 = df_s2[df_s2.columns.drop(list(df_s2.filter(regex='ITU')))]
-    df_s2 = df_s2[df_s2.columns.drop(list(df_s2.filter(regex='IsoCode')))]
-    df_s2 = df_s2[df_s2.columns.drop(list(df_s2.filter(regex='Cellular')))]
+        # Remove Cols/Rows with 'ITU', 'IsoCode', and 'Cellular' in 'df_s2'.
+        df_s2 = df_s2[df_s2.columns.drop(list(df_s2.filter(regex='ITU')))]
+        df_s2 = df_s2[df_s2.columns.drop(list(df_s2.filter(regex='IsoCode')))]
+        df_s2 = df_s2[df_s2.columns.drop(list(df_s2.filter(regex='Cellular')))]
 
 
-    # ----------------------------- Merge Dataframes ----------------------------- #
+        # ----------------------------- Merge Dataframes ----------------------------- #
 
-    # The 'merge' function merges 'df_s1' and 'df_s2' and separate them into 3 categories:
-    # GNI per capita, Purchasing Parity Power, and US Dollar.
-    # 'gni_pc' = contains GNI per capita.
-    # 'ppp' = contains Purchasing Parity Power.
-    # 'usd' = contains US Dollar.
-    gni_pc = merge("GNIpc", "PPP", "USD", df_s1, df_s2)
-    ppp = merge("PPP", "USD", "GNIpc", df_s1, df_s2)
-    usd = merge("USD", "GNIpc", "PPP", df_s1, df_s2)
+        # The 'merge' function merges 'df_s1' and 'df_s2' and separate them into 3 categories:
+        # GNI per capita, Purchasing Parity Power, and US Dollar.
+        # 'gni_pc' = contains GNI per capita.
+        # 'ppp' = contains Purchasing Parity Power.
+        # 'usd' = contains US Dollar.
+        gni_pc = merge("GNIpc", "PPP", "USD", df_s1, df_s2)
+        ppp = merge("PPP", "USD", "GNIpc", df_s1, df_s2)
+        usd = merge("USD", "GNIpc", "PPP", df_s1, df_s2)
+
+
+        
+    except Exception as e:
+        error = "Error extracting Price Baskets Data.\nError: " + str(e)
+        return error
 
 
     # ---------------------------------------------------------------------------- #
@@ -123,6 +148,7 @@ def baskets():
         # Add 'mob' to the database.
         # Add 'low' to the database.
         # Add 'high' to the database.
+        # Add 'updt' to the database.
 
 
     # -------------------------- Purchasing Parity Power ------------------------- #
@@ -142,7 +168,7 @@ def baskets():
         # Add 'mob' to the database.
         # Add 'low' to the database.
         # Add 'high' to the database.
-
+        # Add 'updt' to the database.
 
     # --------------------------------- US Dollar -------------------------------- #
 
@@ -161,7 +187,8 @@ def baskets():
         # Add 'mob' to the database.
         # Add 'low' to the database.
         # Add 'high' to the database.
-
+        # Add 'updt' to the database.
+    
 
 def merge(c1, c2, c3, s1, s2):
     '''
@@ -217,5 +244,5 @@ def merge(c1, c2, c3, s1, s2):
     # Sort 'df_cat' by 'DataYear' header in ascending order.
     df_cat = df_cat.append(df_res)
     df_cat = df_cat.sort_values(by=['DataYear'])
-
+    
     return df_cat

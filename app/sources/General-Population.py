@@ -83,11 +83,20 @@ def population():
         # 'index' = current index of loop.
         # 'url' = URL in 'urls' at an index.
         
-        # Read HTML to 'source' from URL in 'url'.
-        source = requests.get(url).text
+        try:
+            # Read HTML to 'source' from URL in 'url'.
+            source = requests.get(url).text
 
-        # Pass HTML to BeautifulSoup with an XML parser.
-        soup = BeautifulSoup(source, 'lxml')
+            # Pass HTML to BeautifulSoup with an XML parser.
+            soup = BeautifulSoup(source, 'lxml')
+            
+            if soup_e.find('404 Error') != -1:
+                raise Exception("HTTP Error 404: NOT FOUND")
+        except Exception as e:
+            error = "Source: " + url + "\nError: " + str(e)
+            return error
+
+        
 
         # 'x' = stores HTML in 'soup' as a string object.
         x = str(soup)
@@ -344,3 +353,58 @@ def population():
         # Store 'pov' to database
         # Store 'lit' to database
         # Store 'updt' to database
+
+        # To store to db:
+        # u = Gen_pop(
+        # ctry = '',
+        # gen = '',
+        # cur = ''
+        # area = '',
+        # land = '', 
+        # lang = '', 
+        # pop = '', 
+        # urb = '', 
+        # elec = '', 
+        # lab = '', 
+        # occ = '', 
+        # unem = '', 
+        # pov = '', 
+        # lit = '', 
+        # updt = ''
+        # )
+        # db.session.add(u)
+        # db.session.commit()
+
+        # To iterate through db:
+        # gen = Gen_pop.query.all()
+        # for u in gen:
+        #   print(u.id, u.ctry)
+
+        # To check existance of a value:
+        # exist = db.session.query(Gen_pop.id).filter_by(ctry='tt').first()
+        # Will return a tuple with the first id occurence.
+        
+        # Get row via id:
+        # u = Gen_pop.query.get({id})
+
+        # Modify value if id is known:
+        # u = Gen_pop.query.get({id})
+        # u.ctry = 'bb'
+
+        # Print value if id is known:
+        # u = Gen_pop.query.get({id})
+        # print(u.ctry)
+
+        # Remove all rows in table:
+        # gen = Gen_pop.query.all()
+        # for u in gen:
+        #   db.session.delete(u)
+
+        # Check if table exists in db via sqlite:
+        # sqlite3
+        # SELECT count(*) FROM  sqlite_master where type='table' AND name='gen_pop';
+
+        # Check if table is empty:
+        # u = Gen_pop.query.get(1)
+        # if u == None:
+        #   # Table is empty

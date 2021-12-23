@@ -65,27 +65,38 @@ def density():
 
         # --------------------------------- Read JSON -------------------------------- #
 
-        # 'json_pop' = stores JSON from 'url'.
-        json_pop = pd.read_json(url)
-        
+        try:
+            # 'json_pop' = stores JSON from 'url'.
+            json_pop = pd.read_json(url)
+        except Exception as e:
+            error = "Source: " + url + "\nError: " + str(e)
+            return error
+
 
         # ---------------------------------------------------------------------------- #
         #                                 Extract Data                                 #
         # ---------------------------------------------------------------------------- #
 
-        # 'url_tif' = URL to TIF file embedded in 'json_pop'.
-        url_tif = json_pop.iloc[-1]['data']['files'][0]
+        try:
+            # 'url_tif' = URL to TIF file embedded in 'json_pop'.
+            url_tif = json_pop.iloc[-1]['data']['files'][0]
+        except Exception as e:
+            error = "Error Extracting TIF URLs.\nError: " + str(e)
+            return error
 
         # 'dir_' = output directory + filename of TIF file.
         # output directory is located in project directory.
-        dir_ = './app/other/images/Population-Density/' + j + '.tif'
+        dir_ = './app/static/images/Population-Density/' + j + '.tif'
 
 
         # -------------------------- Download to File System ------------------------- #
-
-        # TIF file is downloaded to project directory.
-        urllib.request.urlretrieve(url_tif, dir_)
-
+        try:
+            # TIF file is downloaded to project directory.
+            urllib.request.urlretrieve(url_tif, dir_)
+        except Exception as e:
+            error = "Error Downloading TIF.\nSource: " + url_tif + "\nError: " + str(e)
+            return error
+        
 
     # ---------------------------------------------------------------------------- #
     #                                Add to Database                               #
@@ -96,6 +107,3 @@ def density():
     # 'pop_yr' = year of population density TIF files.
     updt = json_pop.iloc[-1]['data']['date']
     pop_yr = json_pop.iloc[-1]['data']['popyear']
-
-    print(type(updt))
-    print(type(pop_yr))
