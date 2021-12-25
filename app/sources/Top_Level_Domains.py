@@ -10,6 +10,9 @@ Project Title:
 
 from bs4 import BeautifulSoup
 import requests
+from app import db
+from app.models import Tld
+from datetime import datetime, timezone, timedelta
 
 
 def tld():
@@ -175,10 +178,70 @@ def tld():
         #                               Store to Database                              #
         # ---------------------------------------------------------------------------- #
 
-        # Store data to 'tld' database table.
-        # Store 'ctry_' to database
-        # Store 'cctld' to database
-        # Store 'ad_con' to database
-        # Store 'tch_con' to database
-        # Store 'nm_svr' to database
-        # Store 'reg' to database
+        # Store data to 'Tld' database table.
+       
+        # If 'index' = 0, then store the current time into 'time'.
+        # 'time' stores starting time of writing to the database.
+        # The time in 'time' is used to compare against the database entry timestamps.
+        # This is used to ensure only recent data is stored into the database. 
+        if index == 0:
+            time = datetime.now(timezone(timedelta(seconds=-14400))).strftime("%Y-%m-%d %H:%M:%S %z")
+        
+        # 'exist' = Checks is a known value exists in the 'Tld' table.
+        # Returns None if the value does not exist.
+        # Returns a tuple of ids if the value exist.
+        exist = db.session.query(Tld.id).filter_by(ctry_=ctry_).first()
+
+        # If value does not exist in 'Tld' table, then add the data to the table.
+        if exist == None:
+            u = Tld(
+            ctry_ = ctry_,
+            cctld = cctld,
+            ad_con = ad_con,
+            tch_con = tch_con,
+            nm_svr = nm_svr, 
+            reg = reg, 
+            stamp = datetime.now(timezone(timedelta(seconds=-14400))).strftime("%Y-%m-%d %H:%M:%S %z")
+            )
+            # Add entries to the database, and commit the changes.
+            db.session.add(u)
+            db.session.commit()
+        
+        # If value exists in 'Tld' table, then overwrite the existing data.
+        else:
+            # 'u' = retrieves the existing data via id stored in index 1 of the tuple in 'exist'.
+            u = Tld.query.get(exist[0])
+            # Overwriting of data in 'u'.
+            u.cctld = cctld
+            u.ad_con = ad_con
+            u.tch_con = tch_con
+            u.nm_svr = nm_svr
+            u.reg = reg
+            u.stamp = datetime.now(timezone(timedelta(seconds=-14400))).strftime("%Y-%m-%d %H:%M:%S %z")
+
+            # Commit changes in 'u' to the database.
+            db.session.commit()
+    
+    # Checks if the table is empty by looking at the table's first entry.
+    # 'exist' returns None is empty.
+    exist = Tld.query.get(1)
+
+    # If table is full ...
+    if exist != None:
+        # Retrieve all data from 'Tld' and store into 'u'.
+        u = Tld.query.all()
+        # Loop over each data entry in 'u'.
+        for j in u:
+            # 'j.stamp' contain the entry timestamp as a string.
+            # 'past' converts 'j.stamp' into Datetime object for comparison.
+            # 'present' converts 'time' into Datetime object for comparison.
+            past = datetime.strptime(j.stamp, "%Y-%m-%d %H:%M:%S %z").strftime("%Y-%m-%d %H:%M:%S %z")
+            present = datetime.strptime(time, "%Y-%m-%d %H:%M:%S %z").strftime("%Y-%m-%d %H:%M:%S %z")
+            
+            # If entry timestamp (past) is earlier than the time of writing to the database (present) ...
+            # ... then the entry is outdated and does not exist in the more recent batch of data.
+            if past < present:
+                # Delete the outdated entry.
+                db.session.delete(j)
+        # Commit changes to the database.
+        db.session.commit()

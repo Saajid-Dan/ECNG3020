@@ -9,6 +9,9 @@ Project Title:
 # ---------------------------------------------------------------------------- #
 from bs4 import BeautifulSoup
 import requests
+from app import db
+from app.models import Root_srv
+from datetime import datetime, timezone, timedelta
 
 
 def root():
@@ -62,7 +65,7 @@ def root():
     cc = ['AG', 'AI', 'BS', 'BB', 'BZ', 'BM', 'VG', 'KY', 'DM', 'GD', 'GY', 'HT', 'JM', 'MS', 'LC', 'KN', 'VC', 'SR', 'TT', 'TC']
 
     # Loop through all <a> tags in 'soup'.
-    for j in soup.find_all('a'):
+    for index, j in enumerate(soup.find_all('a')):
         # Ignore index directory - '../'
         if j.text == '../':
             continue
@@ -113,6 +116,14 @@ def root():
         # Starting indices for '- Country' string in 'x' is stored in 'res' list.
         # '- Country' is the start of a block of server data per country.
         res = [i for i in range(len(x)) if x.startswith('- Country', i)]
+
+
+        # If 'index' = 1, then store the current time into 'time'.
+        # 'time' stores starting time of writing to the database.
+        # The time in 'time' is used to compare against the database entry timestamps.
+        # This is used to ensure only recent data is stored into the database. 
+        if index == 1:
+            time = datetime.now(timezone(timedelta(seconds=-14400))).strftime("%Y-%m-%d %H:%M:%S %z")
 
         # Read blocks of server data per country using indices in 'res' and store into 'root'.
         for k in range(len(res)):
@@ -214,19 +225,89 @@ def root():
             #                               Store to Database                              #
             # ---------------------------------------------------------------------------- #
             
-            # Store to 'root_srv' database table. 
-            # Add 'name' to database
-            # Add 'ctry' to database
-            # Add 'loc' to database
-            # Add 'oper' to database
-            # Add 'type_' to database
-            # Add 'asn' to database
-            # Add 'ipv4' to database
-            # Add 'ipv6' to database
-            # Add 'inst' to database
-            # Add 'rssac' to database
-            # Add 'con' to database
-            # Add 'peer' to database
-            # Add 'id_root' to database
-            # Add 'id_nc' to database
-            # Add 'sub' to database
+            # 'uni' = Unique string identifier to distinguish between database entries.
+            uni = ctry + '-' + str(index) + '-' + str(k)
+
+            # -------------------- Store data to 'Root_srv' database table ------------------- #
+            
+            # 'exist' = Checks is a known value exists in the 'Root_srv' table.
+            # Returns None if the value does not exist.
+            # Returns a tuple of ids if the value exist.
+            exist = db.session.query(Root_srv.id).filter_by(uni=uni).first()
+
+            # If value does not exist in 'Root_srv' table, then add the data to the table.
+            if exist == None:
+                u = Root_srv(
+                    name = name,
+                    ctry = ctry,
+                    uni = uni,
+                    loc = loc,
+                    oper = oper, 
+                    type_ = type_, 
+                    asn = asn, 
+                    ipv4 = ipv4,
+                    ipv6 = ipv6,
+                    inst = inst,
+                    rssac = rssac,
+                    con = con,
+                    peer = peer,
+                    id_root = id_root,
+                    id_nc = id_nc,
+                    updt = sub,
+                    stamp = datetime.now(timezone(timedelta(seconds=-14400))).strftime("%Y-%m-%d %H:%M:%S %z")
+                )
+                # Add entries to the database, and commit the changes.
+                db.session.add(u)
+                db.session.commit()
+            
+            # If value exists in 'Root_srv' table, then overwrite the existing data.
+            else:
+                # 'u' = retrieves the existing data via id stored in index 1 of the tuple in 'exist'.
+                u = Root_srv.query.get(exist[0])
+                # Overwriting of data in 'u'.
+                u.name = name
+                u.ctry = ctry
+                u.loc = loc
+                u.oper = oper
+                u.type_ = type_
+                u.asn = asn
+                u.ipv4 = ipv4
+                u.ipv6 = ipv6
+                u.inst = inst
+                u.rssac = rssac
+                u.con = con
+                u.peer = peer
+                u.id_root = id_root
+                u.id_nc = id_nc
+                u.updt = sub
+                u.stamp = datetime.now(timezone(timedelta(seconds=-14400))).strftime("%Y-%m-%d %H:%M:%S %z")
+
+                # Commit changes in 'u' to the database.
+                db.session.commit()
+    
+
+    # -------------- Remove outdated data from 'Root_srv' database table -------------- #
+
+    # Checks if the table is empty by looking at the table's first entry.
+    # 'exist' returns None is empty.
+    exist = Root_srv.query.get(1)
+
+    # If table is full ...
+    if exist != None:
+        # Retrieve all data from 'Root_srv' and store into 'u'.
+        u = Root_srv.query.all()
+        # Loop over each data entry in 'u'.
+        for i in u:
+            # 'i.stamp' contain the entry timestamp as a string.
+            # 'past' converts 'i.stamp' into Datetime object for comparison.
+            # 'present' converts 'time' into Datetime object for comparison.
+            past = datetime.strptime(i.stamp, "%Y-%m-%d %H:%M:%S %z").strftime("%Y-%m-%d %H:%M:%S %z")
+            present = datetime.strptime(time, "%Y-%m-%d %H:%M:%S %z").strftime("%Y-%m-%d %H:%M:%S %z")
+            
+            # If entry timestamp (past) is earlier than the time of writing to the database (present) ...
+            # ... then the entry is outdated and does not exist in the more recent batch of data.
+            if past < present:
+                # Delete the outdated entry.
+                db.session.delete(i)
+        # Commit changes to the database.
+        db.session.commit()

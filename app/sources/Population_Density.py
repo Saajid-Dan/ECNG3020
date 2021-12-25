@@ -10,6 +10,9 @@ Project Title:
 
 import pandas as pd
 import urllib.request
+from app import db
+from app.models import Pop_dens
+from datetime import datetime, timezone, timedelta
 
 
 def density():
@@ -107,3 +110,33 @@ def density():
     # 'pop_yr' = year of population density TIF files.
     updt = json_pop.iloc[-1]['data']['date']
     pop_yr = json_pop.iloc[-1]['data']['popyear']
+
+
+    # -------------------- Store data to 'Pop_dens' database table ------------------- #
+       
+    # Checks if the table is empty by looking at the table's first entry.
+    # 'exist' returns None if empty.
+    exist = Pop_dens.query.get(1)
+
+    # If value does not exist in 'Pop_dens' table, then add the data to the table.
+    if exist == None:
+        u = Pop_dens(
+            updt = updt,
+            pop_yr = pop_yr,
+            stamp = datetime.now(timezone(timedelta(seconds=-14400))).strftime("%Y-%m-%d %H:%M:%S %z")
+        )
+        # Add entries to the database, and commit the changes.
+        db.session.add(u)
+        db.session.commit()
+    
+    # If value exists in 'Pop_dens' table, then overwrite the existing data.
+    else:
+        # 'u' = retrieves the table's first entry.
+        u = Pop_dens.query.get(1)
+        # Overwriting of data in 'u'.
+        u.updt = updt
+        u.pop_yr = pop_yr
+        u.stamp = datetime.now(timezone(timedelta(seconds=-14400))).strftime("%Y-%m-%d %H:%M:%S %z")
+
+        # Commit changes in 'u' to the database.
+        db.session.commit()

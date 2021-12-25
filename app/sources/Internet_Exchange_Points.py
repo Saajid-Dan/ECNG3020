@@ -8,7 +8,9 @@ Project Title:
 #                                    Imports                                   #
 # ---------------------------------------------------------------------------- #
 import pandas as pd
-import math
+from app import db
+from app.models import Ixp_dir, Ixp_sub, Ixp_mem
+from datetime import datetime, timezone, timedelta
 
 
 def ixp():
@@ -139,8 +141,7 @@ def ixp():
             error = "Error extracting Subnet and Subnet Member data.\nError: " + str(e)
             return error
 
-    # Remove columns with 'id', 'traffic_graph_url', or 'subnet_num' from 'df_sub'.
-    df_sub = df_sub[df_sub.columns.drop(list(df_sub.filter(regex='id')))]
+    # Remove columns with 'traffic_graph_url', or 'subnet_num' from 'df_sub'.
     df_sub = df_sub[df_sub.columns.drop(list(df_sub.filter(regex='traffic_graph_url')))]
     df_sub = df_sub[df_sub.columns.drop(list(df_sub.filter(regex='subnet_num')))]
 
@@ -214,6 +215,7 @@ def ixp():
 
     # Loop over 'df_dir' and add data to 'ixp_dir' database table
     for j in range(len(df_dir)):
+        uni = str(df_dir.iloc[j]['id'])
         ctry = str(df_dir.iloc[j]['ctry'])
         cit = str(df_dir.iloc[j]['cit'])
         name = str(df_dir.iloc[j]['name'])
@@ -230,10 +232,102 @@ def ixp():
         updt = str(df_dir.iloc[j]['updt'])
 
 
+        # -------------------- Store data to 'Ixp_dir' database table ------------------- #
+       
+        # If 'j' = 0, then store the current time into 'time'.
+        # 'time' stores starting time of writing to the database.
+        # The time in 'time' is used to compare against the database entry timestamps.
+        # This is used to ensure only recent data is stored into the database. 
+        if j == 0:
+            time = datetime.now(timezone(timedelta(seconds=-14400))).strftime("%Y-%m-%d %H:%M:%S %z")
+        
+        # 'exist' = Checks is a known value exists in the 'Ixp_dir' table.
+        # Returns None if the value does not exist.
+        # Returns a tuple of ids if the value exist.
+        exist = db.session.query(Ixp_dir.id).filter_by(uni=uni).first()
+
+        # If value does not exist in 'Ixp_dir' table, then add the data to the table.
+        if exist == None:
+            u = Ixp_dir(    
+                uni = uni,
+                ctry = ctry,
+                city = cit,
+                name = name,
+                url = url,
+                stat = stat,
+                date = date,
+                prfs = prfs, 
+                lat = lat, 
+                lon = lon, 
+                prts = prts,
+                ipv4_avg = ipv4_avg,
+                ipv4_pk = ipv4_pk,
+                ipv6_avg = ipv6_avg,
+                updt = updt,
+                stamp = datetime.now(timezone(timedelta(seconds=-14400))).strftime("%Y-%m-%d %H:%M:%S %z")
+            )
+            # Add entries to the database, and commit the changes.
+            db.session.add(u)
+            db.session.commit()
+        
+        # If value exists in 'Ixp_dir' table, then overwrite the existing data.
+        else:
+            # 'u' = retrieves the existing data via id stored in index 1 of the tuple in 'exist'.
+            u = Ixp_dir.query.get(exist[0])
+            # Overwriting of data in 'u'.
+            u.ctry = ctry
+            u.city = cit
+            u.name = name
+            u.url = url
+            u.stat = stat
+            u.date = date
+            u.prfs = prfs
+            u.lat = lat
+            u.lon = lon
+            u.prts = prts
+            u.ipv4_avg = ipv4_avg
+            u.ipv4_pk = ipv4_pk
+            u.ipv6_avg = ipv6_avg
+            u.updt = updt
+            u.stamp = datetime.now(timezone(timedelta(seconds=-14400))).strftime("%Y-%m-%d %H:%M:%S %z")
+
+            # Commit changes in 'u' to the database.
+            db.session.commit()
+    
+
+    # -------------- Remove outdated data from 'Ixp_dir' database table -------------- #
+
+    # Checks if the table is empty by looking at the table's first entry.
+    # 'exist' returns None is empty.
+    exist = Ixp_dir.query.get(1)
+
+    # If table is full ...
+    if exist != None:
+        # Retrieve all data from 'Ixp_dir' and store into 'u'.
+        u = Ixp_dir.query.all()
+        # Loop over each data entry in 'u'.
+        for j in u:
+            # 'j.stamp' contain the entry timestamp as a string.
+            # 'past' converts 'j.stamp' into Datetime object for comparison.
+            # 'present' converts 'time' into Datetime object for comparison.
+            past = datetime.strptime(j.stamp, "%Y-%m-%d %H:%M:%S %z").strftime("%Y-%m-%d %H:%M:%S %z")
+            present = datetime.strptime(time, "%Y-%m-%d %H:%M:%S %z").strftime("%Y-%m-%d %H:%M:%S %z")
+            
+            # If entry timestamp (past) is earlier than the time of writing to the database (present) ...
+            # ... then the entry is outdated and does not exist in the more recent batch of data.
+            if past < present:
+                # Delete the outdated entry.
+                db.session.delete(j)
+        # Commit changes to the database.
+        db.session.commit()
+
+
+
     # -------------------------------- IXP Subnets ------------------------------- #
 
     # Loop over 'df_sub' and add data to 'ixp_sub' database table
     for j in range(len(df_sub)):
+        uni = str(df_sub.iloc[j]['id'])
         ctry = str(df_sub.iloc[j]['ctry'])
         stat = str(df_sub.iloc[j]['status'])
         name = str(df_sub.iloc[j]['short_name'])
@@ -245,16 +339,88 @@ def ixp():
         est = str(df_sub.iloc[j]['established'])
         url_traf = str(df_sub.iloc[j]['traffic_url'])
 
-        # Add 'ctry' to database
-        # Add 'stat' to database
-        # Add 'name' to database
-        # Add 'ver' to database
-        # Add 'sub' to database
-        # Add 'mlpa' to database
-        # Add 'traf' to database
-        # Add 'prts' to database
-        # Add 'est' to database
-        # Add 'url_traf' to database
+
+        # -------------------- Store data to 'Ixp_sub' database table ------------------- #
+       
+        # If 'j' = 0, then store the current time into 'time'.
+        # 'time' stores starting time of writing to the database.
+        # The time in 'time' is used to compare against the database entry timestamps.
+        # This is used to ensure only recent data is stored into the database. 
+        if j == 0:
+            time = datetime.now(timezone(timedelta(seconds=-14400))).strftime("%Y-%m-%d %H:%M:%S %z")
+        
+        # 'exist' = Checks is a known value exists in the 'Ixp_sub' table.
+        # Returns None if the value does not exist.
+        # Returns a tuple of ids if the value exist.
+        exist = db.session.query(Ixp_sub.id).filter_by(uni=uni).first()
+
+        # If value does not exist in 'Ixp_sub' table, then add the data to the table.
+        if exist == None:
+            u = Ixp_sub(
+                uni = uni,
+                ctry = ctry,
+                stat = stat,
+                name = name,
+                ver = ver, 
+                sub = sub, 
+                mlpa = mlpa, 
+                traf = traf,
+                prts = prts,
+                est = est,
+                url_traf = url_traf,
+                stamp = datetime.now(timezone(timedelta(seconds=-14400))).strftime("%Y-%m-%d %H:%M:%S %z")
+            )
+            # Add entries to the database, and commit the changes.
+            db.session.add(u)
+            db.session.commit()
+        
+        # If value exists in 'Ixp_sub' table, then overwrite the existing data.
+        else:
+            # 'u' = retrieves the existing data via id stored in index 1 of the tuple in 'exist'.
+            u = Ixp_sub.query.get(exist[0])
+            # Overwriting of data in 'u'.
+            u.ctry = ctry
+            u.stat = stat
+            u.name = name
+            u.ver = ver
+            u.sub = sub
+            u.mlpa = mlpa
+            u.traf = traf
+            u.prts = prts
+            u.est = est
+            u.url_traf = url_traf
+            u.stamp = datetime.now(timezone(timedelta(seconds=-14400))).strftime("%Y-%m-%d %H:%M:%S %z")
+
+            # Commit changes in 'u' to the database.
+            db.session.commit()
+    
+
+    # -------------- Remove outdated data from 'Ixp_sub' database table -------------- #
+
+    # Checks if the table is empty by looking at the table's first entry.
+    # 'exist' returns None is empty.
+    exist = Ixp_sub.query.get(1)
+
+    # If table is full ...
+    if exist != None:
+        # Retrieve all data from 'Ixp_sub' and store into 'u'.
+        u = Ixp_sub.query.all()
+        # Loop over each data entry in 'u'.
+        for j in u:
+            # 'j.stamp' contain the entry timestamp as a string.
+            # 'past' converts 'j.stamp' into Datetime object for comparison.
+            # 'present' converts 'time' into Datetime object for comparison.
+            past = datetime.strptime(j.stamp, "%Y-%m-%d %H:%M:%S %z").strftime("%Y-%m-%d %H:%M:%S %z")
+            present = datetime.strptime(time, "%Y-%m-%d %H:%M:%S %z").strftime("%Y-%m-%d %H:%M:%S %z")
+            
+            # If entry timestamp (past) is earlier than the time of writing to the database (present) ...
+            # ... then the entry is outdated and does not exist in the more recent batch of data.
+            if past < present:
+                # Delete the outdated entry.
+                db.session.delete(j)
+        # Commit changes to the database.
+        db.session.commit()
+
 
 
     # ------------------------- IXP Subnet Member Details ------------------------ #
@@ -262,6 +428,7 @@ def ixp():
     # Loop over 'df_det' and add data to 'ixp_mem' database table
     for j in range(len(df_det)):
         ctry = str(df_det.iloc[j]['ctry'])
+        uni = ctry + '-' + str(j)
         ip = str(df_det.iloc[j]['ip'])
         fqdn = str(df_det.iloc[j]['fqdn'])
         ping = str(df_det.iloc[j]['ping'])
@@ -272,13 +439,84 @@ def ixp():
         ipv4 = str(df_det.iloc[j]['ipv4'])
         ipv6 = str(df_det.iloc[j]['ipv6'])
 
-        # Add 'ctry' to database
-        # Add 'ip' to database
-        # Add 'fqdn' to database
-        # Add 'ping' to database
-        # Add 'asn' to database
-        # Add 'org' to database
-        # Add 'peer' to database
-        # Add 'prfs' to database
-        # Add 'ipv4' to database
-        # Add 'ipv6' to database
+        
+        # -------------------- Store data to 'Ixp_mem' database table ------------------- #
+       
+        # If 'j' = 0, then store the current time into 'time'.
+        # 'time' stores starting time of writing to the database.
+        # The time in 'time' is used to compare against the database entry timestamps.
+        # This is used to ensure only recent data is stored into the database. 
+        if j == 0:
+            time = datetime.now(timezone(timedelta(seconds=-14400))).strftime("%Y-%m-%d %H:%M:%S %z")
+        
+        # 'exist' = Checks is a known value exists in the 'Ixp_mem' table.
+        # Returns None if the value does not exist.
+        # Returns a tuple of ids if the value exist.
+        exist = db.session.query(Ixp_mem.id).filter_by(uni=uni).first()
+
+        # If value does not exist in 'Ixp_mem' table, then add the data to the table.
+        if exist == None:
+            u = Ixp_mem(
+                uni = uni,
+                ctry = ctry,
+                ip = ip,
+                fqdn = fqdn,
+                ping = ping, 
+                asn = asn, 
+                org = org, 
+                peer = peer,
+                prfs = prfs,
+                ipv4 = ipv4,
+                ipv6 = ipv6,
+                stamp = datetime.now(timezone(timedelta(seconds=-14400))).strftime("%Y-%m-%d %H:%M:%S %z")
+            )
+            # Add entries to the database, and commit the changes.
+            db.session.add(u)
+            db.session.commit()
+        
+        # If value exists in 'Ixp_mem' table, then overwrite the existing data.
+        else:
+            # 'u' = retrieves the existing data via id stored in index 1 of the tuple in 'exist'.
+            u = Ixp_mem.query.get(exist[0])
+            # Overwriting of data in 'u'.
+            u.ctry = ctry
+            u.ip = ip
+            u.fqdn = fqdn
+            u.ping = ping
+            u.asn = asn
+            u.org = org
+            u.peer = peer
+            u.prfs = prfs
+            u.ipv4 = ipv4
+            u.ipv6 = ipv6
+            u.stamp = datetime.now(timezone(timedelta(seconds=-14400))).strftime("%Y-%m-%d %H:%M:%S %z")
+
+            # Commit changes in 'u' to the database.
+            db.session.commit()
+    
+
+    # -------------- Remove outdated data from 'Ixp_mem' database table -------------- #
+
+    # Checks if the table is empty by looking at the table's first entry.
+    # 'exist' returns None is empty.
+    exist = Ixp_mem.query.get(1)
+
+    # If table is full ...
+    if exist != None:
+        # Retrieve all data from 'Ixp_mem' and store into 'u'.
+        u = Ixp_mem.query.all()
+        # Loop over each data entry in 'u'.
+        for j in u:
+            # 'j.stamp' contain the entry timestamp as a string.
+            # 'past' converts 'j.stamp' into Datetime object for comparison.
+            # 'present' converts 'time' into Datetime object for comparison.
+            past = datetime.strptime(j.stamp, "%Y-%m-%d %H:%M:%S %z").strftime("%Y-%m-%d %H:%M:%S %z")
+            present = datetime.strptime(time, "%Y-%m-%d %H:%M:%S %z").strftime("%Y-%m-%d %H:%M:%S %z")
+            
+            # If entry timestamp (past) is earlier than the time of writing to the database (present) ...
+            # ... then the entry is outdated and does not exist in the more recent batch of data.
+            if past < present:
+                # Delete the outdated entry.
+                db.session.delete(j)
+        # Commit changes to the database.
+        db.session.commit()

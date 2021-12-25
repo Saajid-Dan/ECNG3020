@@ -10,6 +10,9 @@ Project Title:
 
 from bs4 import BeautifulSoup
 import requests
+from app import db
+from app.models import Gen_pop
+from datetime import datetime, timezone, timedelta
 
 
 def population():
@@ -77,7 +80,7 @@ def population():
     # ---------------------------------------------------------------------------- #
     #                                  Read Source                                 #
     # ---------------------------------------------------------------------------- #
-
+    
     # Loop over URLs in 'urls' to scrape data and generate them into HTML files.
     for index, url in enumerate(urls):
         # 'index' = current index of loop.
@@ -90,7 +93,7 @@ def population():
             # Pass HTML to BeautifulSoup with an XML parser.
             soup = BeautifulSoup(source, 'lxml')
             
-            if soup_e.find('404 Error') != -1:
+            if soup.text.find('404 Error') != -1:
                 raise Exception("HTTP Error 404: NOT FOUND")
         except Exception as e:
             error = "Source: " + url + "\nError: " + str(e)
@@ -148,6 +151,8 @@ def population():
         cur = x[ index1 : index2 ]
         # Cleaning 'cur'.
         cur = cur.replace('</h3>', '') + '</p>'
+        cur = cur.replace('<p></p>', '')
+        cur = cur.replace('</div></div><div class="free-form-content__content wysiwyg-wrapper" id="energy"></p>', '')
 
 
         # ------------------------------ languages field ----------------------------- #
@@ -338,73 +343,91 @@ def population():
         # ---------------------------------------------------------------------------- #
 
         # Store data to 'gen_pop' database table.
-        # Store 'ctry_' to database
-        # Store 'gen' to database
-        # Store 'cur' to database
-        # Store 'area' to database
-        # Store 'land' to database
-        # Store 'lang' to database
-        # Store 'pop' to database
-        # Store 'urb' to database
-        # Store 'elec' to database
-        # Store 'lab' to database
-        # Store 'occ' to database
-        # Store 'unem' to database
-        # Store 'pov' to database
-        # Store 'lit' to database
-        # Store 'updt' to database
-
-        # To store to db:
-        # u = Gen_pop(
-        # ctry = '',
-        # gen = '',
-        # cur = ''
-        # area = '',
-        # land = '', 
-        # lang = '', 
-        # pop = '', 
-        # urb = '', 
-        # elec = '', 
-        # lab = '', 
-        # occ = '', 
-        # unem = '', 
-        # pov = '', 
-        # lit = '', 
-        # updt = ''
-        # )
-        # db.session.add(u)
-        # db.session.commit()
-
-        # To iterate through db:
-        # gen = Gen_pop.query.all()
-        # for u in gen:
-        #   print(u.id, u.ctry)
-
-        # To check existance of a value:
-        # exist = db.session.query(Gen_pop.id).filter_by(ctry='tt').first()
-        # Will return a tuple with the first id occurence.
+       
+        # If 'index' = 0, then store the current time into 'time'.
+        # 'time' stores starting time of writing to the database.
+        # The time in 'time' is used to compare against the database entry timestamps.
+        # This is used to ensure only recent data is stored into the database. 
+        if index == 0:
+            time = datetime.now(timezone(timedelta(seconds=-14400))).strftime("%Y-%m-%d %H:%M:%S %z")
         
-        # Get row via id:
-        # u = Gen_pop.query.get({id})
+        # 'exist' = Checks is a known value exists in the 'gen_pop' table.
+        # Returns None if the value does not exist.
+        # Returns a tuple of ids if the value exist.
+        exist = db.session.query(Gen_pop.id).filter_by(ctry_=ctry_).first()
 
-        # Modify value if id is known:
-        # u = Gen_pop.query.get({id})
-        # u.ctry = 'bb'
+        # If value does not exist in 'gen_pop' table, then add the data to the table.
+        if exist == None:
+            # print('Empty')
+            u = Gen_pop(
+            ctry_ = ctry_,
+            gen = gen,
+            cur = cur,
+            area = area,
+            land = land, 
+            lang = lang, 
+            pop = pop, 
+            urb = urb, 
+            elec = elec, 
+            lab = lab, 
+            occ = occ, 
+            unem = unem, 
+            pov = pov, 
+            lit = lit, 
+            updt = updt,
+            stamp = datetime.now(timezone(timedelta(seconds=-14400))).strftime("%Y-%m-%d %H:%M:%S %z")
+            )
+            # Add entries to the database, and commit the changes.
+            db.session.add(u)
+            db.session.commit()
+        
+        # If value exists in 'gen_pop' table, then overwrite the existing data.
+        else:
+            # print('Full'); print(exist[0])
+            # 'u' = retrieves the existing data via id stored in index 1 of the tuple in 'exist'.
+            u = Gen_pop.query.get(exist[0])
+            # Overwriting of data in 'u'.
+            u.gen = gen
+            u.cur = cur
+            u.area = area
+            u.land = land
+            u.lang = lang
+            u.pop = pop
+            u.urb = urb
+            u.elec = elec
+            u.lab = lab
+            u.occ = occ
+            u.unem = unem
+            u.pov = pov
+            u.lit = lit
+            u.updt = updt
+            u.stamp = datetime.now(timezone(timedelta(seconds=-14400))).strftime("%Y-%m-%d %H:%M:%S %z")
 
-        # Print value if id is known:
-        # u = Gen_pop.query.get({id})
-        # print(u.ctry)
+            # Commit changes in 'u' to the database.
+            db.session.commit()
+    
+    # Checks if the table is empty by looking at the table's first entry.
+    # 'exist' returns None is empty.
+    exist = Gen_pop.query.get(1)
 
-        # Remove all rows in table:
-        # gen = Gen_pop.query.all()
-        # for u in gen:
-        #   db.session.delete(u)
-
-        # Check if table exists in db via sqlite:
-        # sqlite3
-        # SELECT count(*) FROM  sqlite_master where type='table' AND name='gen_pop';
-
-        # Check if table is empty:
-        # u = Gen_pop.query.get(1)
-        # if u == None:
-        #   # Table is empty
+    # If table is full ...
+    if exist != None:
+        # Retrieve all data from 'gen_pop' and store into 'u'.
+        u = Gen_pop.query.all()
+        # Loop over each data entry in 'u'.
+        for j in u:
+            # print(j.stamp)
+            # 'j.stamp' contain the entry timestamp as a string.
+            # 'past' converts 'j.stamp' into Datetime object for comparison.
+            # 'present' converts 'time' into Datetime object for comparison.
+            past = datetime.strptime(j.stamp, "%Y-%m-%d %H:%M:%S %z").strftime("%Y-%m-%d %H:%M:%S %z")
+            present = datetime.strptime(time, "%Y-%m-%d %H:%M:%S %z").strftime("%Y-%m-%d %H:%M:%S %z")
+            
+            # If entry timestamp (past) is earlier than the time of writing to the database (present) ...
+            # ... then the entry is outdated and does not exist in the more recent batch of data.
+            if past < present:
+                # print(True)
+                # Delete the outdated entry.
+                db.session.delete(j)
+        # Commit changes to the database.
+        db.session.commit()

@@ -12,6 +12,9 @@ import pandas as pd
 import geopandas as gpd
 from bs4 import BeautifulSoup
 import requests
+from app import db
+from app.models import Land
+from datetime import datetime, timezone, timedelta
 
 
 # ---------------------------------------------------------------------------- #
@@ -365,11 +368,20 @@ def submarine():
     # ---------------------------------------------------------------------------- #
     #                              Store Data into Database                             #
     # ---------------------------------------------------------------------------- #
+    
+    # ----------------------- Timestamping Check Condition ----------------------- #
+
+    # 'time' stores starting time of writing to the database.
+    # The time in 'time' is used to compare against the database entry timestamps.
+    # This is used to ensure only recent data is stored into the database. 
+    time = datetime.now(timezone(timedelta(seconds=-14400))).strftime("%Y-%m-%d %H:%M:%S %z")
+
 
     # ------------------------- Caribbean Landing Points ------------------------- #
 
-    # Loop over 'df_car' and add data to 'land' database table.
+    # Loop over 'df_car' and add data to 'Land' database table.
     for j in range(len(df_car)):
+        uni = "Caribbean - " + str(j)
         name = df_car.iloc[j]['name']
         lat = df_car.iloc[j].geometry.y
         lon = df_car.iloc[j].geometry.x
@@ -377,17 +389,52 @@ def submarine():
         car = "Yes"
         updt = updt_car[j]
         
-        # Add 'name to database
-        # Add 'lat' to database
-        # Add 'lon' to database
-        # Add 'ctry' to database
-        # Add 'car' to database
-        # Add 'updt' to database
+        # -------------------- Store data to 'Land' database table ------------------- #
+            
+        # 'exist' = Checks is a known value exists in the 'Land' table.
+        # Returns None if the value does not exist.
+        # Returns a tuple of ids if the value exist.
+        exist = db.session.query(Land.id).filter_by(uni=uni).first()
+
+        # If value does not exist in 'Land' table, then add the data to the table.
+        if exist == None:
+            u = Land(
+                uni = uni,
+                name = name,
+                lat = lat,
+                lon = lon,
+                ctry = ctry, 
+                car = car,
+                updt = updt,
+                stamp = datetime.now(timezone(timedelta(seconds=-14400))).strftime("%Y-%m-%d %H:%M:%S %z")
+            )
+            # Add entries to the database, and commit the changes.
+            db.session.add(u)
+            db.session.commit()
+        
+        # If value exists in 'Land' table, then overwrite the existing data.
+        else:
+            # 'u' = retrieves the existing data via id stored in index 1 of the tuple in 'exist'.
+            u = Land.query.get(exist[0])
+            # Overwriting of data in 'u'.
+            u.uni = uni
+            u.name = name
+            u.lat = lat
+            u.lon = lon
+            u.ctry = ctry
+            u.car = car
+            u.updt = updt
+            u.stamp = datetime.now(timezone(timedelta(seconds=-14400))).strftime("%Y-%m-%d %H:%M:%S %z")
+
+            # Commit changes in 'u' to the database.
+            db.session.commit()
+    
     
     # ----------------------- International Landing Points ----------------------- #
 
     # Loop over 'df_int' and add data to 'land' database table.
     for j in range(len(df_int)):
+        uni = "International - " + str(j)
         name = df_int.iloc[j]['name']
         lat = df_int.iloc[j].geometry.y
         lon = df_int.iloc[j].geometry.x
@@ -395,9 +442,67 @@ def submarine():
         car = "No"
         updt = updt_int[j]
         
-        # Add 'name to database
-        # Add 'lat' to database
-        # Add 'lon' to database
-        # Add 'ctry' to database
-        # Add 'car' to database
-        # Add 'updt' to database
+                # 'exist' = Checks is a known value exists in the 'Land' table.
+        # Returns None if the value does not exist.
+        # Returns a tuple of ids if the value exist.
+        exist = db.session.query(Land.id).filter_by(uni=uni).first()
+
+        # If value does not exist in 'Land' table, then add the data to the table.
+        if exist == None:
+            u = Land(
+                uni = uni,
+                name = name,
+                lat = lat,
+                lon = lon,
+                ctry = ctry, 
+                car = car,
+                updt = updt,
+                stamp = datetime.now(timezone(timedelta(seconds=-14400))).strftime("%Y-%m-%d %H:%M:%S %z")
+            )
+            # Add entries to the database, and commit the changes.
+            db.session.add(u)
+            db.session.commit()
+        
+        # If value exists in 'Land' table, then overwrite the existing data.
+        else:
+            # 'u' = retrieves the existing data via id stored in index 1 of the tuple in 'exist'.
+            u = Land.query.get(exist[0])
+            # Overwriting of data in 'u'.
+            u.uni = uni
+            u.name = name
+            u.lat = lat
+            u.lon = lon
+            u.ctry = ctry
+            u.car = car
+            u.updt = updt
+            u.stamp = datetime.now(timezone(timedelta(seconds=-14400))).strftime("%Y-%m-%d %H:%M:%S %z")
+
+            # Commit changes in 'u' to the database.
+            db.session.commit()
+
+
+    # -------------- Remove outdated data from 'Land' database table -------------- #
+
+    # Checks if the table is empty by looking at the table's first entry.
+    # 'exist' returns None is empty.
+    exist = Land.query.get(1)
+
+    # If table is full ...
+    if exist != None:
+        # Retrieve all data from 'Land' and store into 'u'.
+        u = Land.query.all()
+        # Loop over each data entry in 'u'.
+        for i in u:
+            # 'i.stamp' contain the entry timestamp as a string.
+            # 'past' converts 'i.stamp' into Datetime object for comparison.
+            # 'present' converts 'time' into Datetime object for comparison.
+            past = datetime.strptime(i.stamp, "%Y-%m-%d %H:%M:%S %z").strftime("%Y-%m-%d %H:%M:%S %z")
+            present = datetime.strptime(time, "%Y-%m-%d %H:%M:%S %z").strftime("%Y-%m-%d %H:%M:%S %z")
+            
+            # If entry timestamp (past) is earlier than the time of writing to the database (present) ...
+            # ... then the entry is outdated and does not exist in the more recent batch of data.
+            if past < present:
+                # Delete the outdated entry.
+                db.session.delete(i)
+        # Commit changes to the database.
+        db.session.commit()
