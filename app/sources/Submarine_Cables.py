@@ -69,8 +69,9 @@ def submarine():
     json_land = "https://raw.githubusercontent.com/telegeography/www.submarinecablemap.com/master/web/public/api/v3/landing-point/landing-point-geo.json"
 
     # 'url_his' = root directory for landing points commit history repo.
+    # 'url_com' = root directory for submarine cable commit history repo.
     url_his = 'https://github.com/telegeography/www.submarinecablemap.com/commits/master/web/public/api/v3/landing-point/'
-
+    url_com = 'https://github.com/telegeography/www.submarinecablemap.com/commits/master/web/public/api/v3/cable/'
     
     # ---------------------------------------------------------------------------- #
     #                                 Read Sources                                 #
@@ -322,6 +323,27 @@ def submarine():
             own = df_sub.iloc[j]['owners']
             url = df_sub.iloc[j]['url']
 
+            # 'url_tel' = directory of the commit history for JSON file with an ID of 'x'.
+            # Commit history contains last updated date of file.
+            url_tel = url_com + src_id + '.json'
+
+            try:
+                # Read HTML to 'html_tel' from URL in 'url_tel'.
+                html_tel = requests.get(url_tel).text
+
+                # Pass HTML to BeautifulSoup with an XML parser.
+                soup = BeautifulSoup(html_tel, 'lxml')
+
+                if 'Page not found' in soup.find('title').text:
+                    raise Exception("HTTP Error 404: NOT FOUND")
+            except Exception as e:
+                error = "Source: " + url_tel + "\nError: " + str(e)
+                return error
+
+            # 'updt' = last updated data.
+            updt = soup.find('h2', class_='f5 text-normal').text
+            updt = updt.replace('Commits on ', '')
+
             # Manipulate 'geo_id' geometries into JSON array format stored into 'geo'.
             geo = geo_id[j]
             geo = geo.replace('MULTILINESTRING ', '')
@@ -337,7 +359,7 @@ def submarine():
             # ---------------------------------- Step 3 ---------------------------------- #
 
             # Creating cable JSON properties.
-            prop = f'{{"type": "Feature", "properties": {{"id": "{src_id}", "name": "{name}", "stat": "{stat}", "lnd": "{lnd}", "len_": "{len_}", "rfs": "{rfs}", "sup": "{sup}", "own": "{own}", "url": "{url}"}}, "geometry": {{"type": "MultiLineString", "coordinates": [{geo}] }} }}'
+            prop = f'{{"type": "Feature", "properties": {{"id": "{src_id}", "updt": "{updt}", "name": "{name}", "stat": "{stat}", "lnd": "{lnd}", "len_": "{len_}", "rfs": "{rfs}", "sup": "{sup}", "own": "{own}", "url": "{url}"}}, "geometry": {{"type": "MultiLineString", "coordinates": [{geo}] }} }}'
             
             # Adding all properties into one feature.
             if j == len(df_sub) - 1:
@@ -442,7 +464,7 @@ def submarine():
         car = "No"
         updt = updt_int[j]
         
-                # 'exist' = Checks is a known value exists in the 'Land' table.
+        # 'exist' = Checks is a known value exists in the 'Land' table.
         # Returns None if the value does not exist.
         # Returns a tuple of ids if the value exist.
         exist = db.session.query(Land.id).filter_by(uni=uni).first()

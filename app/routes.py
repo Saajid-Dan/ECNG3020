@@ -12,6 +12,8 @@ from app.sources.Speed_Index import speedindex
 from app.sources.Submarine_Cables import submarine
 from app.sources.Top_Level_Domains import tld
 
+from app.modules.maps import create_map
+
 
 @app.route('/')
 @app.route('/index')
@@ -26,12 +28,14 @@ def test():
     # print(baskets())
     # print(indicators())
     # print(ixp())
-    # print(density())
+    print(density())
     # print(root())
     # print(speedindex())
     # print(submarine())
-    print(tld())
-    return 'test'
+    # print(tld())
+    create_map()
+    print("successful")
+    return render_template('test.html')
 
 @app.route('/email')
 def email():

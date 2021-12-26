@@ -9,7 +9,7 @@ Project Title:
 # ---------------------------------------------------------------------------- #
 
 import pandas as pd
-import urllib.request
+from osgeo import gdal
 from app import db
 from app.models import Pop_dens
 from datetime import datetime, timezone, timedelta
@@ -81,62 +81,109 @@ def density():
         # ---------------------------------------------------------------------------- #
 
         try:
+            # 'urls' = contains downloadable URLs for TIF and CSV file.
             # 'url_tif' = URL to TIF file embedded in 'json_pop'.
-            url_tif = json_pop.iloc[-1]['data']['files'][0]
+            # 'updt' = last updated date of TIF image.
+            # 'pop_yr' = Population density year.
+            urls = json_pop.iloc[-1]['data']['files']
+            for link in urls:
+                if link.find('.tif') != -1:
+                    url_tif = link
+            updt = json_pop.iloc[-1]['data']['date'][0]
+            pop_yr = json_pop.iloc[-1]['data']['popyear'][0]
         except Exception as e:
-            error = "Error Extracting TIF URLs.\nError: " + str(e)
+            error = "Error Extracting TIF Data.\nError: " + str(e)
             return error
 
-        # 'dir_' = output directory + filename of TIF file.
-        # output directory is located in project directory.
-        dir_ = './app/static/images/Population-Density/' + j + '.tif'
-
-
-        # -------------------------- Download to File System ------------------------- #
         try:
-            # TIF file is downloaded to project directory.
-            urllib.request.urlretrieve(url_tif, dir_)
+            # 'dataset' = Pass TIF URL from 'url_tif' to gdal.
+            dataset = gdal.Open(url_tif, 1)
+            
+            # Read TIF file as an array of RGBA values.
+            band = dataset.GetRasterBand(1)
+            arr = band.ReadAsArray()
         except Exception as e:
-            error = "Error Downloading TIF.\nSource: " + url_tif + "\nError: " + str(e)
+            error = "Source: " + url_tif + "\nError: " + str(e)
             return error
+
+        # 'stats' = contains min, max and mean population densities in a list.
+        # format: [min, max, mean]
+        stats = band.GetStatistics(True, True)
+
+        # Store mean population density into 'dens'.
+        dens = stats[2]
         
 
-    # ---------------------------------------------------------------------------- #
-    #                                Add to Database                               #
-    # ---------------------------------------------------------------------------- #
+        # ---------------------------------------------------------------------------- #
+        #                                Add to Database                               #
+        # ---------------------------------------------------------------------------- #
 
-    # Add data to 'pop_dens' table in database.
-    # 'updt' = date updated.
-    # 'pop_yr' = year of population density TIF files.
-    updt = json_pop.iloc[-1]['data']['date']
-    pop_yr = json_pop.iloc[-1]['data']['popyear']
+        # ----------------------- Timestamping Check Condition ----------------------- #
+
+        # 'time' stores starting time of writing to the database.
+        # The time in 'time' is used to compare against the database entry timestamps.
+        # This is used to ensure only recent data is stored into the database. 
+        time = datetime.now(timezone(timedelta(seconds=-14400))).strftime("%Y-%m-%d %H:%M:%S %z")
 
 
-    # -------------------- Store data to 'Pop_dens' database table ------------------- #
-       
+        # -------------------------- Population Density Data ------------------------- #
+
+        # 'exist' = Checks is a known value exists in the 'Pop_dens' table.
+        # Returns None if the value does not exist.
+        # Returns a tuple of ids if the value exist.
+        exist = db.session.query(Pop_dens.id).filter_by(ctry=j).first()
+
+        # If value does not exist in 'Pop_dens' table, then add the data to the table.
+        if exist == None:
+            u = Pop_dens(
+                ctry = j,
+                pop_yr = pop_yr,
+                url = url_tif,
+                dens = dens,
+                updt = updt,
+                stamp = datetime.now(timezone(timedelta(seconds=-14400))).strftime("%Y-%m-%d %H:%M:%S %z")
+            )
+            # Add entries to the database, and commit the changes.
+            db.session.add(u)
+            db.session.commit()
+        
+        # If value exists in 'Pop_dens' table, then overwrite the existing data.
+        else:
+            # 'u' = retrieves the existing data via id stored in index 1 of the tuple in 'exist'.
+            u = Pop_dens.query.get(exist[0])
+            # Overwriting of data in 'u'.
+            u.pop_yr = pop_yr
+            u.url = url_tif
+            u.dens = dens
+            u.updt = updt
+            u.stamp = datetime.now(timezone(timedelta(seconds=-14400))).strftime("%Y-%m-%d %H:%M:%S %z")
+
+            # Commit changes in 'u' to the database.
+            db.session.commit()
+
+
+    # -------------- Remove outdated data from 'Pop_dens' database table -------------- #
+
     # Checks if the table is empty by looking at the table's first entry.
-    # 'exist' returns None if empty.
+    # 'exist' returns None is empty.
     exist = Pop_dens.query.get(1)
 
-    # If value does not exist in 'Pop_dens' table, then add the data to the table.
-    if exist == None:
-        u = Pop_dens(
-            updt = updt,
-            pop_yr = pop_yr,
-            stamp = datetime.now(timezone(timedelta(seconds=-14400))).strftime("%Y-%m-%d %H:%M:%S %z")
-        )
-        # Add entries to the database, and commit the changes.
-        db.session.add(u)
-        db.session.commit()
-    
-    # If value exists in 'Pop_dens' table, then overwrite the existing data.
-    else:
-        # 'u' = retrieves the table's first entry.
-        u = Pop_dens.query.get(1)
-        # Overwriting of data in 'u'.
-        u.updt = updt
-        u.pop_yr = pop_yr
-        u.stamp = datetime.now(timezone(timedelta(seconds=-14400))).strftime("%Y-%m-%d %H:%M:%S %z")
-
-        # Commit changes in 'u' to the database.
+    # If table is full ...
+    if exist != None:
+        # Retrieve all data from 'Pop_dens' and store into 'u'.
+        u = Pop_dens.query.all()
+        # Loop over each data entry in 'u'.
+        for i in u:
+            # 'i.stamp' contain the entry timestamp as a string.
+            # 'past' converts 'i.stamp' into Datetime object for comparison.
+            # 'present' converts 'time' into Datetime object for comparison.
+            past = datetime.strptime(i.stamp, "%Y-%m-%d %H:%M:%S %z").strftime("%Y-%m-%d %H:%M:%S %z")
+            present = datetime.strptime(time, "%Y-%m-%d %H:%M:%S %z").strftime("%Y-%m-%d %H:%M:%S %z")
+            
+            # If entry timestamp (past) is earlier than the time of writing to the database (present) ...
+            # ... then the entry is outdated and does not exist in the more recent batch of data.
+            if past < present:
+                # Delete the outdated entry.
+                db.session.delete(i)
+        # Commit changes to the database.
         db.session.commit()

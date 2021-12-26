@@ -225,6 +225,9 @@ class Ixp_mem(db.Model):
 class Pop_dens(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     updt = db.Column(db.String, index=True)
+    ctry = db.Column(db.String, index=True)
+    url = db.Column(db.String, index=True)
+    dens = db.Column(db.String, index=True)
     pop_yr = db.Column(db.Integer, index=True)
     stamp = db.Column(db.String, index=True)
 
@@ -248,6 +251,8 @@ class Root_srv(db.Model):
     peer = db.Column(db.String, index=True)
     id_root = db.Column(db.String, index=True)
     id_nc = db.Column(db.String, index=True)
+    lat = db.Column(db.Float, index=True)
+    lon = db.Column(db.Float, index=True)
     updt = db.Column(db.String, index=True)
     stamp = db.Column(db.String, index=True)
 

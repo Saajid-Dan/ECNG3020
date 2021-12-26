@@ -220,6 +220,10 @@ def root():
             else:
                 id_nc = '<br>' + x[ pos1[5] + 30 : pos1[6] - 1 ]
             
+            # 'lat' and 'lon' contains latitude and longitude coordinates of root servers
+            lat = root[ pos2[5] + 10 : pos2[6] - 3 ]
+            lon = root[ pos2[6] + 11 : pos2[7] - 3 ]
+            
 
             # ---------------------------------------------------------------------------- #
             #                               Store to Database                              #
@@ -253,7 +257,9 @@ def root():
                     peer = peer,
                     id_root = id_root,
                     id_nc = id_nc,
-                    updt = sub,
+                    lat = lat,
+                    lon = lon,
+                    updt = sub.replace('/', ''),
                     stamp = datetime.now(timezone(timedelta(seconds=-14400))).strftime("%Y-%m-%d %H:%M:%S %z")
                 )
                 # Add entries to the database, and commit the changes.
@@ -279,7 +285,9 @@ def root():
                 u.peer = peer
                 u.id_root = id_root
                 u.id_nc = id_nc
-                u.updt = sub
+                u.updt = sub.replace('/', '')
+                u.lat = lat
+                u.lon = lon
                 u.stamp = datetime.now(timezone(timedelta(seconds=-14400))).strftime("%Y-%m-%d %H:%M:%S %z")
 
                 # Commit changes in 'u' to the database.
