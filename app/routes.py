@@ -13,6 +13,7 @@ from app.sources.Submarine_Cables import submarine
 from app.sources.Top_Level_Domains import tld
 
 from app.modules.maps import create_map
+from app.modules.speed_index_graph import speed
 
 
 @app.route('/')
@@ -28,12 +29,13 @@ def test():
     # print(baskets())
     # print(indicators())
     # print(ixp())
-    print(density())
+    # print(density())
     # print(root())
     # print(speedindex())
     # print(submarine())
     # print(tld())
-    create_map()
+    # create_map()
+    speed()
     print("successful")
     return render_template('test.html')
 
