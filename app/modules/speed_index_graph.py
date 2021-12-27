@@ -28,6 +28,13 @@ ctry_ = [
     'Trinidad and Tobago'
 ]
 
+cc = [ 
+        'HTI', 
+        'JAM',  
+        'SUR', 
+        'TTO'
+    ]
+
 # 'dict1' is a dictionary that relates numerical month (key) to three letter abbreviated month (value)
 dict1 = {'01':'Jan',
          '02':'Feb',
@@ -43,8 +50,11 @@ dict1 = {'01':'Jan',
          '12':'Dec'}
 
 
-def speed():
-
+def create_speed_graph():
+    '''
+    Retrieves Mobile and Fixed broadband speed index data from the database and plots them into bokeh graphs.
+    '''
+    
     # -------------------------- Mobile Broadband Graphs ------------------------- #
 
     # Loop over countries in 'ctry_' to add 4 figures per 4 graphs.
@@ -59,7 +69,7 @@ def speed():
         ups = db.session.query(Mob_br.ups).filter_by(ctry=j)
         ltcy = db.session.query(Mob_br.ltcy).filter_by(ctry=j)
         jitt = db.session.query(Mob_br.jitt).filter_by(ctry=j)
-
+        
         # Unpack tuples in list.
         dates = [value for value, in dates]
         dls = [value for value, in dls]
@@ -84,13 +94,19 @@ def speed():
 
         # List of figure titles.
         title = [
-            'Mobile Broadband - HTI',
-            'Mobile Broadband - JAM',
-            'Mobile Broadband - SUR',
-            'Mobile Broadband - TTO',
+            'Mobile Broadband - Download',
+            'Mobile Broadband - Upload',
+            'Mobile Broadband - Latency',
+            'Mobile Broadband - Jitter',
         ]
-        # list of figure units.
-        units = ['Mbps', 'Mbps', 'ms', 'ms']
+
+        # list of y-axis label.
+        y_label = [
+            'Download Speed (Mbps)', 
+            'Upload Speed (Mbps)', 
+            'Latency (ms)', 
+            'Jitter (ms)'
+        ]
 
         # 'tabs' = list to append 4 figures.
         tabs = []
@@ -100,16 +116,24 @@ def speed():
             source = ColumnDataSource(data={'x':x,'y':y[k]})
 
             # 'p' = bokeh figure.
-            p = figure(x_range=FactorRange(*x), width=250, title=title[k])
+            p = figure(
+                x_range=FactorRange(*x), 
+                width=250, 
+                title=title[k].split('-')[0] + '- ' + cc[k],
+                x_axis_label = 'Date',
+                y_axis_label = y_label[k]
+            )
             
             # Orient x-axis by 90 degrees.
             p.xaxis.major_label_orientation = pi/2
 
             # Custom Bokeh HoverTool
-            hover = HoverTool(tooltips=[
-                ('y-value', '@y ' + units[k]),
-                ('Date', '@x')
-            ])
+            hover = HoverTool(
+                tooltips=[
+                    (y_label[k], '@y'),
+                    ('Date', '@x')
+                ]
+            )
 
             # Add 'hover' to figures.
             p.add_tools(hover)
@@ -121,14 +145,14 @@ def speed():
                 width=0.5, 
                 source=source,
                 color='#0d6efd'
-                )
+            )
             
             # Makes figures responsive.
             p.sizing_mode = 'stretch_both'
 
             # Add figure to a Bokeh panel.
             # Append panel to 'tabs' list.
-            tabs.append(Panel(child=p, title=title[k]))
+            tabs.append(Panel( child=p, title=title[k].split(' - ')[-1] ))
         
         # 'tabs' = Bokeh tabs object.
         # Combines the figures in 'tabs' list to one graph.
@@ -178,13 +202,19 @@ def speed():
 
         # List of figure titles.
         title = [
-            'Fixed Broadband - HTI',
-            'Fixed Broadband - JAM',
-            'Fixed Broadband - SUR',
-            'Fixed Broadband - TTO',
+            'Fixed Broadband - Download',
+            'Fixed Broadband - Upload',
+            'Fixed Broadband - Latency',
+            'Fixed Broadband - Jitter',
         ]
-        # list of figure units.
-        units = ['Mbps', 'Mbps', 'ms', 'ms']
+
+        # list of y-axis label.
+        y_label = [
+            'Download Speed (Mbps)', 
+            'Upload Speed (Mbps)', 
+            'Latency (ms)', 
+            'Jitter (ms)'
+        ]
 
         # 'tabs' = list to append 4 figures.
         tabs = []
@@ -194,16 +224,23 @@ def speed():
             source = ColumnDataSource(data={'x':x,'y':y[k]})
 
             # 'p' = bokeh figure.
-            p = figure(x_range=FactorRange(*x), width=250, title=title[k])
+            p = figure(
+                x_range=FactorRange(*x), 
+                width=250, 
+                title=title[k].split('-')[0]  + '- ' + cc[k],
+                x_axis_label = 'Date',
+                y_axis_label = y_label[k])
             
             # Orient x-axis by 90 degrees.
             p.xaxis.major_label_orientation = pi/2
 
             # Custom Bokeh HoverTool
-            hover = HoverTool(tooltips=[
-                ('y-value', '@y ' + units[k]),
-                ('Date', '@x')
-            ])
+            hover = HoverTool(
+                tooltips=[
+                    (y_label[k], '@y'),
+                    ('Date', '@x')
+                ]
+            )
 
             # Add 'hover' to figures.
             p.add_tools(hover)
@@ -221,7 +258,7 @@ def speed():
 
             # Add figure to a Bokeh panel.
             # Append panel to 'tabs' list.
-            tabs.append(Panel(child=p, title=title[k]))
+            tabs.append(Panel( child=p, title=title[k].split(' - ')[-1] ))
         
         # 'tabs' = Bokeh tabs object.
         # Combines the figures in 'tabs' list to one graph.
