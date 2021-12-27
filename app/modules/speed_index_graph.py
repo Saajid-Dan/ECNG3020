@@ -119,7 +119,7 @@ def create_speed_graph():
             p = figure(
                 x_range=FactorRange(*x), 
                 width=250, 
-                title=title[k].split('-')[0] + '- ' + cc[k],
+                title=title[k].split('-')[0] + '- ' + cc[index],
                 x_axis_label = 'Date',
                 y_axis_label = y_label[k]
             )
@@ -227,7 +227,7 @@ def create_speed_graph():
             p = figure(
                 x_range=FactorRange(*x), 
                 width=250, 
-                title=title[k].split('-')[0]  + '- ' + cc[k],
+                title=title[k].split('-')[0]  + '- ' + cc[index],
                 x_axis_label = 'Date',
                 y_axis_label = y_label[k])
             
@@ -250,7 +250,8 @@ def create_speed_graph():
                 x='x', 
                 top='y', 
                 width=0.5, 
-                source=source
+                source=source,
+                color='#0d6efd'
                 )
             
             # Makes figures responsive.

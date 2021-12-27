@@ -3,7 +3,11 @@
 
     <head>
         <meta charset="UTF-8">
+
+        <!--- Bootstrap 5.1.3 --->
+
         <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3" crossorigin="anonymous">
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css"></head>
 
         {% if title %}
             <title>{{ title }} - ECNG 3020</title>
@@ -13,6 +17,7 @@
     </head>
     
     <body>
+        <!-- Primary Navbar -->
         <nav class="navbar navbar-expand-sm navbar-dark bg-primary">
             <div class="container">
                 <a class="navbar-brand font-size-8" href="#">
@@ -27,7 +32,7 @@
                 <div class="collapse navbar-collapse justify-content-end align-center" id="navbarSupportedContent">
                     <ul class="navbar-nav mr-auto">
                         <li class="nav-item active">
-                            <a class="nav-link" href="#">Home <span class="sr-only">(current)</span></a>
+                            <a class="nav-link" href="{{ url_for('index') }}">Home <span class="sr-only">(current)</span></a>
                         </li>
                         <li class="nav-item">
                             <a class="nav-link" href="#">IXP</a>
@@ -42,313 +47,329 @@
                 </div>
             </div>
         </nav>
-
-        <div class='row'>
-            <div class="col-1" ></div>
-            
+        
+        <!-- Project Name -->
+        <div class='row justify-content-center'>
             <div class="col-10 d-inline-block align-bottom">
                 <br>
                 <h5 class="text-center text-uppercase">Dashboard for Caribbean Internet Infrastructure, Adoption & Use</h5>
             </div>
-            
-            <div class="col-1"></div>
         </div>
+
         <hr>
-        <div class='row'>
+
+        <!-- Declaration of Map Title -->
+        <div class='row justify-content-center'>
             <div class="col-12" >
                 <h5 class="md-10 text-center text-muted">Map</h5>
             </div>
         </div>
         <hr>
         
-        <div class="row">
-            <div class="col-1"></div>
-                <div class="col-10">
-                    <a class="btn btn-primary" data-bs-toggle="collapse" href="#Collapse1" role="button" aria-expanded="false" aria-controls="Collapse1" style="width: 100%;">Legend</a> 
-                </div>
-            <div class="col-1"></div>
+        <!-- Legend -->
+        <div class='row justify-content-center'>
+            <div class="col-10">
+                <a class="btn btn-primary" data-bs-toggle="collapse" href="#Collapse1" role="button" aria-expanded="false" aria-controls="Collapse1" style="width: 100%;">Legend</a> 
+            </div>
             
-            <div class="col-1"></div>
             <div class="collapse col-10" id="Collapse1" style="margin-top: 0.5em;">
                 <div class="card card-body">
-                    <iframe id='legend' src='./OOKLA/fixed0.html' width="100%" height="300px"></iframe>
+                    {% include '_legend.html' %}
                 </div>
             </div>
-            <div class="col-1"></div>
         </div>
+
         <br>
-
-        <div class='row'>
-            <div class="col-1"></div>
-
+        
+        <!-- Map HTML file -->
+        <div class='row justify-content-center'>
             <div class="col-10">
-                <iframe id='map' src='./map.html' width="100%" height="450px" style="border: thin solid rgb(200, 200, 200)"></iframe>
+                <iframe id='map' src='/static/html/map.html' width="100%" height="450px" style="border: thin solid rgb(200, 200, 200)"></iframe>
+            </div>
+        </div>
+        
+        <!-- Additional Map Attributions -->
+        <div class="row justify-content-center" style="margin-top: 1em;">
+            <div class="col-10">
+                <a class="btn btn-primary" data-bs-toggle="collapse" href="#Collapse2" role="button" aria-expanded="false" aria-controls="Collapse2" style="width: 100%;">Map Attributions</a> 
             </div>
             
-            <div class="col-1"></div>
-        </div>
-
-        <div class="row" style="margin-top: 1em;">
-            <div class="col-1"></div>
-                <div class="col-10">
-                    <a class="btn btn-primary" data-bs-toggle="collapse" href="#Collapse2" role="button" aria-expanded="false" aria-controls="Collapse2" style="width: 100%;">Map Attributions</a> 
-                </div>
-            <div class="col-1"></div>
-            
-            <div class="col-1"></div>
             <div class="collapse col-10" id="Collapse2" style="margin-top: 0.5em;">
                 <div class="card card-body">
                     Lorem ipsum dolor sit amet, consectetur adipisicing elit. Nam, recusandae similique accusantium voluptates quos fugiat reiciendis dolorem voluptatum ipsa repellat inventore, soluta dolorum sint dicta laudantium odit delectus repellendus labore?
                 </div>
             </div>
-            <div class="col-1"></div>
         </div>
-        <br>
 
+        <br>
         <hr>
-        <div class='row'>
+
+        <!-- Toggle Countries Dropdowns -->
+        <div class='row justify-content-center'>
             <div class="col-12" >
                 <h5 class="md-10 text-center text-muted">Select Countries</h5>
             </div>
         </div>
         <hr>
 
-        <div class='row'>
-            <div class="col-1"></div>
-            
+        <div class='row justify-content-center'>       
             <div class="col-xs-5 col-sm-5">
                 <select name="country1" class="form-select" id='country1' onchange="changeGraph('country1', 'left0', 'left1', 'left2', 'left3', 'left4')" required>
-                    <option value='0'>Anguilla</option>
-                    <option value='1'>Antigua and Barbuda</option>
-                    <option value='2'>Bahamas</option>
-                    <option value='3'>Barbados</option>
-                    <option value='4'>Belize</option>
-                    <option value='5'>Bermuda</option>
-                    <option value='6'>British Virgin Islands</option>
-                    <option value='7'>Cayman Islands</option>
-                    <option value='8'>Dominica</option>
-                    <option value='9'>Grenada</option>
-                    <option value='10'>Guyana</option>
-                    <option value='11'>Haiti</option>
-                    <option value='12'>Jamaica</option>
-                    <option value='13'>Montserrat</option>
-                    <option value='14'>St. Kitts and Nevis</option>
-                    <option value='15'>St. Lucia</option>
-                    <option value='16'>St. Vincent and the Grenadines</option>
-                    <option value='17'>Suriname</option>
-                    <option value='18'>Trinidad and Tobago</option>
-                    <option value='19'>Turks and Caicos Islands</option>
+                    <option value='0'>Anguilla (AIA)</option>
+                    <option value='1'>Antigua and Barbuda (ATG)</option>
+                    <option value='2'>Bahamas (BHS)</option>
+                    <option value='3'>Barbados (BRB)</option>
+                    <option value='4'>Belize (BLZ)</option>
+                    <option value='5'>Bermuda (BMU)</option>
+                    <option value='6'>British Virgin Islands (VGB)</option>
+                    <option value='7'>Cayman Islands (CYM)</option>
+                    <option value='8'>Dominica (DMA)</option>
+                    <option value='9'>Grenada (GRD)</option>
+                    <option value='10'>Guyana (GUY)</option>
+                    <option value='11'>Haiti (HTI)</option>
+                    <option value='12'>Jamaica (JAM)</option>
+                    <option value='13'>Montserrat (MSR)</option>
+                    <option value='14'>St. Kitts and Nevis (KNA)</option>
+                    <option value='15'>St. Lucia (LCA)</option>
+                    <option value='16'>St. Vincent and the Grenadines (VCT)</option>
+                    <option value='17'>Suriname (SUR)</option>
+                    <option value='18'>Trinidad and Tobago (TTO)</option>
+                    <option value='19'>Turks and Caicos Islands (TCA)</option>
                 </select>
             </div>
 
             <div class="col-xs-5 col-sm-5">
                 <select name="country2" class="form-select" id='country2' onchange="changeGraph('country2', 'right0', 'right1', 'right2', 'right3', 'right4')" required>
-                    <option value='0'>Anguilla</option>
-                    <option value='1'>Antigua and Barbuda</option>
-                    <option value='2'>Bahamas</option>
-                    <option value='3'>Barbados</option>
-                    <option value='4'>Belize</option>
-                    <option value='5'>Bermuda</option>
-                    <option value='6'>British Virgin Islands</option>
-                    <option value='7'>Cayman Islands</option>
-                    <option value='8'>Dominica</option>
-                    <option value='9'>Grenada</option>
-                    <option value='10'>Guyana</option>
-                    <option value='11'>Haiti</option>
-                    <option value='12'>Jamaica</option>
-                    <option value='13'>Montserrat</option>
-                    <option value='14'>St. Kitts and Nevis</option>
-                    <option value='15'>St. Lucia</option>
-                    <option value='16'>St. Vincent and the Grenadines</option>
-                    <option value='17'>Suriname</option>
-                    <option value='18'>Trinidad and Tobago</option>
-                    <option value='19'>Turks and Caicos Islands</option>
+                    <option value='0'>Anguilla (AIA)</option>
+                    <option value='1'>Antigua and Barbuda (ATG)</option>
+                    <option value='2'>Bahamas (BHS)</option>
+                    <option value='3'>Barbados (BRB)</option>
+                    <option value='4'>Belize (BLZ)</option>
+                    <option value='5'>Bermuda (BMU)</option>
+                    <option value='6'>British Virgin Islands (VGB)</option>
+                    <option value='7'>Cayman Islands (CYM)</option>
+                    <option value='8'>Dominica (DMA)</option>
+                    <option value='9'>Grenada (GRD)</option>
+                    <option value='10'>Guyana (GUY)</option>
+                    <option value='11'>Haiti (HTI)</option>
+                    <option value='12'>Jamaica (JAM)</option>
+                    <option value='13'>Montserrat (MSR)</option>
+                    <option value='14'>St. Kitts and Nevis (KNA)</option>
+                    <option value='15'>St. Lucia (LCA)</option>
+                    <option value='16'>St. Vincent and the Grenadines (VCT)</option>
+                    <option value='17'>Suriname (SUR)</option>
+                    <option value='18'>Trinidad and Tobago (TTO)</option>
+                    <option value='19'>Turks and Caicos Islands (TCA)</option>
                 </select>
             </div>
-            <div class="col-1"></div>
         </div>
         
         <hr>
-        <div class='row'>
+        
+        <!-- Declare General Population Data Title -->
+        <div class='row justify-content-center'>
             <div class="col-12" >
                 <h6 class="md-10 text-center text-muted">General Country Information</h6>
             </div>
         </div>
         <hr>
         
-        <div class="row" style="margin-top: 1em;">
-            <div class="col-1"></div>
-                <div class="col-10">
-                    <a class="btn btn-primary" data-bs-toggle="collapse" href="#Collapse3" role="button" aria-expanded="false" aria-controls="Collapse3" style="width: 100%;">Click to Expand</a> 
-                </div>
-            <div class="col-1"></div>
+        <!-- Collapse object -->
+        <div class="row justify-content-center" style="margin-top: 1em;">
+            <div class="col-10">
+                <a class="btn btn-primary" data-bs-toggle="collapse" href="#Collapse3" role="button" aria-expanded="false" aria-controls="Collapse3" style="width: 100%;">Click to Expand</a> 
+            </div>
             
-            <div class="col-1"></div>
+            <!-- iframe for data -->
             <div class="collapse col-md-5" id="Collapse3" style="margin-top: 0.5em;">
-
-                    <iframe id='left0' src='C:/Users/User/Documents/Python Scripts/Folium_Practice/cia/cia_test0.html' width="100%" height="300px"></iframe>
-                    <p style="font-size:12px; text-align: center;">Source: .</p>
-  
+                <iframe id='left0' src='C:/Users/User/Documents/Python Scripts/Folium_Practice/cia/cia_test0.html' width="100%" height="300px"></iframe>
+                <p style="font-size:12px; text-align: center;">Source: .</p>
             </div>
+            
+            <!-- iframe for data -->
             <div class="collapse col-md-5" id="Collapse3" style="margin-top: 0.5em;">
-
-                    <iframe id='right0' src='./OOKLA/fixed0.html' width="100%" height="300px"></iframe>
-                    <p style="font-size:12px; text-align: center;">Source: .</p>
-
+                <iframe id='right0' src='./OOKLA/fixed0.html' width="100%" height="300px"></iframe>
+                <p style="font-size:12px; text-align: center;">Source: .</p>
             </div>
-            <div class="col-1"></div>
         </div>
-        <br>
 
+        <br>
         <hr>
-        <div class='row'>
+        
+        <!-- Declaration of Internet Infrastructure Title -->
+        <div class='row justify-content-center'>
             <div class="col-12" >
                 <h6 class="md-10 text-center text-muted">Internet Infrastructure</h6>
             </div>
         </div>
-        <hr>
 
-        <div class="row">
-            <div class="col-1"></div>
-                <div class="col-10">
-                    <a class="btn btn-primary" data-bs-toggle="collapse" href="#Collapse4" role="button" aria-expanded="false" aria-controls="Collapse4" style="width: 100%;">Click to Expand</a> 
-                </div>
-            <div class="col-1"></div>
+        <hr>
         
-
-            <div class="col-1"></div>
+        <!-- Collapse Object -->
+        <div class='row justify-content-center'>
+            <div class="col-10">
+                <a class="btn btn-primary" data-bs-toggle="collapse" href="#Collapse4" role="button" aria-expanded="false" aria-controls="Collapse4" style="width: 100%;">Click to Expand</a> 
+            </div>
+            
+            <!-- iframe for data -->
             <div class="col-md-5 collapse" id="Collapse4" style="border: thin solid rgb(200, 200, 200); margin-top: 0.5em;">
-                <iframe id='left1' src='./OOKLA/fixed0.html' width="100%" height="300px"></iframe>
+                <iframe id='left1' src='/static/html/none.html' width="100%" height="300px"></iframe>
                 <p style="font-size:12px; text-align: center;">Used with permission from Ookla, LLC – Copyright 20__. All Rights Reserved.</p>
             </div>
+            
+            <!-- iframe for data -->
             <div class="col-md-5 collapse" id="Collapse4" style="border: thin solid rgb(200, 200, 200); margin-top: 0.5em;">
-                <iframe id='right1' src='./OOKLA/fixed0.html' width="100%" height="300px"></iframe>
+                <iframe id='right1' src='/static/html/none.html' width="100%" height="300px"></iframe>
                 <p style="font-size:12px; text-align: center;">Used with permission from Ookla, LLC – Copyright 20__. All Rights Reserved.</p>
             </div>
-            <div class="col-1"></div>
 
-            <div class="col-1"></div>
+            <!-- iframe for data -->
             <div class="col-md-5 collapse" id="Collapse4" style="border: thin solid rgb(200, 200, 200)">
-                <iframe id='left2' src='./OOKLA/mobile0.html' width="100%" height="300px"></iframe>
+                <iframe id='left2' src='/static/html/none.html' width="100%" height="300px"></iframe>
                 <p style="font-size:12px; text-align: center;">Used with permission from Ookla, LLC – Copyright 20__. All Rights Reserved.</p>
             </div>
+
+            <!-- iframe for data -->
             <div class="col-md-5 collapse" id="Collapse4" style="border: thin solid rgb(200, 200, 200)">
-                <iframe id='right2' src='./OOKLA/mobile0.html' width="100%" height="300px"></iframe>
+                <iframe id='right2' src='/static/html/none.html' width="100%" height="300px"></iframe>
                 <p style="font-size:12px; text-align: center;">Used with permission from Ookla, LLC – Copyright 20__. All Rights Reserved.</p>
             </div>
-            <div class="col-1"></div>
         </div>
-        <br>
 
+        <br>
         <hr>
-        <div class='row'>
+
+        <!-- Declaration of Internet Adoption Title -->
+        <div class='row justify-content-center'>
             <div class="col-12" >
                 <h6 class="md-10 text-center text-muted">Internet Adoption</h6>
             </div>
         </div>
+
         <hr>
         
-        <div class="row">
-            <div class="col-1"></div>
+        <!-- Collapse Object -->
+        <div class='row justify-content-center'>
                 <div class="col-10">
                     <a class="btn btn-primary" data-bs-toggle="collapse" href="#Collapse5" role="button" aria-expanded="false" aria-controls="Collapse5" style="width: 100%;">Click to Expand</a> 
                 </div>
-            <div class="col-1"></div>
+            
+            <!-- iframe for data -->
+            <div class="col-md-5 collapse" id="Collapse5" style="border: thin solid rgb(200, 200, 200); margin-top: 0.5em;">
+                <iframe id='left3' src='/static/html/baskets0.html' width="100%" height="400px"></iframe>
+                <p style="font-size:12px; text-align: center;">Source: .</p>
+            </div>
 
-            <div class="col-1"></div>
+            <!-- iframe for data -->
             <div class="col-md-5 collapse" id="Collapse5" style="border: thin solid rgb(200, 200, 200); margin-top: 0.5em;">
-                <iframe id='left3' src='./OOKLA/fixed0.html' width="100%" height="400px"></iframe>
+                <iframe id='right3' src='/static/html/baskets0.html' width="100%" height="400px"></iframe>
                 <p style="font-size:12px; text-align: center;">Source: .</p>
             </div>
-            <div class="col-md-5 collapse" id="Collapse5" style="border: thin solid rgb(200, 200, 200); margin-top: 0.5em;">
-                <iframe id='right3' src='./OOKLA/fixed0.html' width="100%" height="400px"></iframe>
-                <p style="font-size:12px; text-align: center;">Source: .</p>
-            </div>
-            <div class="col-1"></div>
         </div>
-        <br>
 
+        <br>
         <hr>
-        <div class='row'>
+
+        <!-- Declaration of Internet Use Title -->
+        <div class='row justify-content-center'>
             <div class="col-12" >
                 <h6 class="md-10 text-center text-muted">Internet Use</h6>
             </div>
         </div>
+        
         <hr>
         
-        <div class="row">
-            <div class="col-1"></div>
-                <div class="col-10">
-                    <a class="btn btn-primary" data-bs-toggle="collapse" href="#Collapse6" role="button" aria-expanded="false" aria-controls="Collapse6" style="width: 100%;">Click to Expand</a> 
-                </div>
-            <div class="col-1"></div>
+        <!-- Collapse Object -->
+        <div class='row justify-content-center'>
+            <div class="col-10">
+                <a class="btn btn-primary" data-bs-toggle="collapse" href="#Collapse6" role="button" aria-expanded="false" aria-controls="Collapse6" style="width: 100%;">Click to Expand</a> 
+            </div>
 
-            <div class="col-1"></div>
+            <!-- iframe for data -->
             <div class="col-md-5 collapse" id="Collapse6" style="border: thin solid rgb(200, 200, 200); margin-top: 0.5em;">
-                <iframe id='left4' src='./OOKLA/fixed0.html' width="100%" height="300px"></iframe>
+                <iframe id='left4' src='/static/html/indicators0.html' width="100%" height="300px"></iframe>
                 <p style="font-size:12px; text-align: center;">Source: .</p>
             </div>
+
+            <!-- iframe for data -->
             <div class="col-md-5 collapse" id="Collapse6" style="border: thin solid rgb(200, 200, 200); margin-top: 0.5em;">
-                <iframe id='right4' src='./OOKLA/fixed0.html' width="100%" height="300px"></iframe>
+                <iframe id='right4' src='/static/html/indicators0.html' width="100%" height="300px"></iframe>
                 <p style="font-size:12px; text-align: center;">Source: .</p>
             </div>
-            <div class="col-1"></div>
         </div>
+
         <br>
-
         <hr style="margin-bottom: 0em;">
-        <footer class="bg-light text-center text-lg-start">
-            <!-- Grid container -->
-            <div class="container p-4" >
-              <!--Grid row-->
-              <div class="row">
-                <!--Grid column-->
-                <div class="col-lg-6 col-md-12 mb-4 mb-md-0">
-                  <h5 class="text-uppercase">Provide Feedback</h5>
-          
-                  <form>
-                    <div class="col-xs-5 col-sm-5">
-              
-                        <select name="topic" class="form-select" id='topic'>
-                            <option value='20'>Content Displayed</option>
-                            <option value='21'>Site's Performance</option>
-                            <option value='21'>Site's Interface</option>
-                            <option value='22'>Other</option>
-                        </select>
-                    </div>
-                    <div class="mb-3">
-                      <label for="comment" class="form-label">Comment</label>
-                      <textarea name="message"  class="form-control" id = "comment" style="width:100%; height:150px;">
-                        </textarea> 
-                    </div>
-                    <button type="submit" class="btn btn-primary">Submit</button>
-                  </form>
 
+        <section id="anchor"></section>
+        <!-- Footer -->
+        <footer class="bg-light text-center text-lg-start">
+            <br>
+            
+            <div class="row justify-content-center">
+                <div class="col-sm-5 col-10">
+                    <form action="{{url_for('index') + '#anchor'}}" method="post" novalidate>
+                        {{form.hidden_tag()}}
+
+                        <!-- Declaration of Feedback Title -->
+                        <h5 class="text-uppercase">Feedback</h5>
+
+                        <!-- Feedback Form Topics Dropdown -->
+                        {{form.option.label}}<br>
+                        {{form.option(class = "form-select")}}<br>
+                        
+                        <!-- Feedback Form Error -->
+                        {% for error in form.option.errors %}
+                            <span style="color: red"><small><b>{{ error }}</b></small></span>
+                        {% endfor %}
+                        
+                        <!-- Feedback Form Text Box -->
+                        {{form.comment.label}}<br>
+                        {{form.comment( style="height:150px;",
+                                        class = "form-control" + 
+                                        (" is-invalid" if form.comment.errors else "") + 
+                                        " rounded-0 shadow-none", **{"placeholder": "Your Comment", "autocomplete": "off"}) }}
+                        
+                        <!-- Feedback Form Error -->
+                        {% for error in form.comment.errors %}
+                            <span style="color: red"><small><b>{{ error }}</b></small></span>
+                        {% endfor %}
+
+                        <br>
+                        
+                        <!-- Feedback Form Submit Button -->
+                        {{form.submit(class = "form-control btn btn-primary")}}
+
+                        {% with messages = get_flashed_messages() %}
+                            {% if messages %}
+                                {% for message in messages %}
+                                    <span style="color: rgb(0, 185, 0)"><small><b>{{ message }}</b></small></span>
+                                {% endfor %}
+                            {% endif %}
+                        {% endwith %}
+
+                    </form>
+                    <br>
                 </div>
-                <!--Grid column-->
-          
-                <!--Grid column-->
-                <div class="col-lg-6 col-md-12 mb-4 mb-md-0">
-                  <h5 class="text-uppercase">Contact</h5>
-          
-                  <p>
-                    Email: username@email.com<br>
-                    Tel: 1868 123 4567
-                  </p>
+
+                <div class="col-sm-5 col-10">
+                    <!-- Declaration of Contact Details Title -->
+                    <h5 class="text-uppercase">Contact</h5>
+                        <p>
+                            Email: username@email.com<br>
+                            Tel: 1868 123 4567
+                        </p>
                 </div>
-                <!--Grid column-->
-              </div>
-              <!--Grid row-->
-            </div>
-            <!-- Grid container -->
-          
-            <!-- Copyright -->
+            </div>   
+
+            <!-- Copyright Information -->
             <div class="text-center p-3" style="background-color: rgba(0, 0, 0, 0.2);">
-              © 2020 Copyright: None
+                © 2021 Copyright: None
             </div>
-            <!-- Copyright -->
-          </footer>
+        </footer>
         
+
+        <!--- Toggle Country Graphs --->
         <script>
             function changeGraph(dropdown,iframe1, iframe2, iframe3, iframe4, iframe5) {
                 var dropdown = document.getElementById(dropdown)
@@ -359,151 +380,151 @@
                 var iframe5 = document.getElementById(iframe5)
 
                 if (dropdown.value == '0'){ 
-                    iframe1.src = '/static/spreadsheets/indicator3.html'
-                    iframe2.src = ''
-                    iframe3.src = ''
-                    iframe4.src = ''
-                    iframe5.src = ''
+                    iframe1.src = ''
+                    iframe2.src = '/static/html/none.html'
+                    iframe3.src = '/static/html/none.html'
+                    iframe4.src = '/static/html/baskets0.html'
+                    iframe5.src = '/static/html/indicators0.html'
                 }
                 else if (dropdown.value == '1'){ 
                     iframe1.src = ''
-                    iframe2.src = ''
-                    iframe3.src = ''
-                    iframe4.src = ''
-                    iframe5.src = ''
+                    iframe2.src = '/static/html/none.html'
+                    iframe3.src = '/static/html/none.html'
+                    iframe4.src = '/static/html/baskets1.html'
+                    iframe5.src = '/static/html/indicators1.html'
                 }
                 else if (dropdown.value == '2'){ 
                     iframe1.src = ''
-                    iframe2.src = ''
-                    iframe3.src = ''
-                    iframe4.src = ''
-                    iframe5.src = ''
+                    iframe2.src = '/static/html/none.html'
+                    iframe3.src = '/static/html/none.html'
+                    iframe4.src = '/static/html/baskets2.html'
+                    iframe5.src = '/static/html/indicators2.html'
                 }
                 else if (dropdown.value == '3'){ 
                     iframe1.src = ''
-                    iframe2.src = ''
-                    iframe3.src = ''
-                    iframe4.src = ''
-                    iframe5.src = ''
+                    iframe2.src = '/static/html/none.html'
+                    iframe3.src = '/static/html/none.html'
+                    iframe4.src = '/static/html/baskets3.html'
+                    iframe5.src = '/static/html/indicators3.html'
                 }
                 else if (dropdown.value == '4'){ 
                     iframe1.src = ''
-                    iframe2.src = ''
-                    iframe3.src = ''
-                    iframe4.src = ''
-                    iframe5.src = ''
+                    iframe2.src = '/static/html/none.html'
+                    iframe3.src = '/static/html/none.html'
+                    iframe4.src = '/static/html/baskets4.html'
+                    iframe5.src = '/static/html/indicators4.html'
                 }
                 else if (dropdown.value == '5'){ 
                     iframe1.src = ''
-                    iframe2.src = ''
-                    iframe3.src = ''
-                    iframe4.src = ''
-                    iframe5.src = ''
+                    iframe2.src = '/static/html/none.html'
+                    iframe3.src = '/static/html/none.html'
+                    iframe4.src = '/static/html/baskets5.html'
+                    iframe5.src = '/static/html/indicators5.html'
                 }
                 else if (dropdown.value == '6'){ 
                     iframe1.src = ''
-                    iframe2.src = ''
-                    iframe3.src = 'C:/Users/User/Documents/Python Scripts/Folium_Practice/cia/cia_test0.html'
-                    iframe4.src = ''
-                    iframe5.src = ''
+                    iframe2.src = '/static/html/none.html'
+                    iframe3.src = '/static/html/none.html'
+                    iframe4.src = '/static/html/baskets6.html'
+                    iframe5.src = '/static/html/indicators6.html'
                 }
                 else if (dropdown.value == '7'){ 
                     iframe1.src = ''
-                    iframe2.src = ''
-                    iframe3.src = ''
-                    iframe4.src = ''
-                    iframe5.src = ''
+                    iframe2.src = '/static/html/none.html'
+                    iframe3.src = '/static/html/none.html'
+                    iframe4.src = '/static/html/baskets7.html'
+                    iframe5.src = '/static/html/indicators7.html'
                 }
                 else if (dropdown.value == '8'){ 
                     iframe1.src = ''
-                    iframe2.src = ''
-                    iframe3.src = ''
-                    iframe4.src = ''
-                    iframe5.src = ''
+                    iframe2.src = '/static/html/none.html'
+                    iframe3.src = '/static/html/none.html'
+                    iframe4.src = '/static/html/baskets8.html'
+                    iframe5.src = '/static/html/indicators8.html'
                 }
                 else if (dropdown.value == '9'){ 
                     iframe1.src = ''
-                    iframe2.src = ''
-                    iframe3.src = ''
-                    iframe4.src = ''
-                    iframe5.src = ''
+                    iframe2.src = '/static/html/none.html'
+                    iframe3.src = '/static/html/none.html'
+                    iframe4.src = '/static/html/baskets9.html'
+                    iframe5.src = '/static/html/indicators9.html'
                 }
                 else if (dropdown.value == '10'){ 
                     iframe1.src = ''
-                    iframe2.src = ''
-                    iframe3.src = ''
-                    iframe4.src = ''
-                    iframe5.src = ''
+                    iframe2.src = '/static/html/none.html'
+                    iframe3.src = '/static/html/none.html'
+                    iframe4.src = '/static/html/baskets10.html'
+                    iframe5.src = '/static/html/indicators10.html'
                 }
                 else if (dropdown.value == '11'){ 
                     iframe1.src = ''
-                    iframe2.src = 'C:/Users/User/Documents/Python Scripts/Folium_Practice/cia/cia_test0.html'
-                    iframe3.src = ''
-                    iframe4.src = ''
-                    iframe5.src = ''
+                    iframe2.src = '/static/html/fixed0.html'
+                    iframe3.src = '/static/html/mobile0.html'
+                    iframe4.src = '/static/html/baskets11.html'
+                    iframe5.src = '/static/html/indicators11.html'
                 }
                 else if (dropdown.value == '12'){ 
                     iframe1.src = ''
-                    iframe2.src = ''
-                    iframe3.src = ''
-                    iframe4.src = ''
-                    iframe5.src = ''
+                    iframe2.src = '/static/html/fixed1.html'
+                    iframe3.src = '/static/html/mobile1.html'
+                    iframe4.src = '/static/html/baskets12.html'
+                    iframe5.src = '/static/html/indicators12.html'
                 }
                 else if (dropdown.value == '13'){ 
                     iframe1.src = ''
-                    iframe2.src = ''
-                    iframe3.src = ''
-                    iframe4.src = ''
-                    iframe5.src = ''
+                    iframe2.src = '/static/html/none.html'
+                    iframe3.src = '/static/html/none.html'
+                    iframe4.src = '/static/html/baskets13.html'
+                    iframe5.src = '/static/html/indicators13.html'
                 }
                 else if (dropdown.value == '14'){ 
                     iframe1.src = ''
-                    iframe2.src = 'C:/Users/User/Documents/Python Scripts/Folium_Practice/cia/cia_test0.html'
-                    iframe3.src = ''
-                    iframe4.src = ''
-                    iframe5.src = ''
+                    iframe2.src = '/static/html/none.html'
+                    iframe3.src = '/static/html/none.html'
+                    iframe4.src = '/static/html/baskets14.html'
+                    iframe5.src = '/static/html/indicators14.html'
                 }
                 else if (dropdown.value == '15'){ 
                     iframe1.src = ''
-                    iframe2.src = ''
-                    iframe3.src = ''
-                    iframe4.src = ''
-                    iframe5.src = ''
+                    iframe2.src = '/static/html/none.html'
+                    iframe3.src = '/static/html/none.html'
+                    iframe4.src = '/static/html/baskets15.html'
+                    iframe5.src = '/static/html/indicators15.html'
                 }
                 else if (dropdown.value == '16'){ 
                     iframe1.src = ''
-                    iframe2.src = ''
-                    iframe3.src = ''
-                    iframe4.src = ''
-                    iframe5.src = ''
+                    iframe2.src = '/static/html/none.html'
+                    iframe3.src = '/static/html/none.html'
+                    iframe4.src = '/static/html/baskets16.html'
+                    iframe5.src = '/static/html/indicators16.html'
                 }
                 else if (dropdown.value == '17'){ 
                     iframe1.src = ''
-                    iframe2.src = ''
-                    iframe3.src = 'C:/Users/User/Documents/Python Scripts/Folium_Practice/cia/cia_test0.html'
-                    iframe4.src = ''
-                    iframe5.src = ''
+                    iframe2.src = '/static/html/fixed2.html'
+                    iframe3.src = '/static/html/mobile2.html'
+                    iframe4.src = '/static/html/baskets17.html'
+                    iframe5.src = '/static/html/indicators17.html'
                 }
                 else if (dropdown.value == '18'){ 
                     iframe1.src = ''
-                    iframe2.src = ''
-                    iframe3.src = ''
-                    iframe4.src = ''
-                    iframe5.src = ''
+                    iframe2.src = '/static/html/fixed3.html'
+                    iframe3.src = '/static/html/mobile3.html'
+                    iframe4.src = '/static/html/baskets18.html'
+                    iframe5.src = '/static/html/indicators18.html'
                 }
                 else if (dropdown.value == '19'){ 
                     iframe1.src = ''
-                    iframe2.src = ''
-                    iframe3.src = ''
-                    iframe4.src = ''
-                    iframe5.src = ''
+                    iframe2.src = '/static/html/none.html'
+                    iframe3.src = '/static/html/none.html'
+                    iframe4.src = '/static/html/baskets19.html'
+                    iframe5.src = '/static/html/indicators19.html'
                 }
                 
             }
         </script>
 
 
-
+        <!--- Bootstrap 5.1.3 --->
         <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-ka7Sk0Gln4gmtz2MlQnikT1wXgYsOg+OMhuP+IlRH9sENBO0LRn5q+8nbTov4+1p" crossorigin="anonymous"></script>
     </body>
 </html>

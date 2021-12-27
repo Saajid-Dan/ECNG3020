@@ -19,9 +19,21 @@ from app.modules.indicators_graph import create_indic_graph
 
 
 @app.route('/')
-@app.route('/index')
+@app.route('/index', methods=['GET', 'POST'])
 def index():
-    return render_template('index.html', title='Home')
+    form = Feedback()
+    if form.validate_on_submit():
+        flash('Feedback Sent Successfully.')
+            
+        title = form.option.data
+        body = form.comment.data
+
+        msg = Message(title, body=body, sender='SDan.Testing@gmail.com', recipients=['SDan.Testing@gmail.com'])
+        mail.send(msg)
+
+        return redirect(url_for('index') + "#anchor")
+        
+    return render_template('index.html', title='Home', form=form)
 
 # url_for('index') - #3
 
@@ -42,26 +54,3 @@ def test():
     # create_indic_graph()
     # print("successful")
     return render_template('test.html')
-
-@app.route('/email')
-def email():
-    msg = Message('Hello',body='There', sender='SDan.Testing@gmail.com', recipients=['SDan.Testing@gmail.com', 'farhaan.dan@gmail.com'])
-    mail.send(msg)
-    return 'Sent!'
-    #https://www.google.com/settings/security/lesssecureapps
-
-
-@app.route('/feedback', methods=['GET', 'POST'])
-def feed():
-    form = Feedback()
-    if form.validate_on_submit():
-        flash('Feedback Sent Successfully.')
-            
-        title = form.option.data
-        body = form.comment.data
-
-        msg = Message(title, body=body, sender='SDan.Testing@gmail.com', recipients=['SDan.Testing@gmail.com'])
-        mail.send(msg)
-
-        # return redirect('/feedback')
-    return render_template('feedback.html', form=form)
