@@ -286,7 +286,7 @@ def create_map():
             # Create marker popup message.
             car_land = car_land.add_child(
                 folium.Popup(
-                    f'''<h4>International Landing Point</h4>
+                    f'''<h4>Caribbean Landing Point</h4>
                     <p style="line-height: 15px; margin-top: 0px; margin-bottom: 5px;"><b>Location: </b>{j.name}</p>
                     <p style="line-height: 15px; margin-top: 5px; margin-bottom: 5px;"><b>Country: </b>{j.ctry}</p>
                     <p style="line-height: 15px; margin-top: 5px; margin-bottom: 5px;"><b>Last Updated: </b>{j.ctry}</p>''',

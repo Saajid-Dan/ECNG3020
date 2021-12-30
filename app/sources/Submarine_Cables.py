@@ -36,8 +36,10 @@ def submarine():
 
     # 'url_ctry' = root directory for submarine cables/landing points.
     # 'url_sub' = root directory for submarine cables.
+    # 'url_land' = root directory for landing points.
     url_ctry = "https://raw.githubusercontent.com/telegeography/www.submarinecablemap.com/master/web/public/api/v3/country/"
     url_sub = "https://raw.githubusercontent.com/telegeography/www.submarinecablemap.com/master/web/public/api/v3/cable/"
+    url_land = "https://raw.githubusercontent.com/telegeography/www.submarinecablemap.com/master/web/public/api/v3/landing-point/"
     
     # 'ctry' = sub directories for 'url_ctry'
     ctry = [
@@ -146,12 +148,16 @@ def submarine():
         # 'int_car' = Stores last updated date of International landing point JSON files.
         updt_car = []
         updt_int = []
+        
+        sub_car = []
+        sub_int = []
+
         for j in df_sub['landing_points'].values:
             for k in j:
                 # 'chq' = condition to distinguish Caribbean and international landing points.
                 x = k['id']
                 
-                # 'url_tel' = directory of the commit history for JSON file with an ID of 'x'.
+                # 'url_tel' = directory of the commit history for JSON file with an ID of 'j'.
                 # Commit history contains last updated date of file.
                 url_tel = url_his + x + '.json'
 
@@ -172,21 +178,41 @@ def submarine():
                 updt = soup.find('h2', class_='f5 text-normal').text
                 updt = updt.replace('Commits on ', '')
 
+
                 chq = 0
                 for l in ctry:
                     # 'dominican' = Dominican Republic which is not a Caribbean country considered.
                     if l in x and not('dominican' in x):
                         chq += 1
                 if chq > 0:
-                    car_id.append(k['id'])
-                    updt_car.append(updt)
+                    if k['id'] in car_id:
+                        continue
+                    else:
+                        car_id.append(k['id'])
+                        updt_car.append(updt)
+
+                        sub = pd.read_json(url_land + x + ".json", lines=True)
+                        cables = sub['cables'].values[0]
+
+                        tmp = ''
+                        for cable in cables:
+                            tmp += '"' + cable['name'] + '", '
+                        sub_car.append('[' + tmp + ']')
                 else:
-                    int_id.append(k['id'])
-                    updt_int.append(updt)
-        
-        # Remove duplicates from 'car_' and 'int_' and sort them in ascending order.
-        car_id = sorted(list(set(car_id)), reverse=False)
-        int_id = sorted(list(set(int_id)), reverse=False)
+                    if k['id'] in int_id:
+                        continue
+                    else:
+                        int_id.append(k['id'])
+                        updt_int.append(updt)
+
+                        sub = pd.read_json(url_land + x + ".json", lines=True)
+                        cables = sub['cables'].values[0]
+
+                        tmp = ''
+                        for cable in cables:
+                            tmp += '"' + cable['name'] + '", '
+                        sub_int.append('[' + tmp + ']')   
+
 
         # Filter 'df_land' for Caribbean landing points using IDs in 'car_id' and store into 'df_car' dataframe.
         # Filter 'df_land' for international landing points using IDs in 'int_id' and store into 'df_land' dataframe.
@@ -195,9 +221,9 @@ def submarine():
 
         # Remove columns called 'id' and 'is_tbd' from 'df_car'.
         # Remove columns called 'id' and 'is_tbd' from 'df_int'.
-        df_car = df_car[df_car.columns.drop(list(df_car.filter(regex='id')))]
+        # df_car = df_car[df_car.columns.drop(list(df_car.filter(regex='id')))]
         df_car = df_car[df_car.columns.drop(list(df_car.filter(regex='is_tbd')))]
-        df_int = df_int[df_int.columns.drop(list(df_int.filter(regex='id')))]
+        # df_int = df_int[df_int.columns.drop(list(df_int.filter(regex='id')))]
         df_int = df_int[df_int.columns.drop(list(df_int.filter(regex='is_tbd')))]
     except Exception as e:
         error = "Error extracting Landing Points.\nError: " + str(e)
@@ -403,13 +429,14 @@ def submarine():
 
     # Loop over 'df_car' and add data to 'Land' database table.
     for j in range(len(df_car)):
-        uni = "Caribbean - " + str(j)
+        uni = df_car.iloc[j]['id']
         name = df_car.iloc[j]['name']
         lat = df_car.iloc[j].geometry.y
         lon = df_car.iloc[j].geometry.x
         ctry = name.split(', ')[-1]
         car = "Yes"
         updt = updt_car[j]
+        cab = sub_car[j] 
         
         # -------------------- Store data to 'Land' database table ------------------- #
             
@@ -427,6 +454,7 @@ def submarine():
                 lon = lon,
                 ctry = ctry, 
                 car = car,
+                cab = cab,
                 updt = updt,
                 stamp = datetime.now(timezone(timedelta(seconds=-14400))).strftime("%Y-%m-%d %H:%M:%S %z")
             )
@@ -445,6 +473,7 @@ def submarine():
             u.lon = lon
             u.ctry = ctry
             u.car = car
+            u.cab = cab
             u.updt = updt
             u.stamp = datetime.now(timezone(timedelta(seconds=-14400))).strftime("%Y-%m-%d %H:%M:%S %z")
 
@@ -456,13 +485,14 @@ def submarine():
 
     # Loop over 'df_int' and add data to 'land' database table.
     for j in range(len(df_int)):
-        uni = "International - " + str(j)
+        uni = df_int.iloc[j]['id']
         name = df_int.iloc[j]['name']
         lat = df_int.iloc[j].geometry.y
         lon = df_int.iloc[j].geometry.x
         ctry = name.split(', ')[-1]
         car = "No"
         updt = updt_int[j]
+        cab = sub_int[j] 
         
         # 'exist' = Checks is a known value exists in the 'Land' table.
         # Returns None if the value does not exist.
@@ -478,6 +508,7 @@ def submarine():
                 lon = lon,
                 ctry = ctry, 
                 car = car,
+                cab = cab,
                 updt = updt,
                 stamp = datetime.now(timezone(timedelta(seconds=-14400))).strftime("%Y-%m-%d %H:%M:%S %z")
             )
@@ -496,6 +527,7 @@ def submarine():
             u.lon = lon
             u.ctry = ctry
             u.car = car
+            u.cab = cab
             u.updt = updt
             u.stamp = datetime.now(timezone(timedelta(seconds=-14400))).strftime("%Y-%m-%d %H:%M:%S %z")
 

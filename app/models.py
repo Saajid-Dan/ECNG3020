@@ -292,6 +292,7 @@ class Land(db.Model):
     lon = db.Column(db.Float, index=True)
     ctry = db.Column(db.String, index=True)
     car = db.Column(db.String, index=True)
+    cab = db.Column(db.String, index=True)
     updt = db.Column(db.String, index=True)
     stamp = db.Column(db.String, index=True)
 

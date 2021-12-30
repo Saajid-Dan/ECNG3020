@@ -1,7 +1,14 @@
 from flask import render_template, flash, redirect, url_for
-from app import app, mail
+from app import app, mail, db
 from flask_mail import Message
 from app.forms import Feedback
+
+import geopandas as gpd
+import ast
+
+from app.models import Tld
+from app.models import Land
+
 from app.sources.General_Population import population
 from app.sources.ICT_Baskets import baskets
 from app.sources.ICT_Indicators import indicators
@@ -16,6 +23,8 @@ from app.modules.maps import create_map
 from app.modules.speed_index_graph import create_speed_graph
 from app.modules.baskets_graph import create_baskets_graph
 from app.modules.indicators_graph import create_indic_graph
+from app.modules.landing_image import create_land_image
+from app.modules.submarine_image import create_sub_image
 
 
 @app.route('/')
@@ -36,6 +45,86 @@ def index():
     return render_template('index.html', title='Home', form=form)
 
 # url_for('index') - #3
+@app.route('/tld/<country>')
+def tld_page(country):
+    tld_ctry = Tld.query.filter_by(ctry_=country).first_or_404()
+    return render_template('tld_page.html', title='Top Level Domain', tld=tld_ctry)
+
+@app.route('/landing/<country>')
+def land_page(country):
+    land_uni = Land.query.order_by(Land.lon).filter_by(ctry=country).all()
+    # x = ast.literal_eval(x[0])
+    lst_cab = []
+    for j in land_uni:
+        x = ast.literal_eval(j.cab)
+        lst_cab.append(x)
+    return render_template('land_page.html', title=country, land=land_uni, cables=lst_cab)
+
+@app.route('/landing')
+def land_list():
+    ctry_lst = []
+    ctry = Land.query.order_by(Land.ctry).filter_by(car='Yes').with_entities(Land.ctry)
+    for j in ctry:
+        ctry_lst.append(j[0])
+
+    ctry_lst_uni = []
+    for items in ctry_lst:
+        if items not in ctry_lst_uni:
+            ctry_lst_uni.append(items)
+    # print(ctry_lst_uni)
+    # land_all = Land.query.all()
+    # print(sub_all[1].ctry)
+    return render_template('land_list.html', title= 'Landing Points Listing', land_all=ctry_lst_uni)
+
+@app.route('/submarine/<cable>')
+def sub_page(cable):
+    file_sub = open('./app/static/json/submarine.json', 'r')
+    gdf_sub = gpd.read_file(file_sub)
+    sub = gdf_sub.loc[gdf_sub['name']==cable]
+
+    x = sub.iloc[0]['lnd']
+    land = ast.literal_eval(x)
+    
+    car_lst = []
+    int_lst = []
+    for j in land:
+        # Return None if item does not exist in database.
+        car_ = Land.query.filter_by(uni=j['id'], car='Yes').first()
+        pos = db.session.query(Land.lon, Land.name).filter_by(uni=j['id']).first()
+        
+        if car_ == None:
+            int_lst.append(pos)
+        else:
+            car_lst.append(pos)
+
+    print(int_lst)
+    print()
+    int_lst.sort(key = lambda x: x[0])
+    print(int_lst)
+    print()
+    int_lst = dict(int_lst).values()
+
+    car_lst.sort(key = lambda x: x[0])
+    car_lst = dict(car_lst).values()
+
+    print(int_lst)
+    # print(car_lst)
+
+    return render_template('sub_page.html', title=cable, sub=sub, land_car=car_lst, land_int=int_lst)
+
+@app.route('/submarine')
+def sub_list():
+    cable_lst = []
+    file_sub = open('./app/static/json/submarine.json', 'r')
+    gdf_sub = gpd.read_file(file_sub)
+    for j in range(len(gdf_sub)):
+        cable_lst.append(gdf_sub.iloc[j]['name'])
+    return render_template('sub_list.html', title= 'Submarine Cables Listing', sub_all=cable_lst)
+
+@app.route('/tld')
+def tld_list():
+    tld_all = Tld.query.all()
+    return render_template('tld_list.html', tld_all = tld_all)
 
 @app.route('/test')
 def test():
@@ -46,11 +135,14 @@ def test():
     # print(density())
     # print(root())
     # print(speedindex())
-    # print(submarine())
+    print(submarine())
     # print(tld())
     # create_map()
     # create_speed_graph()
     # create_baskets_graph()
     # create_indic_graph()
     # print("successful")
+    # create_land_image()
+    # create_sub_image()
+    print("Test Completed")
     return render_template('test.html')

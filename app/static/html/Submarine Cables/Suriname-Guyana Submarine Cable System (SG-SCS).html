@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<head>    
+    <meta http-equiv="content-type" content="text/html; charset=UTF-8" />
+    
+        <script>
+            L_NO_TOUCH = false;
+            L_DISABLE_3D = false;
+        </script>
+    
+    <style>html, body {width: 100%;height: 100%;margin: 0;padding: 0;}</style>
+    <style>#map {position:absolute;top:0;bottom:0;right:0;left:0;}</style>
+    <script src="https://cdn.jsdelivr.net/npm/leaflet@1.6.0/dist/leaflet.js"></script>
+    <script src="https://code.jquery.com/jquery-1.12.4.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/js/bootstrap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Leaflet.awesome-markers/2.0.2/leaflet.awesome-markers.js"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/leaflet@1.6.0/dist/leaflet.css"/>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css"/>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap-theme.min.css"/>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.6.3/css/font-awesome.min.css"/>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/Leaflet.awesome-markers/2.0.2/leaflet.awesome-markers.css"/>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/python-visualization/folium/folium/templates/leaflet.awesome.rotate.min.css"/>
+    
+            <meta name="viewport" content="width=device-width,
+                initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+            <style>
+                #map_5177f262726c492b96529687a5a67168 {
+                    position: relative;
+                    width: 100.0%;
+                    height: 100.0%;
+                    left: 0.0%;
+                    top: 0.0%;
+                }
+            </style>
+        
+</head>
+<body>    
+    
+            <div class="folium-map" id="map_5177f262726c492b96529687a5a67168" ></div>
+        
+</body>
+<script>    
+    
+            var map_5177f262726c492b96529687a5a67168 = L.map(
+                "map_5177f262726c492b96529687a5a67168",
+                {
+                    center: [10.536421, -61.311951],
+                    crs: L.CRS.EPSG3857,
+                    maxBounds: [[-90, -180], [90, 180]],
+                    zoom: 11,
+                    zoomControl: true,
+                    preferCanvas: false,
+                }
+            );
+
+            
+
+        
+    
+            var tile_layer_6c42d553e803480582501cb21c441d3d = L.tileLayer(
+                "https://cartodb-basemaps-{s}.global.ssl.fastly.net/light_all/{z}/{x}/{y}.png",
+                {"attribution": "\u0026copy; \u003ca href=\"http://www.openstreetmap.org/copyright\"\u003eOpenStreetMap\u003c/a\u003e contributors \u0026copy; \u003ca href=\"http://cartodb.com/attributions\"\u003eCartoDB\u003c/a\u003e, CartoDB \u003ca href =\"http://cartodb.com/attributions\"\u003eattributions\u003c/a\u003e", "detectRetina": false, "maxNativeZoom": 11, "maxZoom": 11, "minZoom": 0, "noWrap": false, "opacity": 1, "subdomains": "abc", "tms": false}
+            ).addTo(map_5177f262726c492b96529687a5a67168);
+        
+    
+            var circle_marker_8b01e885e1224759bace78d9e221eea9 = L.circleMarker(
+                [6.804503, -58.15483499999928],
+                {"bubblingMouseEvents": true, "color": "red", "dashArray": null, "dashOffset": null, "fill": true, "fillColor": "red", "fillOpacity": 1, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "opacity": 1.0, "radius": 2.5, "stroke": true, "weight": 3}
+            ).addTo(map_5177f262726c492b96529687a5a67168);
+        
+    
+            var circle_marker_189baf69e8dd44598158436dbc5cd1e0 = L.circleMarker(
+                [5.88658231885745, -56.3753863160845],
+                {"bubblingMouseEvents": true, "color": "red", "dashArray": null, "dashOffset": null, "fill": true, "fillColor": "red", "fillOpacity": 1, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "opacity": 1.0, "radius": 2.5, "stroke": true, "weight": 3}
+            ).addTo(map_5177f262726c492b96529687a5a67168);
+        
+    
+            var circle_marker_631aaa8b71904d819d644b6688659bb9 = L.circleMarker(
+                [10.686136800000298, -61.65081049999945],
+                {"bubblingMouseEvents": true, "color": "red", "dashArray": null, "dashOffset": null, "fill": true, "fillColor": "red", "fillOpacity": 1, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "opacity": 1.0, "radius": 2.5, "stroke": true, "weight": 3}
+            ).addTo(map_5177f262726c492b96529687a5a67168);
+        
+    
+        function geo_json_b8e7738a7757405ab1079cca21821875_styler(feature) {
+            switch(feature.id) {
+                default:
+                    return {"color": "#756bb1", "opacity": 0.5, "weight": 2.25};
+            }
+        }
+
+        function geo_json_b8e7738a7757405ab1079cca21821875_onEachFeature(feature, layer) {
+            layer.on({
+            });
+        };
+        var geo_json_b8e7738a7757405ab1079cca21821875 = L.geoJson(null, {
+                onEachFeature: geo_json_b8e7738a7757405ab1079cca21821875_onEachFeature,
+            
+                style: geo_json_b8e7738a7757405ab1079cca21821875_styler,
+        });
+
+        function geo_json_b8e7738a7757405ab1079cca21821875_add (data) {
+            geo_json_b8e7738a7757405ab1079cca21821875
+                .addData(data)
+                .addTo(map_5177f262726c492b96529687a5a67168);
+        }
+            geo_json_b8e7738a7757405ab1079cca21821875_add({"features": [{"geometry": {"coordinates": [[[-56.37537582721498, 5.886620767353833], [-56.36238583641716, 6.405200795356109], [-56.47488575672118, 7.298762754459602], [-57.37488511915315, 8.190543417795567], [-60.29988304705726, 10.63203320811775], [-60.74988272827325, 10.85308969074538], [-60.9748825688812, 10.96355685778923], [-61.42488225009727, 10.85308969074538], [-61.65081209004636, 10.68626103278623]], [[-58.15486456660838, 6.804293299288759], [-57.7123848800652, 7.298762754459602], [-57.37488511915315, 8.190543417795567]]], "type": "MultiLineString"}, "id": "0", "type": "Feature"}], "type": "FeatureCollection"});
+
+        
+    
+            map_5177f262726c492b96529687a5a67168.fitBounds(
+                [[5.876620767353833, -61.660812090046356], [10.97355685778923, -56.35238583641716]],
+                {}
+            );
+        
+    
+            var layer_control_3a3ca0f661744a2da566d462eb9a5429 = {
+                base_layers : {
+                    "Base Map" : tile_layer_6c42d553e803480582501cb21c441d3d,
+                },
+                overlays :  {
+                    "Suriname-Guyana Submarine Cable System (SG-SCS)" : geo_json_b8e7738a7757405ab1079cca21821875,
+                },
+            };
+            L.control.layers(
+                layer_control_3a3ca0f661744a2da566d462eb9a5429.base_layers,
+                layer_control_3a3ca0f661744a2da566d462eb9a5429.overlays,
+                {"autoZIndex": true, "collapsed": true, "position": "topright"}
+            ).addTo(map_5177f262726c492b96529687a5a67168);
+        
+</script>

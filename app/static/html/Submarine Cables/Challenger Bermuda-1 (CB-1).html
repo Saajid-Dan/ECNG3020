@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<head>    
+    <meta http-equiv="content-type" content="text/html; charset=UTF-8" />
+    
+        <script>
+            L_NO_TOUCH = false;
+            L_DISABLE_3D = false;
+        </script>
+    
+    <style>html, body {width: 100%;height: 100%;margin: 0;padding: 0;}</style>
+    <style>#map {position:absolute;top:0;bottom:0;right:0;left:0;}</style>
+    <script src="https://cdn.jsdelivr.net/npm/leaflet@1.6.0/dist/leaflet.js"></script>
+    <script src="https://code.jquery.com/jquery-1.12.4.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/js/bootstrap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Leaflet.awesome-markers/2.0.2/leaflet.awesome-markers.js"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/leaflet@1.6.0/dist/leaflet.css"/>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css"/>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap-theme.min.css"/>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.6.3/css/font-awesome.min.css"/>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/Leaflet.awesome-markers/2.0.2/leaflet.awesome-markers.css"/>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/python-visualization/folium/folium/templates/leaflet.awesome.rotate.min.css"/>
+    
+            <meta name="viewport" content="width=device-width,
+                initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+            <style>
+                #map_66ddbf313735424abfa452d3af44796a {
+                    position: relative;
+                    width: 100.0%;
+                    height: 100.0%;
+                    left: 0.0%;
+                    top: 0.0%;
+                }
+            </style>
+        
+</head>
+<body>    
+    
+            <div class="folium-map" id="map_66ddbf313735424abfa452d3af44796a" ></div>
+        
+</body>
+<script>    
+    
+            var map_66ddbf313735424abfa452d3af44796a = L.map(
+                "map_66ddbf313735424abfa452d3af44796a",
+                {
+                    center: [10.536421, -61.311951],
+                    crs: L.CRS.EPSG3857,
+                    maxBounds: [[-90, -180], [90, 180]],
+                    zoom: 11,
+                    zoomControl: true,
+                    preferCanvas: false,
+                }
+            );
+
+            
+
+        
+    
+            var tile_layer_f6e9a057ba1248949cb20164e6b74c9e = L.tileLayer(
+                "https://cartodb-basemaps-{s}.global.ssl.fastly.net/light_all/{z}/{x}/{y}.png",
+                {"attribution": "\u0026copy; \u003ca href=\"http://www.openstreetmap.org/copyright\"\u003eOpenStreetMap\u003c/a\u003e contributors \u0026copy; \u003ca href=\"http://cartodb.com/attributions\"\u003eCartoDB\u003c/a\u003e, CartoDB \u003ca href =\"http://cartodb.com/attributions\"\u003eattributions\u003c/a\u003e", "detectRetina": false, "maxNativeZoom": 11, "maxZoom": 11, "minZoom": 0, "noWrap": false, "opacity": 1, "subdomains": "abc", "tms": false}
+            ).addTo(map_66ddbf313735424abfa452d3af44796a);
+        
+    
+            var circle_marker_a74429a3fada4125a4ec2a0286452016 = L.circleMarker(
+                [32.28053606150149, -64.78869822710942],
+                {"bubblingMouseEvents": true, "color": "red", "dashArray": null, "dashOffset": null, "fill": true, "fillColor": "red", "fillOpacity": 1, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "opacity": 1.0, "radius": 2.5, "stroke": true, "weight": 3}
+            ).addTo(map_66ddbf313735424abfa452d3af44796a);
+        
+    
+            var circle_marker_a2e80f09353a47e5bc10fb11cac48aec = L.circleMarker(
+                [41.41190102685621, -71.64587110379887],
+                {"bubblingMouseEvents": true, "color": "darkblue", "dashArray": null, "dashOffset": null, "fill": true, "fillColor": "darkblue", "fillOpacity": 1, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "opacity": 1.0, "radius": 2.5, "stroke": true, "weight": 3}
+            ).addTo(map_66ddbf313735424abfa452d3af44796a);
+        
+    
+        function geo_json_516c0f147e414c6e9f0e1c4c99dc8082_styler(feature) {
+            switch(feature.id) {
+                default:
+                    return {"color": "#756bb1", "opacity": 0.5, "weight": 2.25};
+            }
+        }
+
+        function geo_json_516c0f147e414c6e9f0e1c4c99dc8082_onEachFeature(feature, layer) {
+            layer.on({
+            });
+        };
+        var geo_json_516c0f147e414c6e9f0e1c4c99dc8082 = L.geoJson(null, {
+                onEachFeature: geo_json_516c0f147e414c6e9f0e1c4c99dc8082_onEachFeature,
+            
+                style: geo_json_516c0f147e414c6e9f0e1c4c99dc8082_styler,
+        });
+
+        function geo_json_516c0f147e414c6e9f0e1c4c99dc8082_add (data) {
+            geo_json_516c0f147e414c6e9f0e1c4c99dc8082
+                .addData(data)
+                .addTo(map_66ddbf313735424abfa452d3af44796a);
+        }
+            geo_json_516c0f147e414c6e9f0e1c4c99dc8082_add({"features": [{"geometry": {"coordinates": [[[-71.64596500938637, 41.4121212139155], [-71.09987539624133, 41.0693404382163], [-68.39987730894534, 39.00237890905848], [-66.51654530978234, 37.58978657360316], [-63.89988049678531, 34.68301765985788], [-63.67488065617728, 33.56549148235214], [-63.67488065617728, 32.81231878328768], [-64.23738025769728, 32.33831157801282], [-64.80163985797051, 32.2586528368615]]], "type": "MultiLineString"}, "id": "0", "type": "Feature"}], "type": "FeatureCollection"});
+
+        
+    
+            map_66ddbf313735424abfa452d3af44796a.fitBounds(
+                [[32.2486528368615, -71.65596500938638], [41.422121213915496, -63.66488065617728]],
+                {}
+            );
+        
+    
+            var layer_control_797c7204fff0440088c5fe6914f48f8b = {
+                base_layers : {
+                    "Base Map" : tile_layer_f6e9a057ba1248949cb20164e6b74c9e,
+                },
+                overlays :  {
+                    "Challenger Bermuda-1 (CB-1)" : geo_json_516c0f147e414c6e9f0e1c4c99dc8082,
+                },
+            };
+            L.control.layers(
+                layer_control_797c7204fff0440088c5fe6914f48f8b.base_layers,
+                layer_control_797c7204fff0440088c5fe6914f48f8b.overlays,
+                {"autoZIndex": true, "collapsed": true, "position": "topright"}
+            ).addTo(map_66ddbf313735424abfa452d3af44796a);
+        
+</script>
