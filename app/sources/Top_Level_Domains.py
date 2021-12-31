@@ -118,6 +118,25 @@ def tld():
             # end = " Gamma"
 
         
+        # ---------------------------- Country Code field ---------------------------- #
+
+        # Find country code on page in first h1 tag.
+        # Store resulting text into 'cc'.
+        # Clean unnecessary text from 'cc'.
+        cc = soup.find('h1').text
+        cc = cc.replace('Delegation Record for ', '')
+
+
+        # -------------------------------- Domain Type ------------------------------- #
+
+        # Find country code type on page in first p tag.
+        # Store resulting text into 'type_'.
+        # Clean unnecessary text from 'type_'.
+        type_ = soup.find('p').text
+        type_ = type_.replace('(', '')
+        type_ = type_.replace(')', '')
+
+
         # ---------------------------- ccTLD Manager field --------------------------- #
 
         start = '<h2>ccTLD Manager</h2>'
@@ -156,16 +175,32 @@ def tld():
         index2 = x.find(end)
         # 'nm_svr' = Name Server table data.
         nm_svr = ('<table>' + x[ index1 : index2 ] + '</table>')
+        # Add bootstrap styles to 'nm_svr' html table format.
+        nm_svr = nm_svr.replace('<table>', "<table class='table table-sm table-hover'>")
+        nm_svr = nm_svr.replace('<tr>', "<tr class='table-primary'>", 1)
 
 
         # ------------------------ Registry Information field ------------------------ #
 
         start = '<h2>Registry Information</h2>'
-        end = '</i></p>'
+        end = '<h2>IANA Reports</h2>'
         index1 = x.find(start) + len(start)
         index2 = x.find(end)
-        # 'reg' = Registry Information data.
-        reg = (x[ index1 : index2 ] + '</i></p>')
+        # If first instance of 'end' not on page ...
+        if index2 == -1:
+            # Replace 'end' with another key to look for.
+            end = '<i>'
+            index2 = x.find(end)
+            # 'reg' = Registry Information data.
+            reg = (x[ index1 : index2 ] + '</i></p>')
+            # Cleaning 'reg'.
+            reg = reg.replace('<p></i></p>', '')
+
+
+        # -------------------- Registration and Update Dates field ------------------- #
+        
+        # 'dates' = store Registration and last updated date.
+        dates = soup.find('i').text
 
 
         # ------------------------------- Country field ------------------------------ #
@@ -196,11 +231,14 @@ def tld():
         if exist == None:
             u = Tld(
             ctry_ = ctry_,
+            cc = cc,
+            type_ = type_,
             cctld = cctld,
             ad_con = ad_con,
             tch_con = tch_con,
             nm_svr = nm_svr, 
             reg = reg, 
+            dates = dates,
             stamp = datetime.now(timezone(timedelta(seconds=-14400))).strftime("%Y-%m-%d %H:%M:%S %z")
             )
             # Add entries to the database, and commit the changes.
@@ -212,11 +250,14 @@ def tld():
             # 'u' = retrieves the existing data via id stored in index 1 of the tuple in 'exist'.
             u = Tld.query.get(exist[0])
             # Overwriting of data in 'u'.
+            u.cc = cc
+            u.type_ = type_
             u.cctld = cctld
             u.ad_con = ad_con
             u.tch_con = tch_con
             u.nm_svr = nm_svr
             u.reg = reg
+            u.dates = dates
             u.stamp = datetime.now(timezone(timedelta(seconds=-14400))).strftime("%Y-%m-%d %H:%M:%S %z")
 
             # Commit changes in 'u' to the database.

@@ -1,0 +1,249 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3" crossorigin="anonymous">
+        <title>Landing Points - {{ title }}</title>
+    </head>
+    <body>
+        <div class='row justify-content-center'>
+            <div class='col-10'>
+                <h5>Internet Exchange Points - {{ title }}</h5>
+                <div>
+                    <p>
+                        The following table(s) display information on the internet exchange point(s) in {{ title }}.
+                    </p>
+                    
+                    <p>
+                        <b>Note: </b>Some data could not be obtained due to inaccessibility or unavailability. This will present itself as blank entries in the following tables.
+                    </p>
+
+                    {% for item in ixp_dir %}
+                        <p><u>Table {{ loop.index }}a: IXP {{ loop.index }} - {{ item.name }}</u></p>
+
+                        <div class="table-responsive">
+                            <table class='table table-sm table-hover'>
+                                <thead>
+                                    <tr class='table-primary'>
+                                        <th colspan="2">IXP {{ loop.index }}</th>
+                                    </tr>
+                                </thead>
+
+                                <tbody>
+                                    <tr>
+                                        <td>Name</td>
+                                        <td>{{ item.name }}</td>
+                                    </tr>
+                                    
+                                    <tr>
+                                        <td>Status</td>
+                                        <td>{{ item.stat }}</td>
+                                    </tr>
+                                    
+                                    <tr>
+                                        <td>City</td>
+                                        <td>{{ item.city }}</td>
+                                    </tr>
+                                    
+                                    <tr>
+                                        <td>Latitude/°</td>
+                                        <td>{{ '%0.3f' | format(item.lat | float) }}</td>
+                                    </tr>
+
+                                    <tr>
+                                        <td>Longitude/°</td>
+                                        <td>{{ '%0.3f' | format(item.lon | float) }}</td>
+                                    </tr>
+
+                                    <tr>
+                                        <td>Average Throughput (IPv4)</td>
+                                        <td>{{ item.ipv4_avg }}</td>
+                                    </tr>
+
+                                    <tr>
+                                        <td>Peak Throughput (IPv4)</td>
+                                        <td>{{ item.ipv4_pk }}</td>
+                                    </tr>
+
+                                    <tr>
+                                        <td>Average Throughput (IPv6)</td>
+                                        <td>{{ item.ipv6_avg }}</td>
+                                    </tr>
+
+                                    <tr>
+                                        <td>No. of Participants</td>
+                                        <td>{{ item.prts }}</td>
+                                    </tr>
+
+                                    <tr>
+                                        <td>No. of Prefixes</td>
+                                        <td>{{ item.prfs }}</td>
+                                    </tr>
+
+                                    <tr>
+                                        <td>Date Established</td>
+                                        <td>{{ item.date }}</td>
+                                    </tr>
+
+                                    <tr>
+                                        <td>Last Updated</td>
+                                        <td>{{ item.updt }}</td>
+                                    </tr>
+
+                                    <tr>
+                                        <td>IXP Homepage</td>
+                                        <td><a href={{ item.url }} target="_blank" rel="noopener noreferrer">{{ item.url }}</a></td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                        <br>
+                    {% endfor %}
+                    
+                    <p><b>Internet Exchange Point Subnet Details</b></p>
+                    <p>
+                        The following table(s) display information on the internet exchange point subnet details in {{ title }}.
+                    </p>
+                    <p>
+                        <b>Note: </b>Some data could not be obtained due to inaccessibility or unavailability. This will present itself as blank entries in the following tables.
+                    </p>
+
+                    {% for item in ixp_sub %}
+                        <p><u>Table {{ loop.index }}b: IXP Subnet Details - {{ item.name_lng }}</u></p>
+
+                        <div class="table-responsive">
+                            <table class='table table-sm table-hover'>
+                                <thead>
+                                    <tr class='table-primary'>
+                                        <th colspan="2">IXP Subnet Details - {{ item.name_lng }}</th>
+                                    </tr>
+                                </thead>
+
+                                <tbody>
+                                    <tr>
+                                        <td>Short Name</td>
+                                        <td>{{ item.name }}</td>
+                                    </tr>
+
+                                    <tr>
+                                        <td>Long Name</td>
+                                        <td>{{ item.name_lng }}</td>
+                                    </tr>
+                                    
+                                    <tr>
+                                        <td>Status</td>
+                                        <td>{{ item.stat }}</td>
+                                    </tr>
+                                    
+                                    <tr>
+                                        <td>Version</td>
+                                        <td>{{ item.ver }}</td>
+                                    </tr>
+                                    
+                                    <tr>
+                                        <td>Subnet ID</td>
+                                        <td>{{ item.sub }}</td>
+                                    </tr>
+
+                                    <tr>
+                                        <td>MLPA</td>
+                                        <td>{{ item.mlpa }}</td>
+                                    </tr>
+
+                                    <tr>
+                                        <td>Average Traffic</td>
+                                        <td>{{ item.traf }}</td>
+                                    </tr>
+
+                                    <tr>
+                                        <td>No. of Participants</td>
+                                        <td>{{ item.prts }}</td>
+                                    </tr>
+
+                                    <tr>
+                                        <td>Date Established</td>
+                                        <td>{{ item.est }}</td>
+                                    </tr>
+
+                                    <tr>
+                                        <td>Traffic URL</td>
+                                        <td><a href={{ item.url_traf }} target="_blank" rel="noopener noreferrer">{{ item.url_traf }}</a></td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                        <br>
+                    {% endfor %}
+                        
+                    {% if ixp_mem %}
+                        <p><b>Internet Exchange Point Subnet Members</b></p>
+                        <p>
+                            The fossllowing table(s) display information on the internet exchange point subnet details in {{ title }}.
+                        </p>
+                        <p>
+                            <b>Note: </b>Some data could not be obtained due to inaccessibility or unavailability. This will present itself as blank entries in the following tables.
+                        </p>
+
+                        <p><u>Table 1c: IXP Subnet Members</u></p>
+
+                        <div class="table-responsive">
+                            <table class='table table-sm table-hover table-bordered'>
+                                <thead>
+                                    <tr class='table-primary'>
+                                        <th>IP Address</th>
+                                        <th>FQDN</th>
+                                        <th>Ping</th>
+                                        <th>ASN</th>
+                                        <th>Organisation</th>
+                                        <th>Peering Policy</th>
+                                        <th>Prefixes</th>
+                                        <th>Version</th>
+                                    </tr>
+                                </thead>
+
+                                <tbody>
+                                    {% for item in ixp_mem %}
+                                        <tr>
+                                            <td>{{ item.ip }}</td>
+                                            <td>{{ item.fqdn }}</td>
+                                            <td>{{ item.ping }}</td>
+                                            <td>{{ item.asn }}</td>
+                                            <td>{{ item.org }}</td>
+                                            <td>{{ item.peer }}</td>
+                                            <td>{{ item.prfs }}</td>
+                                            {% if item.ipv4 == 'Yes' %}
+                                            <td>IPv4</td>
+                                            {% endif %}
+                                            {% if item.ipv6 == 'Yes' %}
+                                            <td>IPv6</td>
+                                            {% endif %}
+                                        </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                        <br>
+                    {% endif %}
+                        
+                      
+                <p><b>Internet Exchange Point Locations</b></p>
+                <p>
+                    The internet exchange point(s) in {{ title }} are displayed in the following map using red markers.
+                </p>
+                <div>
+                    <img class='img-fluid' src="/static/images/Internet Exchange Points/{{ title }}.png" alt="">
+                <p><u>Figure 1: Internet Exchange Points in {{ title }}</u></p>
+
+                <p><i>
+                    Source: Packet Clearing House<br>
+                    
+                    URL: <a href='https://www.pch.net/' target="_blank" rel="noopener noreferrer">https://www.pch.net/</a><br>
+                    Last Updated: 
+                </i></p>
+            </div>
+        </div>
+        
+
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-ka7Sk0Gln4gmtz2MlQnikT1wXgYsOg+OMhuP+IlRH9sENBO0LRn5q+8nbTov4+1p" crossorigin="anonymous"></script>
+    </body>
+</html>

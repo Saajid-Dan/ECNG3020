@@ -6,38 +6,50 @@
     <title>Top Level Domain - {{ tld.ctry_ | safe }}</title>
 </head>
 <body>
-    <u><h5 style="font-size: 15px;">Country</h5></u>
-    <span style="font-size: 12px;">
-        <p>{{ tld.ctry_ | safe }}</p>
-    </span>
+    <div class='row justify-content-center'>
+        <div class='col-10'>
+            <h5>Top Level Domains - {{ title }}</h5>
+            
+            <p>
+                {{ title }} has a domain name of {{ tld.cc }} which is a {{ tld.type_ }}.
+            </p>
+            
+            <u><h6 style="font-size: 110%;">ccTLD Manager</h5></u>
+            <span>
+                {{ tld.cctld | safe }}
+            </span>
 
-    <u><h5 style="font-size: 15px;">ccTLD Manager</h5></u>
-    <span style="font-size: 12px;">
-        {{ tld.cctld | safe }}
-    </span>
+            <u><h6 style="font-size: 110%;">Administrative Contact</h5></u>
+            <span>
+                {{ tld.ad_con | safe }}
+            </span>
 
-    <u><h5 style="font-size: 15px;">Administrative Contact</h5></u>
-    <span style="font-size: 12px;">
-        {{ tld.ad_con | safe }}
-    </span>
+            <u><h6 style="font-size: 110%;">Technical Contact</h5></u>
+            <span>
+                {{ tld.tch_con | safe }}
+            </span>
 
-    <u><h5 style="font-size: 15px;">Technical Contact</h5></u>
-    <span style="font-size: 12px;">
-        {{ tld.tch_con | safe }}
-    </span>
+            <u></u><h6 style="font-size: 110%;">Name Servers</h5></u>
+            <span>
+                {{ tld.nm_svr | safe }}
+            </span>
 
-    <u></u><h5 style="font-size: 15px;">Name Servers</h5></u>
-    <span style="font-size: 12px;">
-        {{ tld.nm_svr | safe }}
-    </span>
+            <br>
+            
+            <u><h6 style="font-size: 110%;">Registry Information</h5></u>
+            <span>
+                {{ tld.reg | safe }} 
+            </span>
 
-    <br>
-    
-    <u><h5 style="font-size: 15px;">Registry Information</h5></u>
-    <span style="font-size: 12px;">
-        {{ tld.reg | safe }} 
-    </span>
-    
+            <p><i>
+                Source: Internet Assigned Numbers Authority (IANA)<br>
+                URL: <a href='https://www.iana.org/domains/root/db' target="_blank" rel="noopener noreferrer">https://www.iana.org/domains/root/db</a><br>
+                {{ tld.dates | safe }}
+            </i></p>
+            
+        </div>
+    </div>
+            
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-ka7Sk0Gln4gmtz2MlQnikT1wXgYsOg+OMhuP+IlRH9sENBO0LRn5q+8nbTov4+1p" crossorigin="anonymous"></script>
 </body>
 </html>

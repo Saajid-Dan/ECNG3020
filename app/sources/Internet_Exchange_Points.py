@@ -135,6 +135,11 @@ def ixp():
             # Used to link 'json_mem' for reference.
             json_sub = json_sub.assign(ctry = df_dir.iloc[i]['ctry'])
 
+            # Add columns 'long_nm' to 'json_sub' dataframe.
+            # 'long_nm' corresponds to the full corresponding IXP name from 'df_dir' dataframe.
+            # Used to link short IXP name in 'df_sub' to the long name.
+            json_sub = json_sub.assign(long_nm = df_dir.iloc[i]['name'])
+
             # Append subnets to 'df_sub'.
             df_sub = df_sub.append(json_sub)
         except Exception as e:
@@ -194,8 +199,8 @@ def ixp():
                     org = str(v['org'])
                     peer = str(v['peering_policy'])
                     prfs = str(v['prefixes'])
-                    ipv4 = "Yes"
-                    ipv6 = "No"
+                    ipv4 = "No"
+                    ipv6 = "Yes"
 
                     # 'row' = stores values from key:value pairs into a list to be added to 'df_det'.
                     row = [ctry, ip, fqdn, ping, asn, org, peer, prfs, ipv4, ipv6]
@@ -331,6 +336,7 @@ def ixp():
         ctry = str(df_sub.iloc[j]['ctry'])
         stat = str(df_sub.iloc[j]['status'])
         name = str(df_sub.iloc[j]['short_name'])
+        name_lng = str(df_sub.iloc[j]['long_nm'])
         ver = str(df_sub.iloc[j]['version'])
         sub = str(df_sub.iloc[j]['subnet'])
         mlpa = str(df_sub.iloc[j]['mlpa'])
@@ -361,6 +367,7 @@ def ixp():
                 ctry = ctry,
                 stat = stat,
                 name = name,
+                name_lng = name_lng,
                 ver = ver, 
                 sub = sub, 
                 mlpa = mlpa, 
@@ -382,6 +389,7 @@ def ixp():
             u.ctry = ctry
             u.stat = stat
             u.name = name
+            u.name_lng = name_lng
             u.ver = ver
             u.sub = sub
             u.mlpa = mlpa

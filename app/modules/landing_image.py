@@ -90,7 +90,7 @@ def create_land_image():
         browser = webdriver.Firefox(options=options, executable_path="./app/static/webdriver/geckodriver.exe")
         browser.set_window_size(600, 400)
         browser.get(map_url)
-        time.sleep(3)
+        time.sleep(5)
         browser.save_screenshot("./app/static/images/Landing Points/" + items + ".png")
         browser.close()
         browser.quit()

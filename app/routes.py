@@ -8,6 +8,7 @@ import ast
 
 from app.models import Tld
 from app.models import Land
+from app.models import Ixp_dir, Ixp_sub, Ixp_mem
 
 from app.sources.General_Population import population
 from app.sources.ICT_Baskets import baskets
@@ -25,6 +26,7 @@ from app.modules.baskets_graph import create_baskets_graph
 from app.modules.indicators_graph import create_indic_graph
 from app.modules.landing_image import create_land_image
 from app.modules.submarine_image import create_sub_image
+from app.modules.ixp_image import create_ixp_image
 
 
 @app.route('/')
@@ -48,7 +50,7 @@ def index():
 @app.route('/tld/<country>')
 def tld_page(country):
     tld_ctry = Tld.query.filter_by(ctry_=country).first_or_404()
-    return render_template('tld_page.html', title='Top Level Domain', tld=tld_ctry)
+    return render_template('tld_page.html', title=country, tld=tld_ctry)
 
 @app.route('/landing/<country>')
 def land_page(country):
@@ -97,18 +99,11 @@ def sub_page(cable):
         else:
             car_lst.append(pos)
 
-    print(int_lst)
-    print()
     int_lst.sort(key = lambda x: x[0])
-    print(int_lst)
-    print()
     int_lst = dict(int_lst).values()
 
     car_lst.sort(key = lambda x: x[0])
     car_lst = dict(car_lst).values()
-
-    print(int_lst)
-    # print(car_lst)
 
     return render_template('sub_page.html', title=cable, sub=sub, land_car=car_lst, land_int=int_lst)
 
@@ -121,10 +116,30 @@ def sub_list():
         cable_lst.append(gdf_sub.iloc[j]['name'])
     return render_template('sub_list.html', title= 'Submarine Cables Listing', sub_all=cable_lst)
 
+@app.route('/ixp/<country>')
+def ixp_page(country):
+    ixp_dir = Ixp_dir.query.filter_by(ctry=country).all()
+    ixp_sub = Ixp_sub.query.filter_by(ctry=country).all()
+    ixp_mem = Ixp_mem.query.filter_by(ctry=country).all()
+    return render_template('ixp_page.html', title=country, ixp_dir=ixp_dir, ixp_sub=ixp_sub, ixp_mem=ixp_mem)
+
+@app.route('/ixp')
+def ixp_list():
+    ctry_lst = []
+    ctry = Ixp_dir.query.order_by(Ixp_dir.ctry).with_entities(Ixp_dir.ctry)
+    for j in ctry:
+        ctry_lst.append(j[0])
+    ctry_lst = list(dict.fromkeys(ctry_lst))
+    return render_template('ixp_list.html', title= 'IXP Listing', ixp_all=ctry_lst)
+
 @app.route('/tld')
 def tld_list():
-    tld_all = Tld.query.all()
-    return render_template('tld_list.html', tld_all = tld_all)
+    ctry_lst = []
+    ctry = Tld.query.order_by(Tld.ctry_).with_entities(Tld.ctry_)
+    for j in ctry:
+        ctry_lst.append(j[0])
+    # ctry_lst = list(dict.fromkeys(ctry_lst))
+    return render_template('tld_list.html', title= 'TLD Listing', tld_all = ctry_lst)
 
 @app.route('/test')
 def test():
@@ -135,8 +150,8 @@ def test():
     # print(density())
     # print(root())
     # print(speedindex())
-    print(submarine())
-    # print(tld())
+    # print(submarine())
+    print(tld())
     # create_map()
     # create_speed_graph()
     # create_baskets_graph()
@@ -144,5 +159,6 @@ def test():
     # print("successful")
     # create_land_image()
     # create_sub_image()
+    # create_ixp_image()
     print("Test Completed")
     return render_template('test.html')

@@ -35,13 +35,19 @@
                             <a class="nav-link" href="{{ url_for('index') }}">Home <span class="sr-only">(current)</span></a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" href="{{ url_for('land_list') }}">Landing Points Listing</a>
+                            <a class="nav-link" href="{{ url_for('land_list') }}">Landing Point Listing</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" href="{{ url_for('sub_list') }}">Submarine Cables Listing</a>
+                            <a class="nav-link" href="{{ url_for('sub_list') }}">Submarine Cable Listing</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" href="#">TLD</a>
+                            <a class="nav-link" href="{{ url_for('ixp_list') }}">IXP Listing</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="{{ url_for('tld_list') }}">TLD Listing</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="#">Root Server Listing</a>
                         </li>
                         <li class="nav-item">
                             <a class="nav-link" href="#">Speed Index</a>
