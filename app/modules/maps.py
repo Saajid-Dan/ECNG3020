@@ -232,6 +232,9 @@ def create_map():
             icon = folium.Icon(color='orange')
         )
 
+        # 'name' = Server name and URL to homepage.
+        name = '<a href = "' + j.url + '"target="_blank" rel="noopener noreferrer">' + j.name + ' Root</a>'
+
         # Create marker popup message.
         root_pt = root_pt.add_child(
             folium.Popup(

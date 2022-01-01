@@ -59,6 +59,29 @@ def density():
         'TCA'
     ]
 
+    dict_ctry = {
+        'AIA':'Anguilla',
+        'ATG':'Antigua and Barbuda',
+        'BHS':'Bahamas',
+        'BRB':'Barbados',
+        'BLZ':'Belize',
+        'BMU':'Bermuda',
+        'VGB':'Virgin Islands U K ',
+        'CYM':'Cayman Islands',
+        'DMA':'Dominica',
+        'GRD':'Grenada',
+        'GUY':'Guyana',
+        'HTI':'Haiti',
+        'JAM':'Jamaica',
+        'MSR':'Montserrat',
+        'KNA':'Saint Kitts and Nevis',
+        'LCA':'Saint Lucia',
+        'VCT':'Saint Vincent and The Grenadines',
+        'SUR':'Suriname',
+        'TTO':'Trinidad and Tobago',
+        'TCA':'Turks and Caicos Islands'
+    }
+
     # Loop over 'cc' to append subdirectories to 'url_root' to read data.
     for j in cc:
         # 'url' = 'url_root' + 'j' = population density JSON for country 'j'.
@@ -136,7 +159,7 @@ def density():
         # If value does not exist in 'Pop_dens' table, then add the data to the table.
         if exist == None:
             u = Pop_dens(
-                ctry = j,
+                ctry = dict_ctry[j],
                 pop_yr = pop_yr,
                 url = url_tif,
                 dens = dens,

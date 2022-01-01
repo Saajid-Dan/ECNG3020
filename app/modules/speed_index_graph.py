@@ -11,6 +11,7 @@ Project Title:
 import pandas as pd
 from bokeh.plotting import figure, show, output_file, save
 from bokeh.models import ColumnDataSource, FactorRange, HoverTool, Panel, Tabs
+from bokeh.io import export_png
 from math import pi
 from app import db
 from app.models import Mob_br, Fixed_br
@@ -118,7 +119,8 @@ def create_speed_graph():
             # 'p' = bokeh figure.
             p = figure(
                 x_range=FactorRange(*x), 
-                width=250, 
+                width=450, 
+                height=340, 
                 title=title[k].split('-')[0] + '- ' + cc[index],
                 x_axis_label = 'Date',
                 y_axis_label = y_label[k]
@@ -146,6 +148,9 @@ def create_speed_graph():
                 source=source,
                 color='#0d6efd'
             )
+            
+            # Export figures as a PNG.
+            export_png(p, filename='./app/static/images/Speed Index/' + title[k] + j + '.png')
             
             # Makes figures responsive.
             p.sizing_mode = 'stretch_both'
@@ -226,7 +231,8 @@ def create_speed_graph():
             # 'p' = bokeh figure.
             p = figure(
                 x_range=FactorRange(*x), 
-                width=250, 
+                width=450, 
+                height=340,  
                 title=title[k].split('-')[0]  + '- ' + cc[index],
                 x_axis_label = 'Date',
                 y_axis_label = y_label[k])
@@ -253,6 +259,9 @@ def create_speed_graph():
                 source=source,
                 color='#0d6efd'
                 )
+            
+            # Export figures as a PNG.
+            export_png(p, filename='./app/static/images/Speed Index/' + title[k] + j + '.png')
             
             # Makes figures responsive.
             p.sizing_mode = 'stretch_both'

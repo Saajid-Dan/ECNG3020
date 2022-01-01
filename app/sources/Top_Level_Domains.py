@@ -145,6 +145,8 @@ def tld():
         index2 = x.find(end)
         # 'cctld' = ccTLD Manager data.
         cctld = ('<p>' + x[ index1 : index2 ] + '</p>')
+        cctld = cctld.replace('<b>', '<u>')
+        cctld = cctld.replace('</b>', '</u>')
 
 
         # ----------------------- Administrative Contact field ----------------------- #
@@ -155,6 +157,8 @@ def tld():
         index2 = x.find(end)
         # 'ad_con' = Administrative Contact data.
         ad_con = ('<p>' + x[ index1 : index2 ] + '</p>')
+        ad_con = ad_con.replace('<b>', '<u>')
+        ad_con = ad_con.replace('</b>', '</u>')
 
 
         # -------------------------- Technical Contact field ------------------------- #
@@ -165,6 +169,8 @@ def tld():
         index2 = x.find(end)
         # 'tch_con' = Technical Contact data.
         tch_con = ('<p>' + x[ index1 : index2 ] + '</p>')
+        tch_con = tch_con.replace('<b>', '<u>')
+        tch_con = tch_con.replace('</b>', '</u>')
 
 
         # ----------------------------- Name Server table ---------------------------- #
@@ -178,6 +184,8 @@ def tld():
         # Add bootstrap styles to 'nm_svr' html table format.
         nm_svr = nm_svr.replace('<table>', "<table class='table table-sm table-hover'>")
         nm_svr = nm_svr.replace('<tr>', "<tr class='table-primary'>", 1)
+        nm_svr = nm_svr.replace('<b>', '<u>')
+        nm_svr = nm_svr.replace('</b>', '</u>')
 
 
         # ------------------------ Registry Information field ------------------------ #
@@ -195,6 +203,8 @@ def tld():
             reg = (x[ index1 : index2 ] + '</i></p>')
             # Cleaning 'reg'.
             reg = reg.replace('<p></i></p>', '')
+            reg = reg.replace('<b>', '<u>')
+            reg = reg.replace('</b>', '</u>')
 
 
         # -------------------- Registration and Update Dates field ------------------- #

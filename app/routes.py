@@ -9,6 +9,9 @@ import ast
 from app.models import Tld
 from app.models import Land
 from app.models import Ixp_dir, Ixp_sub, Ixp_mem
+from app.models import Root_srv
+from app.models import Gen_pop, Pop_dens
+from app.models import Fixed_br, Mob_br
 
 from app.sources.General_Population import population
 from app.sources.ICT_Baskets import baskets
@@ -27,6 +30,8 @@ from app.modules.indicators_graph import create_indic_graph
 from app.modules.landing_image import create_land_image
 from app.modules.submarine_image import create_sub_image
 from app.modules.ixp_image import create_ixp_image
+from app.modules.root_image import create_root_image
+from app.modules.density_image import create_density_image
 
 
 @app.route('/')
@@ -76,7 +81,7 @@ def land_list():
     # print(ctry_lst_uni)
     # land_all = Land.query.all()
     # print(sub_all[1].ctry)
-    return render_template('land_list.html', title= 'Landing Points Listing', land_all=ctry_lst_uni)
+    return render_template('land_list.html', title= 'Landing Point Listing', land_all=ctry_lst_uni)
 
 @app.route('/submarine/<cable>')
 def sub_page(cable):
@@ -114,7 +119,7 @@ def sub_list():
     gdf_sub = gpd.read_file(file_sub)
     for j in range(len(gdf_sub)):
         cable_lst.append(gdf_sub.iloc[j]['name'])
-    return render_template('sub_list.html', title= 'Submarine Cables Listing', sub_all=cable_lst)
+    return render_template('sub_list.html', title= 'Submarine Cable Listing', sub_all=cable_lst)
 
 @app.route('/ixp/<country>')
 def ixp_page(country):
@@ -141,6 +146,51 @@ def tld_list():
     # ctry_lst = list(dict.fromkeys(ctry_lst))
     return render_template('tld_list.html', title= 'TLD Listing', tld_all = ctry_lst)
 
+@app.route('/root/<country>')
+def root_page(country):
+    root = Root_srv.query.filter_by(ctry=country).all()
+    return render_template('root_page.html', title=country, root=root)
+
+@app.route('/root')
+def root_list():
+    ctry_lst = []
+    ctry = Root_srv.query.order_by(Root_srv.ctry).with_entities(Root_srv.ctry)
+    for j in ctry:
+        ctry_lst.append(j[0])
+    ctry_lst = list(dict.fromkeys(ctry_lst))
+    return render_template('root_list.html', title= 'Root Server Listing', root_all = ctry_lst)
+
+@app.route('/gen/<country>')
+def gen_page(country):
+    gen = Gen_pop.query.filter_by(ctry_=country).first()
+    dens = Pop_dens.query.filter_by(ctry=country).first()
+    return render_template('gen_page.html', title=country, gen=gen, dens=dens)
+
+@app.route('/gen')
+def gen_list():
+    ctry_lst = []
+    ctry = Gen_pop.query.order_by(Gen_pop.ctry_).with_entities(Gen_pop.ctry_)
+    for j in ctry:
+        ctry_lst.append(j[0])
+    # ctry_lst = list(dict.fromkeys(ctry_lst))
+    return render_template('gen_list.html', title= 'General Population Information Listing', gen_all = ctry_lst)
+
+@app.route('/speed/<country>')
+def speed_page(country):
+    fix = Fixed_br.query.filter_by(ctry=country).all()
+    mob = Mob_br.query.filter_by(ctry=country).all()
+    return render_template('speed_page.html', title=country, fix=fix, mob=mob)
+
+@app.route('/speed')
+def speed_list():
+    ctry_lst = []
+    ctry = Fixed_br.query.order_by(Fixed_br.ctry).with_entities(Fixed_br.ctry)
+    for j in ctry:
+        ctry_lst.append(j[0])
+    ctry_lst = list(dict.fromkeys(ctry_lst))
+    return render_template('speed_list.html', title= 'Speed Index Listing', speed_all = ctry_lst)
+
+
 @app.route('/test')
 def test():
     # print(population())
@@ -151,7 +201,7 @@ def test():
     # print(root())
     # print(speedindex())
     # print(submarine())
-    print(tld())
+    # print(tld())
     # create_map()
     # create_speed_graph()
     # create_baskets_graph()
@@ -160,5 +210,7 @@ def test():
     # create_land_image()
     # create_sub_image()
     # create_ixp_image()
+    # create_root_image()
+    # create_density_image()            # Failed
     print("Test Completed")
     return render_template('test.html')

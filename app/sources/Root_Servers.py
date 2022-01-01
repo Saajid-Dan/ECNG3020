@@ -64,6 +64,30 @@ def root():
     # Used to filter extracted data for these country codes.
     cc = ['AG', 'AI', 'BS', 'BB', 'BZ', 'BM', 'VG', 'KY', 'DM', 'GD', 'GY', 'HT', 'JM', 'MS', 'LC', 'KN', 'VC', 'SR', 'TT', 'TC']
 
+    dict_ctry = {
+        'AG':'Anguilla',
+        'AI':'Antigua and Barbuda',
+        'BS':'Bahamas',
+        'BB':'Barbados',
+        'BZ':'Belize',
+        'BM':'Bermuda',
+        'VG':'Virgin Islands U K ',
+        'KK':'Cayman Islands',
+        'DM':'Dominica',
+        'GD':'Grenada',
+        'GY':'Guyana',
+        'HT':'Haiti',
+        'JM':'Jamaica',
+        'MS':'Montserrat',
+        'KN':'Saint Kitts and Nevis',
+        'LC':'Saint Lucia',
+        'VC':'Saint Vincent and The Grenadines',
+        'SR':'Suriname',
+        'TT':'Trinidad and Tobago',
+        'TC':'Turks and Caicos Islands'
+    }
+
+
     # Loop through all <a> tags in 'soup'.
     for index, j in enumerate(soup.find_all('a')):
         # Ignore index directory - '../'
@@ -163,64 +187,67 @@ def root():
         #                                 Extract Data                                 #
         # ---------------------------------------------------------------------------- #
 
-            # 'name' = Root Server Name
-            name = '<a href = "' + x[ pos1[2] + 10 : pos1[3] - 1 ] + '"target="_blank" rel="noopener noreferrer">' + j.text[0].upper() + ' Root</a>'
+            # 'name' = Root Server Name.
+            name = j.text[0].upper()
             
-            # 'loc' = server location
+            # 'url' = server homepage.
+            url = x[ pos1[2] + 10 : pos1[3] - 1 ] 
+
+            # 'loc' = server location.
             loc = root[ pos2[7] + 6 : pos2[8] - 3 ]
 
-            # 'oper' = server operator
+            # 'oper' = server operator.
             oper = x[ pos1[6] + 10 : pos1[7] - 1 ]
 
-            # 'type_' = server type
+            # 'type_' = server type.
             type_ = root[ pos2[8] + 6 : -1]
 
-            # 'asn' = ASN number
+            # 'asn' = ASN number.
             asn = x[ pos1[0] + 5 : pos1[1] - 1 ]
 
-            # 'ipv4' = IPv4 Address Data
+            # 'ipv4' = IPv4 Address Data.
             if root[ pos2[1] + 6 : pos2[2] - 3 ] == 'true':
                 ipv4 = x[ pos1[3] + 6 : pos1[4] - 1 ]
             else:
                 ipv4 = 'NA'
 
-            # 'ipv6' = IPv6 Address Data
+            # 'ipv6' = IPv6 Address Data.
             if root[ pos2[2] + 6 : pos2[3] - 3 ] == 'true':
                 ipv6 = x[ pos1[4] + 6 : pos1[5] - 1 ]
             else:
                 ipv6 = 'NA'
 
-            # 'inst' = number of instances
+            # 'inst' = number of instances.
             inst = root[ pos2[4] + 11 : pos2[5] - 3 ]
 
-            # 'rssac' = Server RSSAC
+            # 'rssac' = Server RSSAC.
             rssac = '<a href = "' + x[ pos1[8] + 7 : pos1[9] - 1] + '"target="_blank" rel="noopener noreferrer">' + x[ pos1[8] + 7 : pos1[9] - 1] + '</a>'
             
-            # 'con' = Server Contact Email
+            # 'con' = Server Contact Email.
             if x[ pos1[1] + 15 : pos1[2] - 1 ] == '\'\'':
                 con = 'NA'
             else:
-                con = '<a href = "' + x[ pos1[1] + 15 : pos1[2] - 1 ] + '"target="_blank" rel="noopener noreferrer">' + x[ pos1[1] + 15 : pos1[2] - 1 ] + '</a>'
+                con = x[ pos1[1] + 15 : pos1[2] - 1 ]
 
-            # 'peer' = Peering Policy
+            # 'peer' = Peering Policy.
             if x[ pos1[7] + 16 : pos1[8] - 1 ] == '\'\'':
                 peer = 'NA'
             else:
                 peer = '<a href = "' + x[ pos1[7] + 16 : pos1[8] - 1 ] + '"target="_blank" rel="noopener noreferrer">' + x[ pos1[7] + 16 : pos1[8] - 1 ] + '</a>'
             
-            # 'id_root' = Root Identifiers
+            # 'id_root' = Root Identifiers.
             if root[ pos2[3] + 13 : pos2[4] - 3 ] == '[]':
                 id_root = 'NA'
             else:
-                id_root = '<br>' + root[ pos2[3] + 13 : pos2[4] - 3 ]
+                id_root = root[ pos2[3] + 13 : pos2[4] - 3 ]
 
-            # 'id_nc' = Identifier Naming Convention
+            # 'id_nc' = Identifier Naming Convention.
             if x[ pos1[5] + 30 : pos1[6] - 1 ] == '\'\'':
                 id_nc = 'NA'
             else:
-                id_nc = '<br>' + x[ pos1[5] + 30 : pos1[6] - 1 ]
+                id_nc = x[ pos1[5] + 30 : pos1[6] - 1 ]
             
-            # 'lat' and 'lon' contains latitude and longitude coordinates of root servers
+            # 'lat' and 'lon' contains latitude and longitude coordinates of root servers.
             lat = root[ pos2[5] + 10 : pos2[6] - 3 ]
             lon = root[ pos2[6] + 11 : pos2[7] - 3 ]
             
@@ -243,7 +270,8 @@ def root():
             if exist == None:
                 u = Root_srv(
                     name = name,
-                    ctry = ctry,
+                    url = url,
+                    ctry = dict_ctry[ctry],
                     uni = uni,
                     loc = loc,
                     oper = oper, 
@@ -272,7 +300,8 @@ def root():
                 u = Root_srv.query.get(exist[0])
                 # Overwriting of data in 'u'.
                 u.name = name
-                u.ctry = ctry
+                u.url = url
+                u.ctry = dict_ctry[ctry]
                 u.loc = loc
                 u.oper = oper
                 u.type_ = type_

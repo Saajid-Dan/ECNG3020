@@ -135,6 +135,8 @@ def population():
         gen = gen.replace('<br/><br/>', '</p><p>') + '<h3>'
         gen = gen.replace('</h3>', '')
         gen = gen.replace('<p><h3>', '')
+        gen = gen.replace('<strong>', '<u>')
+        gen = gen.replace('</strong>', '</u>')
 
 
         # ------------------------------ Currency field ------------------------------ #
@@ -153,6 +155,8 @@ def population():
         cur = cur.replace('</h3>', '') + '</p>'
         cur = cur.replace('<p></p>', '')
         cur = cur.replace('</div></div><div class="free-form-content__content wysiwyg-wrapper" id="energy"></p>', '')
+        cur = cur.replace('<strong>', '<u>')
+        cur = cur.replace('</strong>', '</u>')
 
 
         # ------------------------------ languages field ----------------------------- #
@@ -167,6 +171,8 @@ def population():
         lang = lang.replace('</div><div><h3 class="mt30">', '')
         lang = lang.replace('</h3>', '')
         lang = lang.replace('src="', 'src="https://www.cia.gov')
+        lang = lang.replace('<strong>', '<u>')
+        lang = lang.replace('</strong>', '</u>')
 
 
         # -------------------------- Population Number field ------------------------- #
@@ -179,6 +185,8 @@ def population():
         pop = x[ index1 : index2 ]
         # Cleaning 'pop'.
         pop = pop.replace('</h3>', '')
+        pop = pop.replace('<strong>', '<u>')
+        pop = pop.replace('</strong>', '</u>')
 
 
         # ---------------------------- Country Area field ---------------------------- #
@@ -193,6 +201,8 @@ def population():
         area = area.replace('</h3>', '')
         area = area.replace('total:', '')
         area = area.replace('<br/><br/>', '</p>')
+        area = area.replace('<strong>', '<u>')
+        area = area.replace('</strong>', '</u>')
 
 
         # ------------------------- Land Use Percentage field ------------------------ #
@@ -207,6 +217,8 @@ def population():
         land = land.replace('</h3>', '')
         land = land.replace('<br/><br/>', '</p><p>')
         land = land.replace('</div><div><h3 class="mt30">', '')
+        land = land.replace('<strong>', '<u>')
+        land = land.replace('</strong>', '</u>')
 
 
         # ------------------------ Urbanization Percent field ------------------------ #
@@ -220,6 +232,8 @@ def population():
         # Cleaning 'urb'.
         urb = urb.replace('</h3>', '')
         urb = urb.replace('<br/><br/>', '</p>')
+        urb = urb.replace('<strong>', '<u>')
+        urb = urb.replace('</strong>', '</u>')
 
 
         # ------------------------- Electricity Access field ------------------------- #
@@ -235,6 +249,8 @@ def population():
             # Cleaning 'elec'.
             elec = elec.replace('</h3>', '')
             elec = elec.replace('</div><div><h3 class="mt30">', '')
+            elec = elec.replace('<strong>', '<u>')
+            elec = elec.replace('</strong>', '</u>')
         else:
             elec = 'NA'
 
@@ -249,6 +265,8 @@ def population():
         lab = x[ index1 : index2 ]
         # Cleaning 'lab'.
         lab = lab.replace('</h3>', '')
+        lab = lab.replace('<strong>', '<u>')
+        lab = lab.replace('</strong>', '</u>')
 
 
         # --------------------- Labour Force by Occupation field --------------------- #
@@ -265,6 +283,8 @@ def population():
             occ = occ.replace('</h3>', '')
             occ = occ.replace('</div><div><h3 class="mt30">', '')
             occ = occ.replace('<br/><br/>', '</p><p>')
+            occ = occ.replace('<strong>', '<u>')
+            occ = occ.replace('</strong>', '</u>')
         else:
             occ = 'NA'
 
@@ -280,6 +300,8 @@ def population():
         # Cleaning 'unem'.
         unem = unem.replace('</h3>', '')
         unem = unem.replace('<br/><br/>', '</p><p>')
+        unem = unem.replace('<strong>', '<u>')
+        unem = unem.replace('</strong>', '</u>')
 
 
         # -------------------- Population below Povery Line field -------------------- #
@@ -297,6 +319,8 @@ def population():
         # Cleaning 'pov'.
         pov = pov.replace('</h3>', '')
         pov = pov.replace('</div><div><h3 class="mt30">', '')
+        pov = pov.replace('<strong>', '<u>')
+        pov = pov.replace('</strong>', '</u>')
 
 
         # -------------------------- Literacy Percent field -------------------------- #
@@ -321,6 +345,8 @@ def population():
             lit = lit.replace('</h3>', '')
             lit = lit.replace('</div><div><h3 class="mt30">', '')
             lit = lit.replace('<br/><br/>', '</p><p>')
+            lit = lit.replace('<strong>', '<u>')
+            lit = lit.replace('</strong>', '</u>')
         else:
             lit = 'NA'
 

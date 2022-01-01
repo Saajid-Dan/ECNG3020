@@ -239,6 +239,7 @@ class Root_srv(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     uni = db.Column(db.Integer, index=True)
     name = db.Column(db.String, index=True)
+    url = db.Column(db.String, index=True)
     ctry = db.Column(db.String, index=True)
     loc = db.Column(db.String, index=True)
     oper = db.Column(db.String, index=True)
