@@ -13,12 +13,41 @@ from osgeo import gdal
 from app import db
 from app.models import Pop_dens
 from datetime import datetime, timezone, timedelta
+import os
+import folium
+import branca
 import time
 from selenium import webdriver
 from selenium.webdriver.firefox.options import Options
 
+# lat and long in decimal degrees
+coords = [10.536421, -61.311951]
+
 options = Options()
 options.headless = True
+
+dict_ctry = {
+        'AIA':'Anguilla',
+        'ATG':'Antigua and Barbuda',
+        'BHS':'Bahamas',
+        'BRB':'Barbados',
+        'BLZ':'Belize',
+        'BMU':'Bermuda',
+        'VGB':'Virgin Islands U K ',
+        'CYM':'Cayman Islands',
+        'DMA':'Dominica',
+        'GRD':'Grenada',
+        'GUY':'Guyana',
+        'HTI':'Haiti',
+        'JAM':'Jamaica',
+        'MSR':'Montserrat',
+        'KNA':'Saint Kitts and Nevis',
+        'LCA':'Saint Lucia',
+        'VCT':'Saint Vincent and The Grenadines',
+        'SUR':'Suriname',
+        'TTO':'Trinidad and Tobago',
+        'TCA':'Turks and Caicos Islands'
+    }
 
 def create_density_image():
     # Read Population Density data from database to 'dens'.
@@ -72,18 +101,64 @@ def create_density_image():
         # 'image' overlay added to map 'm'.
         image.add_to(m)
 
-        m.save('./app/static/html/Population Density/' + j.ctry + '.html')
+        legend_html = f'''
+        {{% macro html(this, kwargs) %}}
+        <div style="
+            position: fixed; 
+            bottom: 115px;
+            left: 0px;
+            width: 250px;
+            height: 80px;
+            z-index:9999;
+            font-size:14px;
+            ">
+            <p style="line-height:1;margin-left:20px;font-size:105%">Population Density <br>(100 km resolution)</p>
+            <p style="line-height:0.3"><a style="color:#ffff00;font-size:200%;margin-left:20px;">&#9632;</a>&emsp;1 - 50</p>
+            <p style="line-height:0.3"><a style="color:#ff8000;font-size:200%;margin-left:20px;">&#9632;</a>&emsp;50 - 100</p>
+            <p style="line-height:0.3"><a style="color:#ff3300;font-size:200%;margin-left:20px;">&#9632;</a>&emsp;100 - 1000</p>
+            <p style="line-height:0.3"><a style="color:#ff0000;font-size:200%;margin-left:20px;">&#9632;</a>&emsp;1000 - 2500</p>
+            <p style="line-height:0.3"><a style="color:#b30000;font-size:200%;margin-left:20px;">&#9632;</a>&emsp;2500 - 5000</p>
+            <p style="line-height:0.3"><a style="color:#660000;font-size:200%;margin-left:20px;">&#9632;</a>&emsp;5000 - 10000</p>
+            <p style="line-height:0.3"><a style="color:#260000;font-size:200%;margin-left:20px;">&#9632;</a>&emsp;> 10000</p>
+        </div>
+        <div style="
+            position: fixed; 
+            bottom: 10px;
+            left: 10px;
+            width: 150px;
+            height: 190px; 
+            z-index:9998;
+            font-size:14px;
+            background-color: #ffffff;
+
+            opacity: 0.9;
+            ">
+        </div>
+        {{% endmacro %}}
+        '''
+        legend = branca.element.MacroElement()
+        legend._template = branca.element.Template(legend_html)
+        m.get_root().add_child(legend)
+
+        offset_lon = 0.4
+        offset_lat = 0.01
+        sw = [lat_min - offset_lat, lon_min - offset_lon]
+        ne = [lat_max, lon_max]
+
+        m.fit_bounds([sw, ne])
+
+        m.save('./app/static/html/Population Density/' + dict_ctry[j.ctry] + '.html')
         
         map_url = 'file://{path}/{mapfile}'.format(
             path=os.getcwd(),
-            mapfile="./app/static/html/Population Density/" + j.ctry + ".html"
+            mapfile="./app/static/html/Population Density/" + dict_ctry[j.ctry] + ".html"
             )
 
         browser = webdriver.Firefox(options=options, executable_path="./app/static/webdriver/geckodriver.exe")
-        browser.set_window_size(600, 400)
+        browser.set_window_size(820, 450)
         browser.get(map_url)
-        time.sleep(5)
-        browser.save_screenshot("./app/static/images/Population Density/" + j.ctry + ".png")
+        # time.sleep(5)
+        browser.save_screenshot("./app/static/images/Population Density/" + dict_ctry[j.ctry] + ".png")
         browser.close()
         browser.quit()
    

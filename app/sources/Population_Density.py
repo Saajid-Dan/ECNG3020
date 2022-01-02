@@ -59,29 +59,6 @@ def density():
         'TCA'
     ]
 
-    dict_ctry = {
-        'AIA':'Anguilla',
-        'ATG':'Antigua and Barbuda',
-        'BHS':'Bahamas',
-        'BRB':'Barbados',
-        'BLZ':'Belize',
-        'BMU':'Bermuda',
-        'VGB':'Virgin Islands U K ',
-        'CYM':'Cayman Islands',
-        'DMA':'Dominica',
-        'GRD':'Grenada',
-        'GUY':'Guyana',
-        'HTI':'Haiti',
-        'JAM':'Jamaica',
-        'MSR':'Montserrat',
-        'KNA':'Saint Kitts and Nevis',
-        'LCA':'Saint Lucia',
-        'VCT':'Saint Vincent and The Grenadines',
-        'SUR':'Suriname',
-        'TTO':'Trinidad and Tobago',
-        'TCA':'Turks and Caicos Islands'
-    }
-
     # Loop over 'cc' to append subdirectories to 'url_root' to read data.
     for j in cc:
         # 'url' = 'url_root' + 'j' = population density JSON for country 'j'.
@@ -114,6 +91,10 @@ def density():
                     url_tif = link
             updt = json_pop.iloc[-1]['data']['date'][0]
             pop_yr = json_pop.iloc[-1]['data']['popyear'][0]
+
+            print(json_pop.iloc[-1]['data']['popyear'])
+            print(pop_yr)
+            print()
         except Exception as e:
             error = "Error Extracting TIF Data.\nError: " + str(e)
             return error
@@ -134,7 +115,11 @@ def density():
         stats = band.GetStatistics(True, True)
 
         # Store mean population density into 'dens'.
+        # Store max population density into 'max_'
+        # Store min population density into 'min_'
         dens = stats[2]
+        max_ = stats[1]
+        min_ = stats[0]
         
 
         # ---------------------------------------------------------------------------- #
@@ -159,10 +144,12 @@ def density():
         # If value does not exist in 'Pop_dens' table, then add the data to the table.
         if exist == None:
             u = Pop_dens(
-                ctry = dict_ctry[j],
+                ctry = j,
                 pop_yr = pop_yr,
                 url = url_tif,
                 dens = dens,
+                max_ = max_,
+                min_ = min_,
                 updt = updt,
                 stamp = datetime.now(timezone(timedelta(seconds=-14400))).strftime("%Y-%m-%d %H:%M:%S %z")
             )
@@ -178,6 +165,8 @@ def density():
             u.pop_yr = pop_yr
             u.url = url_tif
             u.dens = dens
+            u.max_ = max_
+            u.min_ = min_
             u.updt = updt
             u.stamp = datetime.now(timezone(timedelta(seconds=-14400))).strftime("%Y-%m-%d %H:%M:%S %z")
 

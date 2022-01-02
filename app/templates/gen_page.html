@@ -27,10 +27,17 @@
             <h6 style="font-size: 105%; margin-top: 30px;">Population</h6>
             {{ gen.pop | safe }}
             <h6 style="font-size: 105%; margin-top: 30px;">Population Density</h6>
-            <p><u>Average Density: </u>{{ dens.dens }}Placeholder</p>
+            <p><u>Average Density: </u>{{ dens.dens }}</p>
+            
+            <!-- ------------------------------ To change ------------------------------ -->
+            <p><u>Maximum Density: </u>{{ dens.max_ }}</p>
+            <p><u>Minimum Density: </u>{{ dens.min_ }}</p>
             <p>The following figure displays the population density over {{ title }}.</p>
             
-            <!-- Insert Figure Here -->
+            <img class='img-fluid' src="/static/images/Population Density/{{ title }}.png" alt="The Image may not exist or has not loaded.">
+            <p>
+                <u>Figure 1a: Population Density in {{ title }}</u><br>
+            </p>
 
             <h6 style="font-size: 105%; margin-top: 30px;">Urbanization</h6>
             {{ gen.urb | safe }}

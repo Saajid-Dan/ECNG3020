@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<head>    
+    <meta http-equiv="content-type" content="text/html; charset=UTF-8" />
+    
+        <script>
+            L_NO_TOUCH = false;
+            L_DISABLE_3D = false;
+        </script>
+    
+    <style>html, body {width: 100%;height: 100%;margin: 0;padding: 0;}</style>
+    <style>#map {position:absolute;top:0;bottom:0;right:0;left:0;}</style>
+    <script src="https://cdn.jsdelivr.net/npm/leaflet@1.6.0/dist/leaflet.js"></script>
+    <script src="https://code.jquery.com/jquery-1.12.4.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/js/bootstrap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Leaflet.awesome-markers/2.0.2/leaflet.awesome-markers.js"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/leaflet@1.6.0/dist/leaflet.css"/>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css"/>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap-theme.min.css"/>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.6.3/css/font-awesome.min.css"/>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/Leaflet.awesome-markers/2.0.2/leaflet.awesome-markers.css"/>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/python-visualization/folium/folium/templates/leaflet.awesome.rotate.min.css"/>
+    
+            <meta name="viewport" content="width=device-width,
+                initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+            <style>
+                #map_ebedd991288f403eaa421e4add70fbc5 {
+                    position: relative;
+                    width: 100.0%;
+                    height: 100.0%;
+                    left: 0.0%;
+                    top: 0.0%;
+                }
+            </style>
+        
+    
+                <style>
+                    .leaflet-image-layer {
+                        /* old android/safari*/
+                        image-rendering: -webkit-optimize-contrast;
+                        image-rendering: crisp-edges; /* safari */
+                        image-rendering: pixelated; /* chrome */
+                        image-rendering: -moz-crisp-edges; /* firefox */
+                        image-rendering: -o-crisp-edges; /* opera */
+                        -ms-interpolation-mode: nearest-neighbor; /* ie */
+                    }
+                </style>
+            
+</head>
+<body>    
+    
+            <div class="folium-map" id="map_ebedd991288f403eaa421e4add70fbc5" ></div>
+        
+    
+        <div style="
+            position: fixed; 
+            bottom: 115px;
+            left: 0px;
+            width: 250px;
+            height: 80px;
+            z-index:9999;
+            font-size:14px;
+            ">
+            <p style="line-height:1;margin-left:20px;font-size:105%">Population Density <br>(100 km resolution)</p>
+            <p style="line-height:0.3"><a style="color:#ffff00;font-size:200%;margin-left:20px;">&#9632;</a>&emsp;1 - 50</p>
+            <p style="line-height:0.3"><a style="color:#ff8000;font-size:200%;margin-left:20px;">&#9632;</a>&emsp;50 - 100</p>
+            <p style="line-height:0.3"><a style="color:#ff3300;font-size:200%;margin-left:20px;">&#9632;</a>&emsp;100 - 1000</p>
+            <p style="line-height:0.3"><a style="color:#ff0000;font-size:200%;margin-left:20px;">&#9632;</a>&emsp;1000 - 2500</p>
+            <p style="line-height:0.3"><a style="color:#b30000;font-size:200%;margin-left:20px;">&#9632;</a>&emsp;2500 - 5000</p>
+            <p style="line-height:0.3"><a style="color:#660000;font-size:200%;margin-left:20px;">&#9632;</a>&emsp;5000 - 10000</p>
+            <p style="line-height:0.3"><a style="color:#260000;font-size:200%;margin-left:20px;">&#9632;</a>&emsp;> 10000</p>
+        </div>
+        <div style="
+            position: fixed; 
+            bottom: 10px;
+            left: 10px;
+            width: 150px;
+            height: 190px; 
+            z-index:9998;
+            font-size:14px;
+            background-color: #ffffff;
+
+            opacity: 0.9;
+            ">
+        </div>
+        
+</body>
+<script>    
+    
+            var map_ebedd991288f403eaa421e4add70fbc5 = L.map(
+                "map_ebedd991288f403eaa421e4add70fbc5",
+                {
+                    center: [10.536421, -61.311951],
+                    crs: L.CRS.EPSG3857,
+                    maxBounds: [[-90, -180], [90, 180]],
+                    zoom: 11,
+                    zoomControl: true,
+                    preferCanvas: false,
+                }
+            );
+
+            
+
+        
+    
+            var tile_layer_020a3370070045a5abfd8c937ca7e4b3 = L.tileLayer(
+                "https://cartodb-basemaps-{s}.global.ssl.fastly.net/light_all/{z}/{x}/{y}.png",
+                {"attribution": "\u0026copy; \u003ca href=\"http://www.openstreetmap.org/copyright\"\u003eOpenStreetMap\u003c/a\u003e contributors \u0026copy; \u003ca href=\"http://cartodb.com/attributions\"\u003eCartoDB\u003c/a\u003e, CartoDB \u003ca href =\"http://cartodb.com/attributions\"\u003eattributions\u003c/a\u003e", "detectRetina": false, "maxNativeZoom": 11, "maxZoom": 11, "minZoom": 5, "noWrap": false, "opacity": 1, "subdomains": "abc", "tms": false}
+            ).addTo(map_ebedd991288f403eaa421e4add70fbc5);
+        
+    
+            var image_overlay_0554f604b29c455eb17e35e6d080af76 = L.imageOverlay(
+                "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACsAAABiCAYAAADJCipkAAABzklEQVR42u3bbQ7DIAgGYO/kATk625It6VpUtBVeEn6QZV/JE0bRqivMpcBEfT98ovE+CpSZvtBzAGH5LwZgPCwJaAAsiyGB3bHUwHbAflBqAM/P3bG9TErxBWNlFQr7+0l72E5XsG/8UmaVLcw+q1UBJnmAsEVqsYyC1UDZqwzCYGmhBMjrAputV2pfXHuxpQOluYzaZLY0oDQP3YutHSgNhtrGBNwPS+NBwAdbFZMVKKwGXz3vwZ6AumPPaAXUFvt7uU6G+bqB9DIsdhZ8fN8Fe4Zo0O5rXSNsQcLWwUdgVxFrowxglzyl3gu+PquKxCY2sYlN7PKeAjCWxqOVP5b08wBfbL0HtccW3YQFL7Ng2P5tNhBWtcuNWwY011O9W9cq1nxXfAV6Xh0331S+9T3rAxC3fg3kWVYobKj5LHRmh3WNhg1QBsr5AhY2xFrX9ewMKPb/7FaQMqDsBvZINCxHH24Ta3b3kNibN4iJzW6Q2MQaYHllM8MHq5zlY2EXF4h9sLA1Kx3Agb7AHlp6t8GSDTAHBQTs9t65I7McAysPpYyJvQ6ljIu9whilDDhCNzj+0SEI9oFt9t3Y9nY7YGZl7LEbgPZZ3nFO4Kl4AS4d/wEYaxPIAAAAAElFTkSuQmCC",
+                [[12.574583486802979, -61.467916427629575], [13.391250150202978, -61.109583095729576]],
+                {"interactive": true, "opacity": 1, "zindex": 1}
+            ).addTo(map_ebedd991288f403eaa421e4add70fbc5);
+        
+    
+            map_ebedd991288f403eaa421e4add70fbc5.fitBounds(
+                [[12.564583486802979, -61.867916427629574], [13.391250150202978, -61.109583095729576]],
+                {}
+            );
+        
+</script>

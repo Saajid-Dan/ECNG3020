@@ -229,6 +229,8 @@ class Pop_dens(db.Model):
     ctry = db.Column(db.String, index=True)
     url = db.Column(db.String, index=True)
     dens = db.Column(db.String, index=True)
+    max_ = db.Column(db.String, index=True)
+    min_ = db.Column(db.String, index=True)
     pop_yr = db.Column(db.Integer, index=True)
     stamp = db.Column(db.String, index=True)
 

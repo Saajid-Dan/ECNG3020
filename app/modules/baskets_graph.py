@@ -11,6 +11,7 @@ Project Title:
 import pandas as pd
 from bokeh.plotting import figure, show, output_file, save
 from bokeh.models import Range1d, HoverTool, Panel, Tabs, Legend
+from bokeh.io import export_png
 from math import pi
 from app import db
 from app.models import GNI, PPP, USD
@@ -138,7 +139,8 @@ def create_baskets_graph():
                 x_axis_label='Year', 
                 y_axis_label= unit[index],
                 tools = tools,
-                width = 250
+                width=450, 
+                height=340,
             )
 
             # 'p.line' plots a line graph. 
@@ -170,7 +172,10 @@ def create_baskets_graph():
 
             # x axis label orientation by 90 degrees
             p.xaxis.major_label_orientation = pi/2
-    
+
+            # Export figures as a PNG.
+            export_png(p, filename='./app/static/images/Baskets/' + unit[index].split(' ')[0] + ctry[j] + '.png')
+
             # Makes figure 'p' responsive
             p.sizing_mode = 'stretch_both'
 

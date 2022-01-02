@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<head>    
+    <meta http-equiv="content-type" content="text/html; charset=UTF-8" />
+    
+        <script>
+            L_NO_TOUCH = false;
+            L_DISABLE_3D = false;
+        </script>
+    
+    <style>html, body {width: 100%;height: 100%;margin: 0;padding: 0;}</style>
+    <style>#map {position:absolute;top:0;bottom:0;right:0;left:0;}</style>
+    <script src="https://cdn.jsdelivr.net/npm/leaflet@1.6.0/dist/leaflet.js"></script>
+    <script src="https://code.jquery.com/jquery-1.12.4.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/js/bootstrap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Leaflet.awesome-markers/2.0.2/leaflet.awesome-markers.js"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/leaflet@1.6.0/dist/leaflet.css"/>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css"/>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap-theme.min.css"/>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.6.3/css/font-awesome.min.css"/>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/Leaflet.awesome-markers/2.0.2/leaflet.awesome-markers.css"/>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/python-visualization/folium/folium/templates/leaflet.awesome.rotate.min.css"/>
+    
+            <meta name="viewport" content="width=device-width,
+                initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+            <style>
+                #map_91685e81d36943c480c51a7d36bf75f1 {
+                    position: relative;
+                    width: 100.0%;
+                    height: 100.0%;
+                    left: 0.0%;
+                    top: 0.0%;
+                }
+            </style>
+        
+    
+                <style>
+                    .leaflet-image-layer {
+                        /* old android/safari*/
+                        image-rendering: -webkit-optimize-contrast;
+                        image-rendering: crisp-edges; /* safari */
+                        image-rendering: pixelated; /* chrome */
+                        image-rendering: -moz-crisp-edges; /* firefox */
+                        image-rendering: -o-crisp-edges; /* opera */
+                        -ms-interpolation-mode: nearest-neighbor; /* ie */
+                    }
+                </style>
+            
+</head>
+<body>    
+    
+            <div class="folium-map" id="map_91685e81d36943c480c51a7d36bf75f1" ></div>
+        
+    
+        <div style="
+            position: fixed; 
+            bottom: 115px;
+            left: 0px;
+            width: 250px;
+            height: 80px;
+            z-index:9999;
+            font-size:14px;
+            ">
+            <p style="line-height:1;margin-left:20px;font-size:105%">Population Density <br>(100 km resolution)</p>
+            <p style="line-height:0.3"><a style="color:#ffff00;font-size:200%;margin-left:20px;">&#9632;</a>&emsp;1 - 50</p>
+            <p style="line-height:0.3"><a style="color:#ff8000;font-size:200%;margin-left:20px;">&#9632;</a>&emsp;50 - 100</p>
+            <p style="line-height:0.3"><a style="color:#ff3300;font-size:200%;margin-left:20px;">&#9632;</a>&emsp;100 - 1000</p>
+            <p style="line-height:0.3"><a style="color:#ff0000;font-size:200%;margin-left:20px;">&#9632;</a>&emsp;1000 - 2500</p>
+            <p style="line-height:0.3"><a style="color:#b30000;font-size:200%;margin-left:20px;">&#9632;</a>&emsp;2500 - 5000</p>
+            <p style="line-height:0.3"><a style="color:#660000;font-size:200%;margin-left:20px;">&#9632;</a>&emsp;5000 - 10000</p>
+            <p style="line-height:0.3"><a style="color:#260000;font-size:200%;margin-left:20px;">&#9632;</a>&emsp;> 10000</p>
+        </div>
+        <div style="
+            position: fixed; 
+            bottom: 10px;
+            left: 10px;
+            width: 150px;
+            height: 190px; 
+            z-index:9998;
+            font-size:14px;
+            background-color: #ffffff;
+
+            opacity: 0.9;
+            ">
+        </div>
+        
+</body>
+<script>    
+    
+            var map_91685e81d36943c480c51a7d36bf75f1 = L.map(
+                "map_91685e81d36943c480c51a7d36bf75f1",
+                {
+                    center: [10.536421, -61.311951],
+                    crs: L.CRS.EPSG3857,
+                    maxBounds: [[-90, -180], [90, 180]],
+                    zoom: 11,
+                    zoomControl: true,
+                    preferCanvas: false,
+                }
+            );
+
+            
+
+        
+    
+            var tile_layer_9cc52c9810e44c559226d0dc6f58c893 = L.tileLayer(
+                "https://cartodb-basemaps-{s}.global.ssl.fastly.net/light_all/{z}/{x}/{y}.png",
+                {"attribution": "\u0026copy; \u003ca href=\"http://www.openstreetmap.org/copyright\"\u003eOpenStreetMap\u003c/a\u003e contributors \u0026copy; \u003ca href=\"http://cartodb.com/attributions\"\u003eCartoDB\u003c/a\u003e, CartoDB \u003ca href =\"http://cartodb.com/attributions\"\u003eattributions\u003c/a\u003e", "detectRetina": false, "maxNativeZoom": 11, "maxZoom": 11, "minZoom": 5, "noWrap": false, "opacity": 1, "subdomains": "abc", "tms": false}
+            ).addTo(map_91685e81d36943c480c51a7d36bf75f1);
+        
+    
+            var image_overlay_225c8359119e4973a8fecd14c05ea7d5 = L.imageOverlay(
+                "data:image/png;base64,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",
+                [[15.899583471014317, -89.2262496530139], [18.499583460614318, -87.4845829933139]],
+                {"interactive": true, "opacity": 1, "zindex": 1}
+            ).addTo(map_91685e81d36943c480c51a7d36bf75f1);
+        
+    
+            map_91685e81d36943c480c51a7d36bf75f1.fitBounds(
+                [[15.889583471014317, -89.6262496530139], [18.499583460614318, -87.4845829933139]],
+                {}
+            );
+        
+</script>

@@ -12,6 +12,8 @@ from app.models import Ixp_dir, Ixp_sub, Ixp_mem
 from app.models import Root_srv
 from app.models import Gen_pop, Pop_dens
 from app.models import Fixed_br, Mob_br
+from app.models import GNI, PPP, USD
+from app.models import ICT_fix, ICT_mob, ICT_per, ICT_bw
 
 from app.sources.General_Population import population
 from app.sources.ICT_Baskets import baskets
@@ -190,6 +192,98 @@ def speed_list():
     ctry_lst = list(dict.fromkeys(ctry_lst))
     return render_template('speed_list.html', title= 'Speed Index Listing', speed_all = ctry_lst)
 
+@app.route('/basket/<country>')
+def basket_page(country):
+    gni = GNI.query.filter_by(ctry=country).all()
+    ppp = PPP.query.filter_by(ctry=country).all()
+    usd = USD.query.filter_by(ctry=country).all()
+    return render_template('basket_page.html', title=country, gni=gni, ppp=ppp, usd=usd)
+
+@app.route('/basket')
+def basket_list():
+    ctry_lst = []
+    ctry = GNI.query.order_by(GNI.ctry).with_entities(GNI.ctry)
+    for j in ctry:
+        ctry_lst.append(j[0])
+    ctry_lst = list(dict.fromkeys(ctry_lst))
+    return render_template('basket_list.html', title= 'ICT Price Basket Listing', bask_all = ctry_lst)
+
+@app.route('/indicator/<country>')
+def indicator_page(country):
+
+    dict_ctry = {
+        'Anguilla':[ ICT_fix.ai, ICT_mob.ai, ICT_per.ai, ICT_bw.ai ],
+        'Antigua and Barbuda':[ ICT_fix.ag, ICT_mob.ag, ICT_per.ag, ICT_bw.ag ],
+        'Bahamas':[ ICT_fix.bs, ICT_mob.bs, ICT_per.bs, ICT_bw.bs ],
+        'Barbados':[ ICT_fix.bb, ICT_mob.bb, ICT_per.bb, ICT_bw.bb ],
+        'Belize':[ ICT_fix.bz, ICT_mob.bz, ICT_per.bz, ICT_bw.bz ],
+        'Bermuda':[ ICT_fix.bm, ICT_mob.bm, ICT_per.bm, ICT_bw.bm ],
+        'Virgin Islands U K ':[ ICT_fix.vg, ICT_mob.vg, ICT_per.vg, ICT_bw.vg ],
+        'Cayman Islands':[ ICT_fix.ky, ICT_mob.ky, ICT_per.ky, ICT_bw.ky ],
+        'Dominica':[ ICT_fix.dm, ICT_mob.dm, ICT_per.dm, ICT_bw.dm ],
+        'Grenada':[ ICT_fix.gd, ICT_mob.gd, ICT_per.gd, ICT_bw.gd ],
+        'Guyana':[ ICT_fix.gy, ICT_mob.gy, ICT_per.gy, ICT_bw.gy ],
+        'Haiti':[ ICT_fix.ht, ICT_mob.ht, ICT_per.ht, ICT_bw.ht ],
+        'Jamaica':[ ICT_fix.jm, ICT_mob.jm, ICT_per.jm, ICT_bw.jm ],
+        'Montserrat':[ ICT_fix.ms, ICT_mob.ms, ICT_per.ms, ICT_bw.ms ],
+        'Saint Kitts and Nevis':[ ICT_fix.kn, ICT_mob.kn, ICT_per.kn, ICT_bw.kn ],
+        'Saint Lucia':[ ICT_fix.lc, ICT_mob.lc, ICT_per.lc, ICT_bw.lc ],
+        'Saint Vincent and The Grenadines':[ ICT_fix.vc, ICT_mob.vc, ICT_per.vc, ICT_bw.vc ],
+        'Suriname':[ ICT_fix.sr, ICT_mob.sr, ICT_per.sr, ICT_bw.sr ],
+        'Trinidad and Tobago':[ ICT_fix.tt, ICT_mob.tt, ICT_per.tt, ICT_bw.tt ],
+        'Turks and Caicos Islands':[ ICT_fix.tc, ICT_mob.tc, ICT_per.tc, ICT_bw.tc ]
+    }
+    
+    cat = dict_ctry[country]
+    
+    fix_yr =  ICT_fix.query.order_by(ICT_fix.yrs).all()
+    mob_yr =  ICT_mob.query.order_by(ICT_mob.yrs).all()
+    per_yr =  ICT_per.query.order_by(ICT_per.yrs).all()
+    bw_yr =  ICT_bw.query.order_by(ICT_bw.yrs).all()
+
+    fix = ICT_fix.query.order_by(ICT_fix.yrs).with_entities(cat[0])
+    mob = ICT_mob.query.order_by(ICT_mob.yrs).with_entities(cat[1])
+    per = ICT_per.query.order_by(ICT_per.yrs).with_entities(cat[2])
+    bw = ICT_bw.query.order_by(ICT_bw.yrs).with_entities(cat[3])
+
+    return render_template(
+        'indicator_page.html', 
+        title=country, 
+        fix_yr=fix_yr, 
+        mob_yr=mob_yr, 
+        per_yr=per_yr, 
+        bw_yr=bw_yr, 
+        fix=fix, 
+        mob=mob, 
+        per=per, 
+        bw=bw
+        )
+
+@app.route('/indicator')
+def indicator_list():
+    ctry_lst = [
+        'Anguilla',
+        'Antigua and Barbuda',
+        'Bahamas',
+        'Barbados',
+        'Belize',
+        'Bermuda',
+        'British Virgin Islands',
+        'Cayman Islands',
+        'Dominica',
+        'Grenada',
+        'Guyana',
+        'Haiti',
+        'Jamaica',
+        'Montserrat',
+        'Saint Kitts and Nevis',
+        'Saint Lucia',
+        'Saint Vincent and the Grenadines',
+        'Suriname',
+        'Trinidad and Tobago',
+        'Turks & Caicos Is.'
+    ]
+    return render_template('indicator_list.html', title= 'ICT Indicators Listing', indic_all = ctry_lst)
 
 @app.route('/test')
 def test():
@@ -197,7 +291,7 @@ def test():
     # print(baskets())
     # print(indicators())
     # print(ixp())
-    # print(density())
+    print(density())
     # print(root())
     # print(speedindex())
     # print(submarine())
@@ -211,6 +305,6 @@ def test():
     # create_sub_image()
     # create_ixp_image()
     # create_root_image()
-    # create_density_image()            # Failed
+    create_density_image()            # Failed
     print("Test Completed")
     return render_template('test.html')

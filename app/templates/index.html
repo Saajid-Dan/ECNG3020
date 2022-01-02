@@ -19,7 +19,7 @@
     <body>
         <!-- Primary Navbar -->
         <nav class="navbar navbar-expand-sm navbar-dark bg-primary">
-            <div class="container">
+            <div class="container-fluid">
                 <a class="navbar-brand font-size-8" href="#">
                     <img src="https://icon-library.com/images/blue-search-icon/blue-search-icon-15.jpg" width=30 height=30 class="d-inline-block align-top">
                     <span style="font-size:85%">ECNG 3020</span>
@@ -34,27 +34,28 @@
                         <li class="nav-item active">
                             <a class="nav-link" href="{{ url_for('index') }}">Home <span class="sr-only">(current)</span></a>
                         </li>
+                        <li class="nav-item dropdown">
+                            <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                              Data Listings
+                            </a>
+                            <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
+                              <li><a class="dropdown-item" href="{{ url_for('gen_list') }}">General Country Information</a></li>
+                              <li><hr class="dropdown-divider"></li>
+                              <li><a class="dropdown-item" href="{{ url_for('indicator_list') }}">ICT Indicators</a></li>
+                              <li><a class="dropdown-item" href="{{ url_for('basket_list') }}">ICT Price Baskets</a></li>
+                              <li><hr class="dropdown-divider"></li>
+                              <li><a class="dropdown-item" href="{{ url_for('land_list') }}">Landing Points</a></li>
+                              <li><a class="dropdown-item" href="{{ url_for('sub_list') }}">Submarine Cables</a></li>
+                              <li><a class="dropdown-item" href="{{ url_for('ixp_list') }}">Internet Exchange Points</a></li>
+                              <li><a class="dropdown-item" href="{{ url_for('tld_list') }}">Top Level Domains</a></li>
+                              <li><a class="dropdown-item" href="{{ url_for('root_list') }}">Root Servers</a></li>
+                              <li><a class="dropdown-item" href="{{ url_for('speed_list') }}">Caribbean Speed Index</a></li>
+                            </ul>
+                          </li>
                         <li class="nav-item">
-                            <a class="nav-link" href="{{ url_for('land_list') }}">Landing Point Listing</a>
+                            <a class="nav-link" href="#">Download Reports</a>
                         </li>
-                        <li class="nav-item">
-                            <a class="nav-link" href="{{ url_for('sub_list') }}">Submarine Cable Listing</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" href="{{ url_for('ixp_list') }}">IXP Listing</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" href="{{ url_for('tld_list') }}">TLD Listing</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" href="{{ url_for('root_list') }}">Root Server Listing</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" href="{{ url_for('gen_list') }}">General Country Information</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" href="#">Speed Index</a>
-                        </li>
+
                     </ul>
                 </div>
             </div>
@@ -195,13 +196,13 @@
             </div>
             
             <!-- iframe for data -->
-            <div class="collapse col-md-5" id="Collapse3" style="margin-top: 0.5em;">
+            <div class="collapse col-md-5 col-10" id="Collapse3" style="margin-top: 0.5em;">
                 <iframe id='left0' src='C:/Users/User/Documents/Python Scripts/Folium_Practice/cia/cia_test0.html' width="100%" height="300px"></iframe>
                 <p style="font-size:12px; text-align: center;">Source: .</p>
             </div>
             
             <!-- iframe for data -->
-            <div class="collapse col-md-5" id="Collapse3" style="margin-top: 0.5em;">
+            <div class="collapse col-md-5 col-10" id="Collapse3" style="margin-top: 0.5em;">
                 <iframe id='right0' src='./OOKLA/fixed0.html' width="100%" height="300px"></iframe>
                 <p style="font-size:12px; text-align: center;">Source: .</p>
             </div>
@@ -238,25 +239,25 @@
             </div>
 
             <!-- iframe for data -->
-            <div class="col-md-5 collapse" id="Collapse4" style="border: thin solid rgb(200, 200, 200); margin-top: 0.5em;">
+            <div class="col-md-5 col-10 collapse" id="Collapse4" style="border: thin solid rgb(200, 200, 200); margin-top: 0.5em;">
                 <iframe id='left1' src='/static/html/none.html' width="100%" height="300px"></iframe>
                 <p style="font-size:12px; text-align: center;">Used with permission from Ookla, LLC – Copyright 20__. All Rights Reserved.</p>
             </div>
             
             <!-- iframe for data -->
-            <div class="col-md-5 collapse" id="Collapse4" style="border: thin solid rgb(200, 200, 200); margin-top: 0.5em;">
+            <div class="col-md-5 col-10 collapse" id="Collapse4" style="border: thin solid rgb(200, 200, 200); margin-top: 0.5em;">
                 <iframe id='right1' src='/static/html/none.html' width="100%" height="300px"></iframe>
                 <p style="font-size:12px; text-align: center;">Used with permission from Ookla, LLC – Copyright 20__. All Rights Reserved.</p>
             </div>
 
             <!-- iframe for data -->
-            <div class="col-md-5 collapse" id="Collapse4" style="border: thin solid rgb(200, 200, 200)">
+            <div class="col-md-5 col-10 collapse" id="Collapse4" style="border: thin solid rgb(200, 200, 200)">
                 <iframe id='left2' src='/static/html/none.html' width="100%" height="300px"></iframe>
                 <p style="font-size:12px; text-align: center;">Used with permission from Ookla, LLC – Copyright 20__. All Rights Reserved.</p>
             </div>
 
             <!-- iframe for data -->
-            <div class="col-md-5 collapse" id="Collapse4" style="border: thin solid rgb(200, 200, 200)">
+            <div class="col-md-5 col-10 collapse" id="Collapse4" style="border: thin solid rgb(200, 200, 200)">
                 <iframe id='right2' src='/static/html/none.html' width="100%" height="300px"></iframe>
                 <p style="font-size:12px; text-align: center;">Used with permission from Ookla, LLC – Copyright 20__. All Rights Reserved.</p>
             </div>
@@ -281,13 +282,13 @@
                 </div>
             
             <!-- iframe for data -->
-            <div class="col-md-5 collapse" id="Collapse5" style="border: thin solid rgb(200, 200, 200); margin-top: 0.5em;">
+            <div class="col-md-5 col-10 collapse" id="Collapse5" style="border: thin solid rgb(200, 200, 200); margin-top: 0.5em;">
                 <iframe id='left3' src='/static/html/baskets0.html' width="100%" height="400px"></iframe>
                 <p style="font-size:12px; text-align: center;">Source: .</p>
             </div>
 
             <!-- iframe for data -->
-            <div class="col-md-5 collapse" id="Collapse5" style="border: thin solid rgb(200, 200, 200); margin-top: 0.5em;">
+            <div class="col-md-5 col-10 collapse" id="Collapse5" style="border: thin solid rgb(200, 200, 200); margin-top: 0.5em;">
                 <iframe id='right3' src='/static/html/baskets0.html' width="100%" height="400px"></iframe>
                 <p style="font-size:12px; text-align: center;">Source: .</p>
             </div>
@@ -312,13 +313,13 @@
             </div>
 
             <!-- iframe for data -->
-            <div class="col-md-5 collapse" id="Collapse6" style="border: thin solid rgb(200, 200, 200); margin-top: 0.5em;">
+            <div class="col-md-5 col-10 collapse" id="Collapse6" style="border: thin solid rgb(200, 200, 200); margin-top: 0.5em;">
                 <iframe id='left4' src='/static/html/indicators0.html' width="100%" height="300px"></iframe>
                 <p style="font-size:12px; text-align: center;">Source: .</p>
             </div>
 
             <!-- iframe for data -->
-            <div class="col-md-5 collapse" id="Collapse6" style="border: thin solid rgb(200, 200, 200); margin-top: 0.5em;">
+            <div class="col-md-5 col-10 collapse" id="Collapse6" style="border: thin solid rgb(200, 200, 200); margin-top: 0.5em;">
                 <iframe id='right4' src='/static/html/indicators0.html' width="100%" height="300px"></iframe>
                 <p style="font-size:12px; text-align: center;">Source: .</p>
             </div>

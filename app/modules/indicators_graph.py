@@ -11,6 +11,7 @@ Project Title:
 import pandas as pd
 from bokeh.plotting import figure, show, output_file, save
 from bokeh.models import Range1d, FuncTickFormatter, HoverTool, Panel, Tabs
+from bokeh.io import export_png
 from math import pi
 from app import db
 from app.models import ICT_fix, ICT_mob, ICT_per, ICT_bw
@@ -44,6 +45,29 @@ cc = [
     'TTO', 
     'TCA'
 ]
+
+dict_ctry = {
+        'AIA':'Anguilla',
+        'ATG':'Antigua and Barbuda',
+        'BHS':'Bahamas',
+        'BRB':'Barbados',
+        'BLZ':'Belize',
+        'BMU':'Bermuda',
+        'VGB':'Virgin Islands U K ',
+        'CYM':'Cayman Islands',
+        'DMA':'Dominica',
+        'GRD':'Grenada',
+        'GUY':'Guyana',
+        'HTI':'Haiti',
+        'JAM':'Jamaica',
+        'MSR':'Montserrat',
+        'KNA':'Saint Kitts and Nevis',
+        'LCA':'Saint Lucia',
+        'VCT':'Saint Vincent and The Grenadines',
+        'SUR':'Suriname',
+        'TTO':'Trinidad and Tobago',
+        'TCA':'Turks and Caicos Islands'
+    }
 
 def create_indic_graph():
     '''
@@ -173,7 +197,8 @@ def create_indic_graph():
                 x_axis_label='Year', 
                 y_axis_label= y_label,
                 tools = tools,
-                width = 250
+                width=450, 
+                height=340,
             )
 
             # 'p.line' plots a line graph. 
@@ -204,7 +229,10 @@ def create_indic_graph():
 
             # x-axis label orientation by 90 degrees.
             p.xaxis.major_label_orientation = pi/2
-    
+
+            # Export figures as a PNG.
+            export_png(p, filename='./app/static/images/Indicators/' + y_label.split(' ')[0] + dict_ctry[cc[index]] + '.png')
+
             # Makes figure 'p' responsive.
             p.sizing_mode = 'stretch_both'
             
