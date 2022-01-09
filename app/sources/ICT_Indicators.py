@@ -156,6 +156,19 @@ def indicators():
         yrs_per = [int(i) for i in list(df_per.columns[1:].values)]
         yrs_bw = [int(i) for i in list(df_bw.columns[1:].values)]
 
+        #
+        df_fix = df_fix.assign(updt = [updt_fix] * len(df_fix))
+        df_mob = df_mob.assign(updt = [updt_mob] * len(df_mob))
+        df_per = df_per.assign(updt = [updt_per] * len(df_per))
+        df_bw = df_bw.assign(updt = [updt_bw] * len(df_bw))
+
+        # Export data in 'df_fix', 'df_mob', 'df_per', and 'df_bw' to CSV formats.
+        df_fix.to_csv(r'./app/static/csv/indicators_fixed.csv', encoding='utf-8', header=True, index=False)
+        df_mob.to_csv(r'./app/static/csv/indicators_mobile.csv', encoding='utf-8', header=True, index=False)
+        df_per.to_csv(r'./app/static/csv/indicators_percent.csv', encoding='utf-8', header=True, index=False)
+        df_bw.to_csv(r'./app/static/csv/indicators_bandwidth.csv', encoding='utf-8', header=True, index=False)
+
+
     except Exception as e:
         error = "Error extracting Indicators Data.\nError: " + str(e)
         return error
@@ -486,7 +499,7 @@ def indicators():
 
     # Checks if the table is empty by looking at the table's first entry.
     # 'exist' returns None is empty.
-    exist = ICT_per.query.get(1)
+    exist = ICT_per.query.all()
 
     # If table is full ...
     if exist != None:
@@ -602,7 +615,7 @@ def indicators():
 
     # Checks if the table is empty by looking at the table's first entry.
     # 'exist' returns None is empty.
-    exist = ICT_bw.query.get(1)
+    exist = ICT_bw.query.all()
 
     # If table is full ...
     if exist != None:

@@ -67,10 +67,10 @@ def ixp():
         'Montserrat',                   # *
         'Saint Kitts and Nevis',
         'Saint Lucia',
-        'Saint Vincent and Grenadines', # *
+        'Saint Vincent and the Grenadines', # *
         'Suriname',                     # *
         'Trinidad and Tobago',
-        'Turks'                         # *
+        'Turks & Caicos Is.'            # *
     ]
 
     # Filter 'df_dir' for Caribbean countries in 'ctry'.
@@ -210,6 +210,16 @@ def ixp():
     except Exception as e:
         error = 'Error Cleaning Subnet Member Data\nError: ' + str(e)
         return error
+
+
+    # ---------------------------------------------------------------------------- #
+    #                               Create CSV Files                               #
+    # ---------------------------------------------------------------------------- #
+
+    # Export data in 'df_dir', 'df_sub', and 'df_det' to CSV formats.
+    df_dir.to_csv(r'./app/static/csv/ixp_dir.csv', encoding='utf-8', header=True, index=False)
+    df_sub.to_csv(r'./app/static/csv/ixp_sub.csv', encoding='utf-8', header=True, index=False)
+    df_det.to_csv(r'./app/static/csv/ixp_mem.csv', encoding='utf-8', header=True, index=False)
 
 
     # ---------------------------------------------------------------------------- #
@@ -407,7 +417,7 @@ def ixp():
 
     # Checks if the table is empty by looking at the table's first entry.
     # 'exist' returns None is empty.
-    exist = Ixp_sub.query.get(1)
+    exist = Ixp_sub.query.all()
 
     # If table is full ...
     if exist != None:

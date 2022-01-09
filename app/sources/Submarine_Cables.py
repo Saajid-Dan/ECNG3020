@@ -219,12 +219,31 @@ def submarine():
         df_car = df_land.loc[ [ any(i) for i in zip(*[df_land['id'] == word for word in car_id])] ]
         df_int = df_land.loc[ [ any(i) for i in zip(*[df_land['id'] == word for word in int_id])] ]
 
-        # Remove columns called 'id' and 'is_tbd' from 'df_car'.
-        # Remove columns called 'id' and 'is_tbd' from 'df_int'.
-        # df_car = df_car[df_car.columns.drop(list(df_car.filter(regex='id')))]
-        df_car = df_car[df_car.columns.drop(list(df_car.filter(regex='is_tbd')))]
-        # df_int = df_int[df_int.columns.drop(list(df_int.filter(regex='id')))]
-        df_int = df_int[df_int.columns.drop(list(df_int.filter(regex='is_tbd')))]
+        feat = ''
+        for j in range(len(df_car)):
+            # Creating cable JSON properties.
+            prop = f'{{"type": "Feature", "properties": {{"id": "{df_car.iloc[j]["id"]}", "updt": "{updt_car[j]}", "name": "{df_car.iloc[j]["name"]}", "ctry": "{df_car.iloc[j]["name"].split(" ,")[-1]}", "car": "Yes"}}, "geometry": {{"type": "Point", "coordinates": [{df_car.iloc[j].geometry.x},{df_car.iloc[j].geometry.y}] }} }}'
+            
+            # Adding all properties into one feature.
+            if j == len(df_car) - 1:
+                feat += prop + f'''
+    '''
+            else:
+                feat += prop + f''',
+    '''
+        
+        # 'coll' = stores feature collection.
+        coll = f'''{{
+            "type": "FeatureCollection", 
+            "features": [
+                {feat}
+                ]
+                }}'''
+        
+        with open('./app/static/json/landing_point.json', 'w') as f:
+            f.write(coll)
+
+    
     except Exception as e:
         error = "Error extracting Landing Points.\nError: " + str(e)
         return error
@@ -539,7 +558,7 @@ def submarine():
 
     # Checks if the table is empty by looking at the table's first entry.
     # 'exist' returns None is empty.
-    exist = Land.query.get(1)
+    exist = Land.query.all()
 
     # If table is full ...
     if exist != None:

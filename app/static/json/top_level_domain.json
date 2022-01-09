@@ -1,0 +1,184 @@
+{
+        "Anguilla": {
+                "cc": ".AG",
+                "type_": "Country-code top-level domain",
+                "cctld": "UHSA School of Medicine,  P.O. Box 510, Saints Johns,  Antigua And Barbuda, , ",
+                "ad_con": "George S. Daniel,  UHSA School of Medicine,  P.O. Box 510, Saints Johns,  Antigua And Barbuda, Email: daniel@uhsa.edu.ag, Voice: +1 268 460 1391, Fax: +1 268 460 1477, , ",
+                "tch_con": "Senior Director, DNS Infrastructure Group,  Afilias Limited,  C/O Afilias USA, Inc., , 300 Welsh Road, Building 3, Suite 105, Horsham, PA 19044,  United States, Email: tld-tech-poc@afilias.info, Voice: +1 215 706 5700, Fax: +1 215 706 5701, , ",
+                "reg": "URL for registration services: http://www.nic.ag, http://www.nic.ag, WHOIS Server: whois.nic.ag  , ",
+                "dates": " Record last updated 2021-02-08. Registration date 1991-09-03. ",
+                "nm_svr": {"Host Name": ["a0.cctld.afilias-nst.info", "b0.cctld.afilias-nst.org", "c0.cctld.afilias-nst.info", "d0.cctld.afilias-nst.org", "a2.cctld.afilias-nst.info", "b2.cctld.afilias-nst.org"], "IPv4": ["199.254.59.1", "199.254.60.1", "199.254.61.1", "199.254.62.1", "199.249.116.1", "199.249.124.1"], "IPv6": ["2001:500:25:0:0:0:0:1", "2001:500:26:0:0:0:0:1", "2001:500:27:0:0:0:0:1", "2001:500:28:0:0:0:0:1", "2001:500:44:0:0:0:0:1", "2001:500:4c:0:0:0:0:1"]}
+            },"Antigua and Barbuda": {
+                "cc": ".AI",
+                "type_": "Country-code top-level domain",
+                "cctld": "Government of Anguilla,  Coronation Avenue, PO Box 60, The Valley, AI2640,  Anguilla, , ",
+                "ad_con": "Telecommunications Officer,  Government of Anguilla, Ministry of Infrastructure, Communications and Utilities,  Coronation Avenue, PO Box 60, The Valley, AI2640,  Anguilla, Email: telecommunications.office@gov.ai, Voice: +1 264 497 5233, , ",
+                "tch_con": "Vincent Cate,  DataHaven.Net Ltd.,  949 Stoney Ground, The Valley, AI2640,  Anguilla, Email: vincecate@gmail.com, Voice: +1 264 497 3255, , ",
+                "reg": "URL for registration services: http://whois.ai, http://whois.ai, WHOIS Server: whois.nic.ai  , ",
+                "dates": " Record last updated 2021-02-04. Registration date 1995-02-16. ",
+                "nm_svr": {"Host Name": ["pch.whois.ai", "anycastdns2-cz.nic.ai", "anycastdns1-cz.nic.ai", "a.lactld.org"], "IPv4": ["204.61.216.123", "185.38.108.108", "185.28.194.194", "200.0.68.10"], "IPv6": ["2001:500:14:6123:ad:0:0:1", "2a00:fea0:dead:0:0:0:0:beef", "nan", "2801:14:a000:0:0:0:0:10"]}
+            },"Bahamas": {
+                "cc": ".BS",
+                "type_": "Country-code top-level domain",
+                "cctld": "University of The Bahamas,  University Drive (Thompson Blvd.), P.O. Box N4912, Nassau New Providence,  Bahamas, , ",
+                "ad_con": "Administrator, BSNIC - Carla Glinton,  University of The Bahamas,  University Drive (Thompson Blvd.), P.O. Box N 4912, Nassau New Providence,  Bahamas, Email: bsadmin@ub.edu.bs, Voice: +1 242 302 4549, , ",
+                "tch_con": "Technical Contact, BSNIC - Rudyard Burton,  University of The Bahamas,  University Drive (Thompson Blvd.), P.O. Box N4912, Nassau New Providence,  Bahamas, Email: bstech@ub.edu.bs, Voice: +1 242 302 4528, , ",
+                "reg": "URL for registration services: http://www.register.bs, http://www.register.bs, , ",
+                "dates": " Record last updated 2019-08-12. Registration date 1991-09-03. ",
+                "nm_svr": {"Host Name": ["anyns.pch.net", "anyns.dns.bs", "ns36.cdns.net"], "IPv4": ["204.61.216.4", "204.61.216.68", "194.0.1.36"], "IPv6": ["2001:500:14:6004:ad:0:0:1", "2001:500:14:6068:ad:0:0:1", "2001:678:4:0:0:0:0:24"]}
+            },"Barbados": {
+                "cc": ".BB",
+                "type_": "Country-code top-level domain",
+                "cctld": "Government of Barbados, Ministry of Economic Affairs and Development, Telecommunications Unit,  3rd Floor East, Warrens Complex, Warrens St. Michael BB12001,  Barbados, , ",
+                "ad_con": "Mr. Reginald Bourne, Chief Telecommunications Officer,  Government of BarbadosMinistry of Economic Affairs and DevelopmentTelecommunications Unit,  3rd Floor East, Warrens Complex, Warrens St. Michael BB12001,  Barbados, Email: reginald.bourne@telecoms.gov.bb, Voice: +1 246 535 2502, Fax: +1 246 620 0960, , ",
+                "tch_con": "Senior Telecommunications Officer,  Government of BarbadosMinistry of Economic Affairs and DevelopmentTelecommunications Unit,  3rd Floor East, Warrens Complex, Warrens St. Michael BB12001,  Barbados, Email: winston.devonish@telecoms.gov.bb, Voice: +1 246 535 2570, Fax: +1 246 620 0960, , ",
+                "reg": "URL for registration services: http://www.register.bs, http://www.register.bs, , ",
+                "dates": " Record last updated 2019-05-02. Registration date 1991-09-03. ",
+                "nm_svr": {"Host Name": ["ns2.nic.bb", "ns1.nic.bb", "ns3.nic.bb", "ns4.nic.bb", "ns5.nic.bb"], "IPv4": ["198.41.222.254", "64.68.192.10", "64.68.196.10", "64.68.197.10", "200.50.92.195"], "IPv6": ["2400:cb00:2049:1:0:0:c629:defe", "2400:cb00:2049:1:0:0:a29f:1835", "2620:49:3:0:0:0:0:10", "2620:49:4:0:0:0:0:10", "nan"]}
+            },"Belize": {
+                "cc": ".BZ",
+                "type_": "Country-code top-level domain",
+                "cctld": "University of Belize,  Stann Creek Street Extension, P.O. Box 340, Belmopan,  Belize, , ",
+                "ad_con": "Juan Carlos Namis,  University Management Ltd,  115 Barrack Road, Third Floor, Belize City,  Belize, Email: hostmaster@belizenic.bz, Voice: +501 223 1607, Fax: +501 223 2242, , ",
+                "tch_con": "Juan Carlos Namis,  University Management Ltd,  115 Barrack Road, Third Floor, Belize City,  Belize, Email: jcnamis@belizenic.bz, Voice: +501 610 5124, Fax: +501 223 2242, , ",
+                "reg": "URL for registration services: http://www.belizenic.bz, http://www.belizenic.bz, , ",
+                "dates": " Record last updated 2020-11-23. Registration date 1991-09-03. ",
+                "nm_svr": {"Host Name": ["a0.cctld.afilias-nst.info", "b0.cctld.afilias-nst.org", "c0.cctld.afilias-nst.info", "d0.cctld.afilias-nst.org", "a2.cctld.afilias-nst.info", "b2.cctld.afilias-nst.org"], "IPv4": ["199.254.59.1", "199.254.60.1", "199.254.61.1", "199.254.62.1", "199.249.116.1", "199.249.124.1"], "IPv6": ["2001:500:25:0:0:0:0:1", "2001:500:26:0:0:0:0:1", "2001:500:27:0:0:0:0:1", "2001:500:28:0:0:0:0:1", "2001:500:44:0:0:0:0:1", "2001:500:4c:0:0:0:0:1"]}
+            },"Bermuda": {
+                "cc": ".BM",
+                "type_": "Country-code top-level domain",
+                "cctld": "Registry General Department, Ministry of Home Affairs,  30 Parliament Street, Hamilton HM 12,  Bermuda, , ",
+                "ad_con": "Aubrey Pennyman,  Registry General Department,  30 Parliament Street, Hamilton HM 12,  Bermuda, Email: apennyman@gov.bm, Voice: +1 441.297.7662, Fax: +1 441.292.4568, , ",
+                "tch_con": "Howard Eland,  Afilias,  Building 3, Suite 105, 300 Welsh Road, Horsham, PA 19044,  United States, Email: tld-tech-poc@afilias.info, Voice: +1 215.706.5700, Fax: +1 215.706.5701, , ",
+                "reg": "URL for registration services: http://www.belizenic.bz, http://www.belizenic.bz, , ",
+                "dates": " Record last updated 2020-09-29. Registration date 1993-03-31. ",
+                "nm_svr": {"Host Name": ["b2.bm.afilias-nst.org", "b0.bm.afilias-nst.org", "c0.bm.afilias-nst.info", "a0.bm.afilias-nst.info", "a2.bm.afilias-nst.info", "d0.bm.afilias-nst.org"], "IPv4": ["199.249.124.9", "199.254.60.9", "199.254.61.9", "199.254.59.9", "199.249.116.9", "199.254.62.9"], "IPv6": ["2001:500:4c:0:0:0:0:9", "2001:500:26:0:0:0:0:9", "2001:500:27:0:0:0:0:9", "2001:500:25:0:0:0:0:9", "2001:500:44:0:0:0:0:9", "2001:500:28:0:0:0:0:9"]}
+            },"British Virgin Islands": {
+                "cc": ".VG",
+                "type_": "Country-code top-level domain",
+                "cctld": "Telecommunications Regulatory Commission of the Virgin Islands,  27 Fish Lock Road, 3rd Floor, Road Town, Tortola VG1110,  Virgin Islands, British, , ",
+                "ad_con": "Chief Executive Officer,  Telecommunications Regulatory Commission of the Virgin Islands,  27 Fish Lock Road, 3rd Floor, Road Town, Tortola VG1110,  Virgin Islands, British, Email: gmalone@trc.vg, Voice: 284-468-4165, Fax: 284-494-6786, , ",
+                "tch_con": "CTO,  CentralNic,  Saddlers House, 4th Floor, 44 Gutter Lane, London EC2V 6BR,  United Kingdom, Email: tld.ops@centralnic.com, Voice: +44 20 33 88 0600, Fax: +44 20 33 88 0601, , ",
+                "reg": "URL for registration services: http://www.belizenic.bz, http://www.belizenic.bz, , ",
+                "dates": " Record last updated 2021-12-03. Registration date 1997-02-20. ",
+                "nm_svr": {"Host Name": ["b.nic.vg", "c.nic.vg", "a.nic.vg", "d.nic.vg"], "IPv4": ["185.24.64.104", "212.18.248.104", "194.169.218.104", "212.18.249.104"], "IPv6": ["2a04:2b00:13cc:0:0:0:1:104", "2a04:2b00:13ee:0:0:0:0:104", "2001:67c:13cc:0:0:0:1:104", "2a04:2b00:13ff:0:0:0:0:104"]}
+            },"Cayman Islands": {
+                "cc": ".KY",
+                "type_": "Country-code top-level domain",
+                "cctld": "Utility Regulation and Competition Office (OfReg),  P.O. Box 2502, Grand Cayman  KY1-1104,  Cayman Islands, , ",
+                "ad_con": "Acting Executive Director ICT,  Utility Regulation and Competition Office (OfReg),  P.O. Box 10189, Grand Cayman  KY1-1002,  Cayman Islands, Email: sonji.myles@ofreg.ky, Voice: 1-345-946-4282, Fax: 1-345-945-8284, , ",
+                "tch_con": "Francisco Obispo,  Uniregistry Inc.,  Governors Square, Unit 3-110, 23 Lime Tree Bay Avenue, Grand Cayman, Cayman Islands, PO Box 1361, George Town, KY1-1108,  Cayman Islands, Email: ops@unr.com, Voice: +1.3457496263, Fax: +1.3457466263, , ",
+                "reg": "URL for registration services: http://www.belizenic.bz, http://www.belizenic.bz, , ",
+                "dates": " Record last updated 2020-12-31. Registration date 1995-05-03. ",
+                "nm_svr": {"Host Name": ["ns1.uniregistry.net", "ns2.uniregistry.info", "ns3.uniregistry.net", "ns4.uniregistry.info"], "IPv4": ["64.96.1.1", "64.96.2.1", "185.159.197.3", "185.159.198.3"], "IPv6": ["2620:57:4000:1:0:0:0:1", "nan", "2620:10a:80aa:0:0:0:0:3", "2620:10a:80ab:0:0:0:0:3"]}
+            },"Dominica": {
+                "cc": ".DM",
+                "type_": "Country-code top-level domain",
+                "cctld": "DotDM Corporation,  P.O. Box 2102, Roseau,  Dominica, , ",
+                "ad_con": "Jennifer Aird, Chief Executive Officer,  DotDM Corporation,  P.O. Box 2102, Roseau,  Dominica, Email: admin@dotdm.dm, Voice: +1 (767) 448-1531, Fax: +1 (767) 448-5015, , ",
+                "tch_con": "Hilkiah Lavinier, Chief Technical Officer,  DotDM Corporation,  P.O. Box 2102, Roseau,  Dominica, Email: cto@dotdm.dm, Voice: +1 (767) 448-1531, Fax: +1 (767) 448-5015, , ",
+                "reg": "URL for registration services: http://www.belizenic.bz, http://www.belizenic.bz, , ",
+                "dates": " Record last updated 2021-11-30. Registration date 1991-09-03. ",
+                "nm_svr": {"Host Name": ["ns2.nic.dm", "ns2.blacknightsolutions.com", "ns.blacknightsolutions.com", "ns34.cdns.net"], "IPv4": ["199.127.196.35", "78.153.202.4", "81.17.240.204", "194.0.1.34"], "IPv6": ["nan", "2a01:a8:dc2:33:0:0:0:33", "2a01:a8:dc1:33:0:0:0:33", "2001:678:4:0:0:0:0:22"]}
+            },"Grenada": {
+                "cc": ".GD",
+                "type_": "Country-code top-level domain",
+                "cctld": "The National Telecommunications Regulatory Commission (NTRC),  P.O. Box 854, St George`s,  Grenada, , ",
+                "ad_con": "Dr. Spencer Thomas,  The National Telecommunications Regulatory Commission (NTRC),  P.O. Box 854, St. Georges`s,  Grenada, Email: sthomas@ectel.int, Voice: +1 473 435 6872, Fax: +1 473 435 2132, , ",
+                "tch_con": "CTO,  CentralNic,  Saddlers House 4th Floor 44 Gutter Lane, London EC2V 6BR,  United Kingdom, Email: tld.ops@centralnic.com, Voice: +44 20 33 88 0600, Fax: +44 20 33 88 0601, , ",
+                "reg": "URL for registration services: http://www.belizenic.bz, http://www.belizenic.bz, , ",
+                "dates": " Record last updated 2021-10-20. Registration date 1992-06-03. ",
+                "nm_svr": {"Host Name": ["d.nic.gd", "b.nic.gd", "c.nic.gd", "a.nic.gd"], "IPv4": ["212.18.249.88", "185.24.64.88", "212.18.248.88", "194.169.218.88"], "IPv6": ["2a04:2b00:13ff:0:0:0:0:88", "2a04:2b00:13cc:0:0:0:1:88", "2a04:2b00:13ee:0:0:0:0:88", "2001:67c:13cc:0:0:0:1:88"]}
+            },"Guyana": {
+                "cc": ".GY",
+                "type_": "Country-code top-level domain",
+                "cctld": "University of Guyana,  Turkeyen Campus, P.O. Box 101110, Georgetown,  Guyana, , ",
+                "ad_con": "Rayman Khan,  University of Guyana,  Turkeyen Campus, P.O. Box 101110, Georgetown,  Guyana, Email: admin@registry.gy, Voice: +5926444135, Fax: -, , ",
+                "tch_con": "DNS Admin,  University of Guyana,  Turkeyen Campus, Georgetown  P.O. Box 101110,  Guyana, Email: tech@registry.gy, Voice: +5926444135, , ",
+                "reg": "URL for registration services: https://registry.gy/, https://registry.gy/, WHOIS Server: whois.registry.gy  , ",
+                "dates": " Record last updated 2020-12-14. Registration date 1994-09-13. ",
+                "nm_svr": {"Host Name": ["gy-ns.anycast.pch.net", "a.lactld.org"], "IPv4": ["204.61.216.34", "200.0.68.10"], "IPv6": ["2001:500:14:6034:ad:0:0:1", "2801:14:a000:0:0:0:0:10"]}
+            },"Haiti": {
+                "cc": ".HT",
+                "type_": "Country-code top-level domain",
+                "cctld": "Consortium FDS/RDDH,  17, 2e Ruelle Wilson, Pacot, Port au Prince,  Haiti, , ",
+                "ad_con": "Admin Contact,  Fondation Réseau de Développement Durable d`Haïti/ Faculté Des Sciences - UEH,  17, 2e Ruelle Wilson, Pacot, Port au Prince,  Haiti, Email: jnahum.constant@frddh.org.ht, Voice: (509) 37357815, , ",
+                "tch_con": "Contact Technique,  Faculté des Sciences de l`Université d`Etat d`Haïti/ FRDDH,  17, 2e Ruelle Wilson, Pacot, Port au Prince,  Haiti, Email: maxlarson.henry@transversal.ht, Voice: +1 (305)8316789., +(509) 37027275, , ",
+                "reg": "URL for registration services: https://registry.gy/, https://registry.gy/, WHOIS Server: whois.registry.gy  , ",
+                "dates": " Record last updated 2021-02-16. Registration date 1997-03-06. ",
+                "nm_svr": {"Host Name": ["ns3.nic.fr", "ns1.nic.ht", "ns1.polymtl.ca", "pch.nic.ht"], "IPv4": ["192.134.0.49", "200.115.182.11", "132.207.6.11", "204.61.216.38"], "IPv6": ["2001:660:3006:1:0:0:1:1", "nan", "nan", "2001:500:14:6038:ad:0:0:1"]}
+            },"Jamaica": {
+                "cc": ".JM",
+                "type_": "Country-code top-level domain",
+                "cctld": "University of West Indies,  7 Gibraltar Road, Kingston  7,  Jamaica, , ",
+                "ad_con": "Jeremy M. Whyte,  Mona Information Technology ServicesUniversity of the West Indies,  7 Gibraltar Road, Kingston  7,  Jamaica, Email: jeremy.whyte@uwimona.edu.jm, Voice: +1 876 927 2148, Fax: +1 876 927 0997, , ",
+                "tch_con": "Domain Master,  Mona Information Technology ServicesUniversity of the West Indies,  7 Gilbraltar Road, Mona, Kingston  7,  Jamaica, Email: dmaster@ns.jm, Voice: +1 876 927 2148, Fax: +1 876 927 0997, , ",
+                "reg": ", ",
+                "dates": " Record last updated 2011-12-06. Registration date 1991-09-24. ",
+                "nm_svr": {"Host Name": ["ns.jm", "ns.utechjamaica.edu.jm", "ns3-jm.fsl.org.jm", "phloem.uoregon.edu", "jm.cctld.authdns.ripe.net"], "IPv4": ["196.2.1.6", "200.9.115.2", "196.3.191.66", "128.223.32.35", "193.0.9.82"], "IPv6": ["nan", "nan", "nan", "2001:468:d01:20:0:0:80df:2023", "2001:67c:e0:0:0:0:0:82"]}
+            },"Montserrat": {
+                "cc": ".MS",
+                "type_": "Country-code top-level domain",
+                "cctld": "MNI Networks Ltd.,  Olveston Drive, Olveston Salem,  Montserrat, , ",
+                "ad_con": "Director, Marketing and Development,  MNI Networks Ltd.,  Olveston Drive, Olveston Salem,  Montserrat, Email: info@mninet.ms, Voice: +1 664 491 6386, , ",
+                "tch_con": "Chief Technical Officer,  MNI Networks Ltd.,  Olveston Drive, Olveston Salem,  Montserrat, Email: regsupport@mninet.ms, Voice: +1 664 491 6386, , ",
+                "reg": ", ",
+                "dates": " Record last updated 2021-10-12. Registration date 1997-03-06. ",
+                "nm_svr": {"Host Name": ["ms-ns.anycast.pch.net", "ns1.anycastdns.cz", "ns2.anycastdns.cz"], "IPv4": ["204.61.216.33", "185.38.108.108", "185.28.194.194"], "IPv6": ["2001:500:14:6033:ad:0:0:1", "2a00:fea0:dead:0:0:0:0:beef", "nan"]}
+            },"Saint Kitts and Nevis": {
+                "cc": ".LC",
+                "type_": "Country-code top-level domain",
+                "cctld": "University of Puerto Rico,  Central Administration Building, P.O. Box 364984G, San Juan  00936,  Puerto Rico, , ",
+                "ad_con": "Dr. Patrick W. Lay,  ISIS World Corporation,  #4 Colony House, John Compton Highway, Castries,  Saint Lucia, Email: patricklay@yahoo.com, Voice: 758 572-8188, Fax: 758 452-0065, , ",
+                "tch_con": "Patrick W. Lay,  NIC LC,  #4 Colony House, John Compton Highway, Castries,  Saint Lucia, Email: patricklay@yahoo.com, Voice: 758 572 8188, Fax: 758 452 0065, , ",
+                "reg": "URL for registration services: http://www.nic.lc, http://www.nic.lc, , ",
+                "dates": " Record last updated 2020-11-16. Registration date 1991-09-03. ",
+                "nm_svr": {"Host Name": ["a0.cctld.afilias-nst.info", "b0.cctld.afilias-nst.org", "c0.cctld.afilias-nst.info", "d0.cctld.afilias-nst.org", "a2.cctld.afilias-nst.info", "b2.cctld.afilias-nst.org"], "IPv4": ["199.254.59.1", "199.254.60.1", "199.254.61.1", "199.254.62.1", "199.249.116.1", "199.249.124.1"], "IPv6": ["2001:500:25:0:0:0:0:1", "2001:500:26:0:0:0:0:1", "2001:500:27:0:0:0:0:1", "2001:500:28:0:0:0:0:1", "2001:500:44:0:0:0:0:1", "2001:500:4c:0:0:0:0:1"]}
+            },"Saint Lucia": {
+                "cc": ".KN",
+                "type_": "Country-code top-level domain",
+                "cctld": "Ministry of Finance, Sustainable Development Information &amp; Technology,  Church Street, P.O. Box 186,  Saint Kitts And Nevis, , ",
+                "ad_con": "Adviser of National ICT Center,  National ICT Center,  No. 3 C.A. Paul Southwell Industrial Site,  Saint Kitts And Nevis, Email: admin@knnic.kn, Voice: +1 869 4658582, Fax: +1 869 4650610, , ",
+                "tch_con": "Nai-Wen Hsu,  Taiwan Network Information Center (TWNIC),  4F-2, No. 9, Roosevelt Road, Section 2, Taipei  100,  Taiwan, Province Of China, Email: snw@twnic.net.tw, Voice: +886 2 2341 1313 ext. 500, Fax: +886 2 2396 8832, , ",
+                "reg": "URL for registration services: http://www.nic.lc, http://www.nic.lc, , ",
+                "dates": " Record last updated 2021-01-10. Registration date 1991-09-03. ",
+                "nm_svr": {"Host Name": ["pch.nic.kn", "ns1.anycastdns.cz", "ns2.anycastdns.cz"], "IPv4": ["204.61.216.109", "185.38.108.108", "185.28.194.194"], "IPv6": ["2001:500:14:6109:ad:0:0:1", "2a00:fea0:dead:0:0:0:0:beef", "nan"]}
+            },"Saint Vincent and the Grenadines": {
+                "cc": ".VC",
+                "type_": "Country-code top-level domain",
+                "cctld": "Ministry of Telecommunications, Science, Technology and Industry,  Egmont Street, Kingstown,  Saint Vincent And The Grenadines, , ",
+                "ad_con": "Jacqueline Creese,  Ministry of Telecommunications, Science, Technology and Industry,  Egmont Steet, Kingstown,  Saint Vincent And The Grenadines, Email: jcreese@gov.vc, Voice: +1 784 457 1007, Fax: +1 784 457 2880, , ",
+                "tch_con": "Senior Director, DNS Infrastructure Group,  Afilias,  300 Welsh Road, Bldg. 3,, Suite 105, Horsham Pennsylvania 19044,  United States, Email: tld-tech-poc@afilias.info, Voice: +1 215 706 5700, Fax: +1 215 706 5701, , ",
+                "reg": "WHOIS Server: whois2.afilias-grs.net  , ",
+                "dates": " Record last updated 2020-12-19. Registration date 1991-09-03. ",
+                "nm_svr": {"Host Name": ["a0.cctld.afilias-nst.info", "b0.cctld.afilias-nst.org", "c0.cctld.afilias-nst.info", "d0.cctld.afilias-nst.org", "a2.cctld.afilias-nst.info", "b2.cctld.afilias-nst.org"], "IPv4": ["199.254.59.1", "199.254.60.1", "199.254.61.1", "199.254.62.1", "199.249.116.1", "199.249.124.1"], "IPv6": ["2001:500:25:0:0:0:0:1", "2001:500:26:0:0:0:0:1", "2001:500:27:0:0:0:0:1", "2001:500:28:0:0:0:0:1", "2001:500:44:0:0:0:0:1", "2001:500:4c:0:0:0:0:1"]}
+            },"Suriname": {
+                "cc": ".SR",
+                "type_": "Country-code top-level domain",
+                "cctld": "Telesur,  Heiligenweg 14, P.O. Box 1839, Paramaribo,  Suriname, , ",
+                "ad_con": "John Culbard,  Telesur,  Heiligenweg 14, P.O. Box 1839, Paramaribo,  Suriname, Email: john.culbard@telesur.sr, Voice: +597 8500027, , ",
+                "tch_con": "Furyal Naarden,  Telesur,  Heiligenweg 14, P.O. Box 1839, Paramaribo,  Suriname, Email: furyal.naarden@telesur.sr, Voice: +597 8809685, , ",
+                "reg": "URL for registration services: http://www.register.sr/, http://www.register.sr/, , ",
+                "dates": " Record last updated 2020-03-04. Registration date 1991-09-03. ",
+                "nm_svr": {"Host Name": ["ns1.sr.net", "ns2.sr.net"], "IPv4": ["200.1.159.148", "200.2.162.30"]}
+            },"Trinidad and Tobago": {
+                "cc": ".TT",
+                "type_": "Country-code top-level domain",
+                "cctld": "University of the West Indies, Faculty of Engineering,  St. Augustine,  Trinidad And Tobago, , ",
+                "ad_con": "Dr. Patrick Hosein,  TTNIC,  84 Abercromby St., Port of Spain,  Trinidad And Tobago, Email: admin@nic.tt, Voice: +1 868 483 4454, , ",
+                "tch_con": "Dr. Patrick Hosein,  TTNIC,  84 Abercromby St., Port of Spain,  Trinidad And Tobago, Email: tech@nic.tt, Voice: +1868 483 4454, , ",
+                "reg": "URL for registration services: http://www.nic.tt, http://www.nic.tt, , ",
+                "dates": " Record last updated 2020-01-14. Registration date 1991-09-03. ",
+                "nm_svr": {"Host Name": ["ns3.nic.mx", "pch.nic.tt", "ripe.nic.tt", "a.lactld.org"], "IPv4": ["200.33.111.1", "204.61.216.63", "193.0.9.50", "200.0.68.10"], "IPv6": ["nan", "2001:500:14:6063:ad:0:0:1", "2001:67c:e0:0:0:0:0:50", "2801:14:a000:0:0:0:0:10"]}
+            },"Turks & Caicos Is.": {
+                "cc": ".TC",
+                "type_": "Country-code top-level domain",
+                "cctld": "Melrex TC,  Richmond House, PO Box 127, Leeward Highway Providenciales,  Turks And Caicos Islands, , ",
+                "ad_con": "Mr. Kenva Williams,  TCI Telecommunications Commission,  P.O. Box 203 , 872 Business Solutions Building  Leeward Highway , Providenciales,  Turks And Caicos Islands, Email: kenvawilliams@tcitelecommission.tc, Voice: 1-649-946-1900, Fax: 1-649-946-1119, , ",
+                "tch_con": "Ali Yilmaz,  NIC TC Internet Hizmetleri A.S.,  Hüseyin Yılmaz Cad. 67 D Blok - 207 , 20070 DENİZLİ,  Turkey, Email: tech@nic.tc, Voice: +90 850 8850888, Fax: +90 850 8850804, , ",
+                "reg": "URL for registration services: HTTPS://WWW.NIC.TC, HTTPS://WWW.NIC.TC, WHOIS Server: whois.nic.tc  , ",
+                "dates": " Record last updated 2021-02-25. Registration date 1997-01-27. ",
+                "nm_svr": {"Host Name": ["root5.zone.tc", "root4.zone.tc", "root1.zone.tc", "root2.zone.tc", "root3.zone.tc", "root6.zone.tc", "root7.zone.tc", "root8.zone.tc"], "IPv4": ["95.173.188.6", "31.169.81.226", "31.169.81.225", "77.79.104.226", "77.79.104.225", "166.78.254.145", "119.9.93.69", "162.13.87.182"], "IPv6": ["2a03:2100:0:100:0:0:0:5", "nan", "nan", "nan", "nan", "2001:4801:7819:74:a322:3632:ff10:3e2f", "2401:1800:7800:102:ab3b:e6a7:859f:a6c7", "2a00:1a48:7806:115:d994:9fe:9eb2:e68d"]}
+            }
+    }
+    

@@ -1,7 +1,6 @@
-from flask import render_template, flash, redirect, url_for
-from app import app, mail, db
-from flask_mail import Message
-from app.forms import Feedback
+from flask import render_template, url_for
+from app import app, db
+from app.forms import Feedback, form_validate
 
 import geopandas as gpd
 import ast
@@ -35,31 +34,33 @@ from app.modules.ixp_image import create_ixp_image
 from app.modules.root_image import create_root_image
 from app.modules.density_image import create_density_image
 
+from app.modules.test import create_indic_graph_test
+
 
 @app.route('/')
 @app.route('/index', methods=['GET', 'POST'])
 def index():
+    
+    url = url_for('index')
     form = Feedback()
     if form.validate_on_submit():
-        flash('Feedback Sent Successfully.')
-            
-        title = form.option.data
-        body = form.comment.data
-
-        msg = Message(title, body=body, sender='SDan.Testing@gmail.com', recipients=['SDan.Testing@gmail.com'])
-        mail.send(msg)
-
-        return redirect(url_for('index') + "#anchor")
+        form_validate(url, form)
         
-    return render_template('index.html', title='Home', form=form)
+    return render_template('index.html', title='Home', form=form, url=url)
 
-# url_for('index') - #3
-@app.route('/tld/<country>')
+
+@app.route('/tld/<country>', methods=['GET', 'POST'])
 def tld_page(country):
     tld_ctry = Tld.query.filter_by(ctry_=country).first_or_404()
-    return render_template('tld_page.html', title=country, tld=tld_ctry)
 
-@app.route('/landing/<country>')
+    url = url_for('tld_page', country=country)
+    form = Feedback()
+    if form.validate_on_submit():
+        form_validate(url, form)
+
+    return render_template('tld_page.html', title=country, tld=tld_ctry, form=form, url=url)
+
+@app.route('/landing/<country>', methods=['GET', 'POST'])
 def land_page(country):
     land_uni = Land.query.order_by(Land.lon).filter_by(ctry=country).all()
     # x = ast.literal_eval(x[0])
@@ -67,9 +68,15 @@ def land_page(country):
     for j in land_uni:
         x = ast.literal_eval(j.cab)
         lst_cab.append(x)
-    return render_template('land_page.html', title=country, land=land_uni, cables=lst_cab)
+    
+    url = url_for('land_page', country=country)
+    form = Feedback()
+    if form.validate_on_submit():
+        form_validate(url, form)
 
-@app.route('/landing')
+    return render_template('land_page.html', title=country, land=land_uni, cables=lst_cab, form=form, url=url)
+
+@app.route('/landing', methods=['GET', 'POST'])
 def land_list():
     ctry_lst = []
     ctry = Land.query.order_by(Land.ctry).filter_by(car='Yes').with_entities(Land.ctry)
@@ -80,12 +87,15 @@ def land_list():
     for items in ctry_lst:
         if items not in ctry_lst_uni:
             ctry_lst_uni.append(items)
-    # print(ctry_lst_uni)
-    # land_all = Land.query.all()
-    # print(sub_all[1].ctry)
-    return render_template('land_list.html', title= 'Landing Point Listing', land_all=ctry_lst_uni)
+    
+    url = url_for('land_list')
+    form = Feedback()
+    if form.validate_on_submit():
+        form_validate(url, form)
 
-@app.route('/submarine/<cable>')
+    return render_template('land_list.html', title= 'Landing Point Listing', land_all=ctry_lst_uni, form=form, url=url)
+
+@app.route('/submarine/<cable>', methods=['GET', 'POST'])
 def sub_page(cable):
     file_sub = open('./app/static/json/submarine.json', 'r')
     gdf_sub = gpd.read_file(file_sub)
@@ -112,103 +122,178 @@ def sub_page(cable):
     car_lst.sort(key = lambda x: x[0])
     car_lst = dict(car_lst).values()
 
-    return render_template('sub_page.html', title=cable, sub=sub, land_car=car_lst, land_int=int_lst)
+    url = url_for('sub_page', cable=cable)
+    form = Feedback()
+    if form.validate_on_submit():
+        form_validate(url, form)
 
-@app.route('/submarine')
+    return render_template('sub_page.html', title=cable, sub=sub, land_car=car_lst, land_int=int_lst, form=form, url=url)
+
+@app.route('/submarine', methods=['GET', 'POST'])
 def sub_list():
     cable_lst = []
     file_sub = open('./app/static/json/submarine.json', 'r')
     gdf_sub = gpd.read_file(file_sub)
     for j in range(len(gdf_sub)):
         cable_lst.append(gdf_sub.iloc[j]['name'])
-    return render_template('sub_list.html', title= 'Submarine Cable Listing', sub_all=cable_lst)
 
-@app.route('/ixp/<country>')
+    url = url_for('sub_list')
+    form = Feedback()
+    if form.validate_on_submit():
+        form_validate(url, form)
+        
+    return render_template('sub_list.html', title= 'Submarine Cable Listing', sub_all=cable_lst, form=form, url=url)
+
+@app.route('/ixp/<country>', methods=['GET', 'POST'])
 def ixp_page(country):
     ixp_dir = Ixp_dir.query.filter_by(ctry=country).all()
     ixp_sub = Ixp_sub.query.filter_by(ctry=country).all()
     ixp_mem = Ixp_mem.query.filter_by(ctry=country).all()
-    return render_template('ixp_page.html', title=country, ixp_dir=ixp_dir, ixp_sub=ixp_sub, ixp_mem=ixp_mem)
 
-@app.route('/ixp')
+    url = url_for('ixp_page', country=country)
+    form = Feedback()
+    if form.validate_on_submit():
+        form_validate(url, form)
+
+    return render_template('ixp_page.html', title=country, ixp_dir=ixp_dir, ixp_sub=ixp_sub, ixp_mem=ixp_mem, form=form, url=url)
+
+@app.route('/ixp', methods=['GET', 'POST'])
 def ixp_list():
     ctry_lst = []
     ctry = Ixp_dir.query.order_by(Ixp_dir.ctry).with_entities(Ixp_dir.ctry)
     for j in ctry:
         ctry_lst.append(j[0])
     ctry_lst = list(dict.fromkeys(ctry_lst))
-    return render_template('ixp_list.html', title= 'IXP Listing', ixp_all=ctry_lst)
 
-@app.route('/tld')
+    url = url_for('ixp_list')
+    form = Feedback()
+    if form.validate_on_submit():
+        form_validate(url, form)
+
+    return render_template('ixp_list.html', title= 'IXP Listing', ixp_all=ctry_lst, form=form, url=url)
+
+@app.route('/tld', methods=['GET', 'POST'])
 def tld_list():
     ctry_lst = []
     ctry = Tld.query.order_by(Tld.ctry_).with_entities(Tld.ctry_)
     for j in ctry:
         ctry_lst.append(j[0])
-    # ctry_lst = list(dict.fromkeys(ctry_lst))
-    return render_template('tld_list.html', title= 'TLD Listing', tld_all = ctry_lst)
+    
+    url = url_for('tld_list')
+    form = Feedback()
+    if form.validate_on_submit():
+        form_validate(url, form)
 
-@app.route('/root/<country>')
+    return render_template('tld_list.html', title= 'TLD Listing', tld_all = ctry_lst, form=form, url=url)
+
+@app.route('/root/<country>', methods=['GET', 'POST'])
 def root_page(country):
     root = Root_srv.query.filter_by(ctry=country).all()
-    return render_template('root_page.html', title=country, root=root)
 
-@app.route('/root')
+    url = url_for('root_page', country=country)
+    form = Feedback()
+    if form.validate_on_submit():
+        form_validate(url, form)
+
+    return render_template('root_page.html', title=country, root=root, form=form, url=url)
+
+@app.route('/root', methods=['GET', 'POST'])
 def root_list():
     ctry_lst = []
     ctry = Root_srv.query.order_by(Root_srv.ctry).with_entities(Root_srv.ctry)
     for j in ctry:
         ctry_lst.append(j[0])
     ctry_lst = list(dict.fromkeys(ctry_lst))
-    return render_template('root_list.html', title= 'Root Server Listing', root_all = ctry_lst)
 
-@app.route('/gen/<country>')
+    url = url_for('root_list')
+    form = Feedback()
+    if form.validate_on_submit():
+        form_validate(url, form)
+
+    return render_template('root_list.html', title= 'Root Server Listing', root_all = ctry_lst, form=form, url=url)
+
+@app.route('/gen/<country>', methods=['GET', 'POST'])
 def gen_page(country):
     gen = Gen_pop.query.filter_by(ctry_=country).first()
     dens = Pop_dens.query.filter_by(ctry=country).first()
-    return render_template('gen_page.html', title=country, gen=gen, dens=dens)
 
-@app.route('/gen')
+    url = url_for('gen_page', country=country)
+    form = Feedback()
+    if form.validate_on_submit():
+        form_validate(url, form)
+
+    return render_template('gen_page.html', title=country, gen=gen, dens=dens, form=form, url=url)
+
+@app.route('/gen', methods=['GET', 'POST'])
 def gen_list():
     ctry_lst = []
     ctry = Gen_pop.query.order_by(Gen_pop.ctry_).with_entities(Gen_pop.ctry_)
     for j in ctry:
         ctry_lst.append(j[0])
-    # ctry_lst = list(dict.fromkeys(ctry_lst))
-    return render_template('gen_list.html', title= 'General Population Information Listing', gen_all = ctry_lst)
+    
+    url = url_for('gen_list')
+    form = Feedback()
+    if form.validate_on_submit():
+        form_validate(url, form)
 
-@app.route('/speed/<country>')
+    return render_template('gen_list.html', title= 'General Population Information Listing', gen_all = ctry_lst, form=form, url=url)
+
+@app.route('/speed/<country>', methods=['GET', 'POST'])
 def speed_page(country):
     fix = Fixed_br.query.filter_by(ctry=country).all()
     mob = Mob_br.query.filter_by(ctry=country).all()
-    return render_template('speed_page.html', title=country, fix=fix, mob=mob)
 
-@app.route('/speed')
+    url = url_for('speed_page', country=country)
+    form = Feedback()
+    if form.validate_on_submit():
+        form_validate(url, form)
+
+    return render_template('speed_page.html', title=country, fix=fix, mob=mob, form=form, url=url)
+
+@app.route('/speed', methods=['GET', 'POST'])
 def speed_list():
     ctry_lst = []
     ctry = Fixed_br.query.order_by(Fixed_br.ctry).with_entities(Fixed_br.ctry)
     for j in ctry:
         ctry_lst.append(j[0])
     ctry_lst = list(dict.fromkeys(ctry_lst))
-    return render_template('speed_list.html', title= 'Speed Index Listing', speed_all = ctry_lst)
 
-@app.route('/basket/<country>')
+    url = url_for('speed_list')
+    form = Feedback()
+    if form.validate_on_submit():
+        form_validate(url, form)
+
+    return render_template('speed_list.html', title= 'Speed Index Listing', speed_all = ctry_lst, form=form, url=url)
+
+@app.route('/basket/<country>', methods=['GET', 'POST'])
 def basket_page(country):
     gni = GNI.query.filter_by(ctry=country).all()
     ppp = PPP.query.filter_by(ctry=country).all()
     usd = USD.query.filter_by(ctry=country).all()
-    return render_template('basket_page.html', title=country, gni=gni, ppp=ppp, usd=usd)
 
-@app.route('/basket')
+    url = url_for('basket_page', country=country)
+    form = Feedback()
+    if form.validate_on_submit():
+        form_validate(url, form)
+
+    return render_template('basket_page.html', title=country, gni=gni, ppp=ppp, usd=usd, form=form, url=url)
+
+@app.route('/basket', methods=['GET', 'POST'])
 def basket_list():
     ctry_lst = []
     ctry = GNI.query.order_by(GNI.ctry).with_entities(GNI.ctry)
     for j in ctry:
         ctry_lst.append(j[0])
     ctry_lst = list(dict.fromkeys(ctry_lst))
-    return render_template('basket_list.html', title= 'ICT Price Basket Listing', bask_all = ctry_lst)
 
-@app.route('/indicator/<country>')
+    url = url_for('basket_list')
+    form = Feedback()
+    if form.validate_on_submit():
+        form_validate(url, form)
+
+    return render_template('basket_list.html', title= 'ICT Price Basket Listing', bask_all = ctry_lst, form=form, url=url)
+
+@app.route('/indicator/<country>', methods=['GET', 'POST'])
 def indicator_page(country):
 
     dict_ctry = {
@@ -218,7 +303,7 @@ def indicator_page(country):
         'Barbados':[ ICT_fix.bb, ICT_mob.bb, ICT_per.bb, ICT_bw.bb ],
         'Belize':[ ICT_fix.bz, ICT_mob.bz, ICT_per.bz, ICT_bw.bz ],
         'Bermuda':[ ICT_fix.bm, ICT_mob.bm, ICT_per.bm, ICT_bw.bm ],
-        'Virgin Islands U K ':[ ICT_fix.vg, ICT_mob.vg, ICT_per.vg, ICT_bw.vg ],
+        'British Virgin Islands':[ ICT_fix.vg, ICT_mob.vg, ICT_per.vg, ICT_bw.vg ],
         'Cayman Islands':[ ICT_fix.ky, ICT_mob.ky, ICT_per.ky, ICT_bw.ky ],
         'Dominica':[ ICT_fix.dm, ICT_mob.dm, ICT_per.dm, ICT_bw.dm ],
         'Grenada':[ ICT_fix.gd, ICT_mob.gd, ICT_per.gd, ICT_bw.gd ],
@@ -231,7 +316,7 @@ def indicator_page(country):
         'Saint Vincent and The Grenadines':[ ICT_fix.vc, ICT_mob.vc, ICT_per.vc, ICT_bw.vc ],
         'Suriname':[ ICT_fix.sr, ICT_mob.sr, ICT_per.sr, ICT_bw.sr ],
         'Trinidad and Tobago':[ ICT_fix.tt, ICT_mob.tt, ICT_per.tt, ICT_bw.tt ],
-        'Turks and Caicos Islands':[ ICT_fix.tc, ICT_mob.tc, ICT_per.tc, ICT_bw.tc ]
+        'Turks & Caicos Is.':[ ICT_fix.tc, ICT_mob.tc, ICT_per.tc, ICT_bw.tc ]
     }
     
     cat = dict_ctry[country]
@@ -246,6 +331,11 @@ def indicator_page(country):
     per = ICT_per.query.order_by(ICT_per.yrs).with_entities(cat[2])
     bw = ICT_bw.query.order_by(ICT_bw.yrs).with_entities(cat[3])
 
+    url = url_for('indicator_page', country=country)
+    form = Feedback()
+    if form.validate_on_submit():
+        form_validate(url, form)
+
     return render_template(
         'indicator_page.html', 
         title=country, 
@@ -256,10 +346,12 @@ def indicator_page(country):
         fix=fix, 
         mob=mob, 
         per=per, 
-        bw=bw
+        bw=bw,
+        form=form,
+        url=url
         )
 
-@app.route('/indicator')
+@app.route('/indicator', methods=['GET', 'POST'])
 def indicator_list():
     ctry_lst = [
         'Anguilla',
@@ -283,7 +375,13 @@ def indicator_list():
         'Trinidad and Tobago',
         'Turks & Caicos Is.'
     ]
-    return render_template('indicator_list.html', title= 'ICT Indicators Listing', indic_all = ctry_lst)
+
+    url = url_for('indicator_list')
+    form = Feedback()
+    if form.validate_on_submit():
+        form_validate(url, form)
+
+    return render_template('indicator_list.html', title= 'ICT Indicators Listing', indic_all = ctry_lst, form=form, url=url)
 
 @app.route('/test')
 def test():
@@ -291,7 +389,7 @@ def test():
     # print(baskets())
     # print(indicators())
     # print(ixp())
-    print(density())
+    # print(density())
     # print(root())
     # print(speedindex())
     # print(submarine())
@@ -305,6 +403,7 @@ def test():
     # create_sub_image()
     # create_ixp_image()
     # create_root_image()
-    create_density_image()            # Failed
+    # create_density_image()
+    create_indic_graph_test()
     print("Test Completed")
     return render_template('test.html')

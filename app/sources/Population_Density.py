@@ -59,8 +59,33 @@ def density():
         'TCA'
     ]
 
+    dict_ctry = {
+        'AIA':'Anguilla',
+        'ATG':'Antigua and Barbuda',
+        'BHS':'Bahamas',
+        'BRB':'Barbados',
+        'BLZ':'Belize',
+        'BMU':'Bermuda',
+        'VGB':'British Virgin Islands',
+        'CYM':'Cayman Islands',
+        'DMA':'Dominica',
+        'GRD':'Grenada',
+        'GUY':'Guyana',
+        'HTI':'Haiti',
+        'JAM':'Jamaica',
+        'MSR':'Montserrat',
+        'KNA':'Saint Kitts and Nevis',
+        'LCA':'Saint Lucia',
+        'VCT':'Saint Vincent and The Grenadines',
+        'SUR':'Suriname',
+        'TTO':'Trinidad and Tobago',
+        'TCA':'Turks & Caicos Is.'
+    }
+
+    to_json = ''
+
     # Loop over 'cc' to append subdirectories to 'url_root' to read data.
-    for j in cc:
+    for index, j in enumerate(cc):
         # 'url' = 'url_root' + 'j' = population density JSON for country 'j'.
         # 'j' = individual country codes.
         url = url_root + j
@@ -89,12 +114,9 @@ def density():
             for link in urls:
                 if link.find('.tif') != -1:
                     url_tif = link
-            updt = json_pop.iloc[-1]['data']['date'][0]
-            pop_yr = json_pop.iloc[-1]['data']['popyear'][0]
+            updt = json_pop.iloc[-1]['data']['date']
+            pop_yr = json_pop.iloc[-1]['data']['popyear']
 
-            print(json_pop.iloc[-1]['data']['popyear'])
-            print(pop_yr)
-            print()
         except Exception as e:
             error = "Error Extracting TIF Data.\nError: " + str(e)
             return error
@@ -123,6 +145,22 @@ def density():
         
 
         # ---------------------------------------------------------------------------- #
+        #                                Convert to CSV                                #
+        # ---------------------------------------------------------------------------- #
+
+        entry = f'''"{dict_ctry[j]}": {{
+                "updt": "{updt}",
+                "pop_yr": "{pop_yr}",
+                "url": "{url_tif}",
+                "dens": "{dens}",
+                "max_": "{max_}",
+                "min_": "{min_}"
+            }}'''
+
+        to_json += entry + ','
+
+
+        # ---------------------------------------------------------------------------- #
         #                                Add to Database                               #
         # ---------------------------------------------------------------------------- #
 
@@ -131,7 +169,8 @@ def density():
         # 'time' stores starting time of writing to the database.
         # The time in 'time' is used to compare against the database entry timestamps.
         # This is used to ensure only recent data is stored into the database. 
-        time = datetime.now(timezone(timedelta(seconds=-14400))).strftime("%Y-%m-%d %H:%M:%S %z")
+        if index == 0:
+            time = datetime.now(timezone(timedelta(seconds=-14400))).strftime("%Y-%m-%d %H:%M:%S %z")
 
 
         # -------------------------- Population Density Data ------------------------- #
@@ -139,12 +178,12 @@ def density():
         # 'exist' = Checks is a known value exists in the 'Pop_dens' table.
         # Returns None if the value does not exist.
         # Returns a tuple of ids if the value exist.
-        exist = db.session.query(Pop_dens.id).filter_by(ctry=j).first()
+        exist = db.session.query(Pop_dens.id).filter_by(ctry=dict_ctry[j]).first()
 
         # If value does not exist in 'Pop_dens' table, then add the data to the table.
         if exist == None:
             u = Pop_dens(
-                ctry = j,
+                ctry = dict_ctry[j],
                 pop_yr = pop_yr,
                 url = url_tif,
                 dens = dens,
@@ -178,7 +217,7 @@ def density():
 
     # Checks if the table is empty by looking at the table's first entry.
     # 'exist' returns None is empty.
-    exist = Pop_dens.query.get(1)
+    exist = Pop_dens.query.all()
 
     # If table is full ...
     if exist != None:
@@ -191,7 +230,7 @@ def density():
             # 'present' converts 'time' into Datetime object for comparison.
             past = datetime.strptime(i.stamp, "%Y-%m-%d %H:%M:%S %z").strftime("%Y-%m-%d %H:%M:%S %z")
             present = datetime.strptime(time, "%Y-%m-%d %H:%M:%S %z").strftime("%Y-%m-%d %H:%M:%S %z")
-            
+
             # If entry timestamp (past) is earlier than the time of writing to the database (present) ...
             # ... then the entry is outdated and does not exist in the more recent batch of data.
             if past < present:
@@ -199,3 +238,10 @@ def density():
                 db.session.delete(i)
         # Commit changes to the database.
         db.session.commit()
+    
+    coll = f'''{{
+        {to_json[:-1]}
+    }}
+    '''
+    with open('./app/static/json/density.json', 'w', encoding="utf-8") as f:
+        f.write(coll)

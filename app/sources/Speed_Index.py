@@ -56,6 +56,11 @@ def speedindex():
     df_mob = df_mob.sort_values( ["Country", "Month"], ascending = (True, True) )
     df_fix = df_fix.sort_values( ["Country", "Month"], ascending = (True, True) )
 
+
+    # Export data in 'df_mob', and 'df_fix' to CSV formats.
+    df_mob.to_csv(r'./app/static/csv/mobile_speed_index.csv', encoding='utf-8', header=True, index=False)
+    df_fix.to_csv(r'./app/static/csv/fixed_speed_index.csv', encoding='utf-8', header=True, index=False)
+
     # Filters 'df_mob' for Caribbean countries and appends dataframes to 'mob_' list.
     # Caribbean countries are Haiti, Jamaica, Suriname, and Trinidad and Tobago.
     mob_ = []
@@ -226,7 +231,7 @@ def speedindex():
 
     # Checks if the table is empty by looking at the table's first entry.
     # 'exist' returns None is empty.
-    exist = Fixed_br.query.get(1)
+    exist = Fixed_br.query.all()
 
     # If table is full ...
     if exist != None:

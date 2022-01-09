@@ -13,6 +13,9 @@ import requests
 from app import db
 from app.models import Tld
 from datetime import datetime, timezone, timedelta
+import pandas as pd
+import html5lib
+import re
 
 
 def tld():
@@ -80,6 +83,8 @@ def tld():
     # ---------------------------------------------------------------------------- #
     #                                  Read Source                                 #
     # ---------------------------------------------------------------------------- #
+
+    to_json = ''
 
     for index, url in enumerate(urls):
         # 'index' = current index of loop.
@@ -218,6 +223,56 @@ def tld():
         # 'ctry_' = contains country for each TLD
         ctry_ =  ctry[index]
 
+        
+        # ---------------------------------------------------------------------------- #
+        #                                Convert to CSV                                #
+        # ---------------------------------------------------------------------------- #
+
+        to_csv = [cc, type_, cctld, ad_con, tch_con, reg, dates]
+        for i in range(len(to_csv)):
+            to_csv[i] = to_csv[i].replace('</p>', ', ')
+            to_csv[i] = to_csv[i].replace('<br/>', ', ')
+            to_csv[i] = to_csv[i].replace('<p>', '')
+            to_csv[i] = to_csv[i].replace('<u>', '')
+            to_csv[i] = to_csv[i].replace('</u>', '')
+            to_csv[i] = to_csv[i].replace('   ', '')
+            to_csv[i] = to_csv[i].replace('\n', '')
+            to_csv[i] = to_csv[i].replace('\'', '`')
+            to_csv[i] = to_csv[i].replace('<a href="', '')
+            to_csv[i] = to_csv[i].replace('</a>', '')
+            to_csv[i] = to_csv[i].replace('">', ', ')
+            # print(to_csv[i])
+        
+        df = pd.DataFrame(columns=['ctry', 'type', 'ad_con', 'tch_con', 'reg', 'dates'])
+
+        table = nm_svr.replace(" class='table table-sm table-hover'", '')
+        table = table.replace(" class='table-primary'", '')
+        table = table.replace("<br/></td>", '</td>')
+        table = table.replace("<br/>", '</td><td>')
+        table = table.replace("<tr><th>", '<tr>\n<td>')
+        table = table.replace("</th></tr>", '</td>\n</tr>')
+        table = table.replace("<thead>", '')
+        table = table.replace("</thead>", '')
+        table = table.replace("<tbody>", '')
+        table = table.replace("</tbody>", '')
+
+        df = pd.read_html(table, skiprows=1)[0]
+        df.rename({0:'Host Name', 1:'IPv4', 2:'IPv6'}, axis='columns', inplace=True)
+        df = df.to_dict('list')
+
+        entry = f'''"{ctry_}": {{
+                "cc": "{to_csv[0]}",
+                "type_": "{to_csv[1]}",
+                "cctld": "{to_csv[2]}",
+                "ad_con": "{to_csv[3]}",
+                "tch_con": "{to_csv[4]}",
+                "reg": "{to_csv[5]}",
+                "dates": "{to_csv[6]}",
+                "nm_svr": {df}
+            }}'''
+
+        to_json += entry + ','
+
 
         # ---------------------------------------------------------------------------- #
         #                               Store to Database                              #
@@ -275,7 +330,7 @@ def tld():
     
     # Checks if the table is empty by looking at the table's first entry.
     # 'exist' returns None is empty.
-    exist = Tld.query.get(1)
+    exist = Tld.query.all()
 
     # If table is full ...
     if exist != None:
@@ -296,3 +351,13 @@ def tld():
                 db.session.delete(j)
         # Commit changes to the database.
         db.session.commit()
+
+    to_json = to_json.replace('\'', '"')
+    to_json = re.sub(r"\bnan\b", '"nan"', to_json)
+
+    coll = f'''{{
+        {to_json[:-1]}
+    }}
+    '''
+    with open('./app/static/json/top_level_domain.json', 'w', encoding="utf-8") as f:
+        f.write(coll)

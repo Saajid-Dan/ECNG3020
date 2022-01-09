@@ -1,0 +1,153 @@
+<!doctype html>
+<html lang="en">
+
+    <head>
+        <meta charset="UTF-8">
+
+        <!--- Bootstrap 5.1.3 --->
+
+        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3" crossorigin="anonymous">
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css"></head>
+
+        {% if title %}
+            <title>{{ title }} - ECNG 3020</title>
+        {% else %}
+            <title>ECNG 3020</title>
+        {% endif %}
+    </head>
+    
+    <body>
+        <!-- Primary Navbar -->
+        <nav class="navbar navbar-expand-sm navbar-dark bg-primary">
+            <div class="container-fluid">
+                <a class="navbar-brand font-size-8" href="#">
+                    <img src="https://icon-library.com/images/blue-search-icon/blue-search-icon-15.jpg" width=30 height=30 class="d-inline-block align-top">
+                    <span style="font-size:85%">ECNG 3020</span>
+                </a>
+
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+            
+                <div class="collapse navbar-collapse justify-content-end align-center" id="navbarSupportedContent">
+                    <ul class="navbar-nav mr-auto">
+                        <li class="nav-item active">
+                            <a class="nav-link" href="{{ url_for('index') }}">Home <span class="sr-only">(current)</span></a>
+                        </li>
+                        <li class="nav-item dropdown">
+                            <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                              Data Listings
+                            </a>
+                            <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
+                              <li><a class="dropdown-item" href="{{ url_for('gen_list') }}">General Country Information</a></li>
+                              <li><hr class="dropdown-divider"></li>
+                              <li><a class="dropdown-item" href="{{ url_for('indicator_list') }}">ICT Indicators</a></li>
+                              <li><a class="dropdown-item" href="{{ url_for('basket_list') }}">ICT Price Baskets</a></li>
+                              <li><hr class="dropdown-divider"></li>
+                              <li><a class="dropdown-item" href="{{ url_for('land_list') }}">Landing Points</a></li>
+                              <li><a class="dropdown-item" href="{{ url_for('sub_list') }}">Submarine Cables</a></li>
+                              <li><a class="dropdown-item" href="{{ url_for('ixp_list') }}">Internet Exchange Points</a></li>
+                              <li><a class="dropdown-item" href="{{ url_for('tld_list') }}">Top Level Domains</a></li>
+                              <li><a class="dropdown-item" href="{{ url_for('root_list') }}">Root Servers</a></li>
+                              <li><a class="dropdown-item" href="{{ url_for('speed_list') }}">Caribbean Speed Index</a></li>
+                            </ul>
+                          </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="#">Download Reports</a>
+                        </li>
+
+                    </ul>
+                </div>
+            </div>
+        </nav>
+        
+        <!-- Project Name -->
+        <div class='row justify-content-center'>
+            <div class="col-10 d-inline-block align-bottom">
+                <br>
+                <h5 class="text-center text-uppercase">Dashboard for Caribbean Internet Infrastructure, Adoption & Use</h5>
+            </div>
+        </div>
+
+        <hr>
+
+        <!-- -------------------------- Insert Code Here --------------------------- -->
+
+        {% block content %}{% endblock %}
+
+        <!-- -------------------------- Insert Code Here --------------------------- -->
+
+        <br>
+        <hr style="margin-bottom: 0em;">
+
+        <section id="anchor"></section>
+        <!-- Footer -->
+        <footer class="bg-light text-center text-lg-start">
+            <br>
+            
+            <div class="row justify-content-center">
+                <div class="col-sm-5 col-10">
+                    <form action="{{url + '#anchor'}}" method="post" novalidate>
+                        {{form.hidden_tag()}}
+
+                        <!-- Declaration of Feedback Title -->
+                        <h5 class="text-uppercase">Feedback</h5>
+
+                        <!-- Feedback Form Topics Dropdown -->
+                        {{form.option.label}}<br>
+                        {{form.option(class = "form-select")}}<br>
+                        
+                        <!-- Feedback Form Error -->
+                        {% for error in form.option.errors %}
+                            <span style="color: red"><small><b>{{ error }}</b></small></span>
+                        {% endfor %}
+                        
+                        <!-- Feedback Form Text Box -->
+                        {{form.comment.label}}<br>
+                        {{form.comment( style="height:150px;",
+                                        class = "form-control" + 
+                                        (" is-invalid" if form.comment.errors else "") + 
+                                        " rounded-0 shadow-none", **{"placeholder": "Your Comment", "autocomplete": "off"}) }}
+                        
+                        <!-- Feedback Form Error -->
+                        {% for error in form.comment.errors %}
+                            <span style="color: red"><small><b>{{ error }}</b></small></span>
+                        {% endfor %}
+
+                        <br>
+                        
+                        <!-- Feedback Form Submit Button -->
+                        {{form.submit(class = "form-control btn btn-primary")}}
+
+                        {% with messages = get_flashed_messages() %}
+                            {% if messages %}
+                                {% for message in messages %}
+                                    <span style="color: rgb(0, 185, 0)"><small><b>{{ message }}</b></small></span>
+                                {% endfor %}
+                            {% endif %}
+                        {% endwith %}
+
+                    </form>
+                    <br>
+                </div>
+
+                <div class="col-sm-5 col-10">
+                    <!-- Declaration of Contact Details Title -->
+                    <h5 class="text-uppercase">Contact</h5>
+                        <p>
+                            Email: username@email.com<br>
+                            Tel: 1868 123 4567
+                        </p>
+                </div>
+            </div>   
+
+            <!-- Copyright Information -->
+            <div class="text-center p-3" style="background-color: rgba(0, 0, 0, 0.2);">
+                © 2021 Copyright: None
+            </div>
+        </footer>
+
+        <!--- Bootstrap 5.1.3 --->
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-ka7Sk0Gln4gmtz2MlQnikT1wXgYsOg+OMhuP+IlRH9sENBO0LRn5q+8nbTov4+1p" crossorigin="anonymous"></script>
+    </body>
+</html>

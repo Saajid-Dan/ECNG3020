@@ -1,15 +1,15 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3" crossorigin="anonymous">
-    <title>General Information - {{ gen.ctry_ }}</title>
-</head>
-<body>
+{% extends "base.html" %}
+
+{% block content %}
+    <!-- Declaration of Map Title -->
+    <div class='row justify-content-center'>
+        <div class="col-12" >
+            <h5 class="md-10 text-center text-muted">General Information on {{ title }}</h5>
+        </div>
+    </div>
+
     <div class='row justify-content-center'>
         <div class='col-10'>
-            <h5>General Information on {{ title }}</h5>
-            
             <p>
                 <b>Note: </b>'NA' means Not Applicable.
             </p>
@@ -27,11 +27,11 @@
             <h6 style="font-size: 105%; margin-top: 30px;">Population</h6>
             {{ gen.pop | safe }}
             <h6 style="font-size: 105%; margin-top: 30px;">Population Density</h6>
-            <p><u>Average Density: </u>{{ dens.dens }}</p>
+            <p><u>Average Density: </u>{{ '%0.1f' | format(dens.dens | float) }} people/sq. km</p>
             
             <!-- ------------------------------ To change ------------------------------ -->
-            <p><u>Maximum Density: </u>{{ dens.max_ }}</p>
-            <p><u>Minimum Density: </u>{{ dens.min_ }}</p>
+            <p><u>Maximum Density: </u>{{ '%0.1f' | format(dens.max_ | float) }} people/sq. km</p>
+            <p><u>Minimum Density: </u>{{ '%0.1f' | format(dens.min_ | float) }} people/sq. km</p>
             <p>The following figure displays the population density over {{ title }}.</p>
             
             <img class='img-fluid' src="/static/images/Population Density/{{ title }}.png" alt="The Image may not exist or has not loaded.">
@@ -64,7 +64,4 @@
             
         </div>
     </div>
-            
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-ka7Sk0Gln4gmtz2MlQnikT1wXgYsOg+OMhuP+IlRH9sENBO0LRn5q+8nbTov4+1p" crossorigin="anonymous"></script>
-</body>
-</html>
+{% endblock %}

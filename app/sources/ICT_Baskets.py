@@ -123,6 +123,10 @@ def baskets():
         ppp = merge("PPP", "USD", "GNIpc", df_s1, df_s2)
         usd = merge("USD", "GNIpc", "PPP", df_s1, df_s2)
 
+        # Export data in 'gni_pc', 'ppp', and 'usd' to CSV formats.
+        gni_pc.to_csv(r'./app/static/csv/GNI.csv', encoding='utf-8', header=True, index=False)
+        ppp.to_csv(r'./app/static/csv/PPP.csv', encoding='utf-8', header=True, index=False)
+        usd.to_csv(r'./app/static/csv/USD.csv', encoding='utf-8', header=True, index=False)
 
         
     except Exception as e:
@@ -200,7 +204,7 @@ def baskets():
 
     # Checks if the table is empty by looking at the table's first entry.
     # 'exist' returns None is empty.
-    exist = GNI.query.get(1)
+    exist = GNI.query.all()
 
     # If table is full ...
     if exist != None:

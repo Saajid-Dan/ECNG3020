@@ -53,7 +53,7 @@ dict_ctry = {
         'BRB':'Barbados',
         'BLZ':'Belize',
         'BMU':'Bermuda',
-        'VGB':'Virgin Islands U K ',
+        'VGB':'British Virgin Islands',
         'CYM':'Cayman Islands',
         'DMA':'Dominica',
         'GRD':'Grenada',
@@ -66,7 +66,7 @@ dict_ctry = {
         'VCT':'Saint Vincent and The Grenadines',
         'SUR':'Suriname',
         'TTO':'Trinidad and Tobago',
-        'TCA':'Turks and Caicos Islands'
+        'TCA':'Turks & Caicos Is.'
     }
 
 def create_indic_graph():

@@ -17,7 +17,7 @@ from datetime import datetime, timezone, timedelta
 
 def population():
     '''
-    Reads and Scrape data general population, geographical and socioencomic data
+    Reads and Scrape general population, geographical and socioencomic data
     from CIA World Factbook source. This data is filtered and cleaned to add to
     a database.
     '''
@@ -81,6 +81,8 @@ def population():
     #                                  Read Source                                 #
     # ---------------------------------------------------------------------------- #
     
+    to_json = ''
+
     # Loop over URLs in 'urls' to scrape data and generate them into HTML files.
     for index, url in enumerate(urls):
         # 'index' = current index of loop.
@@ -347,6 +349,7 @@ def population():
             lit = lit.replace('<br/><br/>', '</p><p>')
             lit = lit.replace('<strong>', '<u>')
             lit = lit.replace('</strong>', '</u>')
+            lit = lit.replace('</div></div><div class="free-form-content__content wysiwyg-wrapper" id="environment">', '')
         else:
             lit = 'NA'
 
@@ -363,6 +366,44 @@ def population():
         updt = soup.find('label', class_='header-subsection-date').text
         updt = updt.replace('Page last updated: ', '')
 
+
+        # ---------------------------------------------------------------------------- #
+        #                                Convert to CSV                                #
+        # ---------------------------------------------------------------------------- #
+
+        to_csv = [gen, cur, area, land, lang, pop, urb, elec, lab, occ, unem, pov, lit, updt]
+        for i in range(len(to_csv)):
+            to_csv[i] = to_csv[i].replace('</p>', ', ')
+            to_csv[i] = to_csv[i].replace('<p>', '')
+            to_csv[i] = to_csv[i].replace('<u>', '')
+            to_csv[i] = to_csv[i].replace('</u>', '')
+            to_csv[i] = to_csv[i].replace('</u>', '')
+            to_csv[i] = to_csv[i].replace('<br/>', ', ')
+            to_csv[i] = to_csv[i].replace('<span class="card-exposed__text bold h5">', '')
+            to_csv[i] = to_csv[i].replace('<!-- -->:', '')
+            to_csv[i] = to_csv[i].replace('<div><audio controls="" src="', ' ')
+            to_csv[i] = to_csv[i].replace('><track kind="captions" srclang="en"/></audio></div></span>', '')
+            to_csv[i] = to_csv[i].replace('"', '')
+
+        entry = f'''"{ctry_}": {{
+                "updt": "{to_csv[13]}",
+                "gen": "{to_csv[0]}",
+                "cur": "{to_csv[1]}",
+                "area": "{to_csv[2]}",
+                "land": "{to_csv[3]}",
+                "lang": "{to_csv[4]}",
+                "pop": "{to_csv[5]}",
+                "urb": "{to_csv[6]}",
+                "elec": "{to_csv[7]}",
+                "lab": "{to_csv[8]}",
+                "occ": "{to_csv[9]}",
+                "unem": "{to_csv[10]}",
+                "pov": "{to_csv[11]}",
+                "lit": "{to_csv[12]}"
+            }}'''
+
+        to_json += entry + ','
+            
 
         # ---------------------------------------------------------------------------- #
         #                               Store to Database                              #
@@ -434,7 +475,7 @@ def population():
     
     # Checks if the table is empty by looking at the table's first entry.
     # 'exist' returns None is empty.
-    exist = Gen_pop.query.get(1)
+    exist = Gen_pop.query.all()
 
     # If table is full ...
     if exist != None:
@@ -457,3 +498,10 @@ def population():
                 db.session.delete(j)
         # Commit changes to the database.
         db.session.commit()
+
+    coll = f'''{{
+        {to_json[:-1]}
+    }}
+    '''
+    with open('./app/static/json/general.json', 'w', encoding="utf-8") as f:
+        f.write(coll)

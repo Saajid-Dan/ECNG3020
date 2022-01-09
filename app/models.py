@@ -28,7 +28,7 @@ class GNI(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     ctry = db.Column(db.String, index=True)
     year = db.Column(db.Integer, index=True)
-    uni = db.Column(db.Integer, index=True)
+    uni = db.Column(db.String, index=True)
     fix = db.Column(db.Float, index=True)
     mob = db.Column(db.Float, index=True)
     low = db.Column(db.Float, index=True)
@@ -40,7 +40,7 @@ class PPP(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     ctry = db.Column(db.String, index=True)
     year = db.Column(db.Integer, index=True)
-    uni = db.Column(db.Integer, index=True)
+    uni = db.Column(db.String, index=True)
     fix = db.Column(db.Float, index=True)
     mob = db.Column(db.Float, index=True)
     low = db.Column(db.Float, index=True)
@@ -52,7 +52,7 @@ class USD(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     ctry = db.Column(db.String, index=True)
     year = db.Column(db.Integer, index=True)
-    uni = db.Column(db.Integer, index=True)
+    uni = db.Column(db.String, index=True)
     fix = db.Column(db.Float, index=True)
     mob = db.Column(db.Float, index=True)
     low = db.Column(db.Float, index=True)
@@ -172,7 +172,7 @@ class ICT_bw(db.Model):
 
 class Ixp_dir(db.Model):
     id = db.Column(db.Integer, primary_key=True)
-    uni = db.Column(db.Integer, index=True)
+    uni = db.Column(db.String, index=True)
     ctry = db.Column(db.String, index=True)
     city = db.Column(db.String, index=True)
     name = db.Column(db.String, index=True)
@@ -191,7 +191,7 @@ class Ixp_dir(db.Model):
     
 class Ixp_sub(db.Model):
     id = db.Column(db.Integer, primary_key=True)
-    uni = db.Column(db.Integer, index=True)
+    uni = db.Column(db.String, index=True)
     ctry = db.Column(db.String, index=True)
     stat = db.Column(db.String, index=True)
     name = db.Column(db.String, index=True)
@@ -207,7 +207,7 @@ class Ixp_sub(db.Model):
 
 class Ixp_mem(db.Model):
     id = db.Column(db.Integer, primary_key=True)
-    uni = db.Column(db.Integer, index=True)
+    uni = db.Column(db.String, index=True)
     ctry = db.Column(db.String, index=True)
     ip = db.Column(db.String, index=True)
     fqdn = db.Column(db.String, index=True)
@@ -239,7 +239,7 @@ class Pop_dens(db.Model):
 
 class Root_srv(db.Model):
     id = db.Column(db.Integer, primary_key=True)
-    uni = db.Column(db.Integer, index=True)
+    uni = db.Column(db.String, index=True)
     name = db.Column(db.String, index=True)
     url = db.Column(db.String, index=True)
     ctry = db.Column(db.String, index=True)
@@ -266,7 +266,7 @@ class Root_srv(db.Model):
 class Mob_br(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     uni = db.Column(db.String, index=True)
-    mnth = db.Column(db.String, index=True)
+    date = db.Column(db.String, index=True)
     ctry = db.Column(db.String, index=True)
     dls = db.Column(db.Float, index=True)
     ups = db.Column(db.Float, index=True)
@@ -277,7 +277,7 @@ class Mob_br(db.Model):
 class Fixed_br(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     uni = db.Column(db.String, index=True)
-    mnth = db.Column(db.String, index=True)
+    date = db.Column(db.String, index=True)
     ctry = db.Column(db.String, index=True)
     dls = db.Column(db.Float, index=True)
     ups = db.Column(db.Float, index=True)

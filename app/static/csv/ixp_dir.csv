@@ -1,0 +1,13 @@
+id,ctry,cit,name,url,stat,date,prfs,lat,lon,prts,avg,trgh,ipv6_avg,updt,prts_url
+982,Haiti,Port au Prince,AHTIC Internet Exchange Point,http://ixp.ht/,Active,1970-08-21 12:41:45,126.0,18.57,-72.3,9,0,200000,0.0,2021-03-05,
+1297,Grenada,St. Georges,Grenada Internet Exchange,https://ixgd.wordpress.com/,Active,1970-08-21 18:15:12,1272.0,12.05363,-61.74995,9,780000,200000,0.0,2013-12-04,https://ixgd.wordpress.com/membership/
+1364,Dominica,Roseau,Dominica National Internet Exchange Point,http://www.danix.dm/,Active,1970-08-21 23:43:47,52.0,15.3,-61.4,4,0,0,0.0,2017-02-22,
+1299,British Virgin Islands,Road Town,British Virgin Islands IXP,,Planned,1970-01-01 00:00:00,0.0,18.41667,-64.61667,0,0,0,0.0,0000-00-00,
+2029,Trinidad and Tobago,Princes Town,TTIX2,https://ix.tt/,Active,1970-08-22 10:48:51,0.0,10.2657,-61.38167,8,2000000,1900000,0.0,2021-08-31,https://ix.tt/membership/founding-members/
+1803,Trinidad and Tobago,Barataria,Trinidad and Tobago Internet Exchange,https://ix.tt/,Active,1970-08-22 02:33:38,186.0,10.64688,-61.46287,8,400000,350000,0.0,2018-11-23,https://ix.tt/membership/founding-members/
+1918,Belize,Belize City ,Belize Internet Exchange Point,,Active,1970-08-22 08:07:07,86.0,17.51587,-88.20404,9,44300,44400,0.0,2020-05-11,
+1814,Jamaica,Kingston,Jamaica Internet Exchange Point,,Active,1970-08-22 02:40:31,317.0,17.93,-76.78,4,0,0,0.0,0000-00-00,
+1782,Saint Lucia,Castries,Saint Lucia IXP,,Active,1970-08-22 02:36:40,35.0,14.02,-61.0,5,0,0,0.0,0000-00-00,
+2035,Saint Vincent and the Grenadines,Kingstown,SVGIX,,Unknown,1970-08-22 08:02:06,0.0,13.16023,-61.22458,0,0,0,0.0,0000-00-00,
+2120,Saint Kitts and Nevis,Basseterre,Saint Kitts and Nevis Internet Exchange,,Planned,1970-08-22 16:20:00,0.0,17.28,-62.73,0,0,0,0.0,0000-00-00,
+2236,Barbados,Bridgetown,Barbados Internet Exchange,,Unknown,,,13.07,-59.48,0,0,0,0.0,0000-00-00,

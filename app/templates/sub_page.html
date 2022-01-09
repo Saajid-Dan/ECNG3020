@@ -1,140 +1,136 @@
-<!DOCTYPE html>
-<html lang="en">
-    <head>
-        <meta charset="UTF-8">
-        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3" crossorigin="anonymous">
-        <title>Submarine Cables - {{ title }}</title>
-    </head>
-    <body>
-        <div class='row justify-content-center'>
-            <div class='col-10'>
-                <h5>Submarine Cables - {{ title }}</h5>
-                <div>
-                    <p>
-                        The properties of {{ title }} submarine cable is presented in Table 1.
-                    </p>
-                    
-                    <p><u>Table 1: {{ title }} Submarine Cable Properties</u></p>
-                    <div class="table-responsive">
-                        <table class='table table-sm table-hover'>
-                            <thead>
-                                <tr class='table-primary'>
-                                    <th scope="col">Header</th>
-                                    <th scope="col">Description</th>
-                                </tr>
-                            </thead>
+{% extends "base.html" %}
 
-                            <tbody>
-                                <tr>
-                                    <td>Name</td>
-                                    <td>{{ sub['name'].values[0] }}</td>
-                                </tr>
-                                
-                                <tr>
-                                    <td>Status</td>
-                                    <td>
-                                        {% if sub['stat'].values[0] == 'True' %}
-                                            Planned
-                                        {% endif %}
-
-                                        {% if sub['stat'].values[0] == 'False' %}
-                                            Active
-                                        {% endif %}
-                                    </td>
-                                </tr>
-
-                                <tr>
-                                    <td>Length</td>
-                                    <td>{{ sub['len_'].values[0] }}</td>
-                                </tr>
-
-                                <tr>
-                                    <td>Ready for Service</td>
-                                    <td>{{ sub['rfs'].values[0] }}</td>
-                                </tr>
-
-                                <tr>
-                                    <td>Owners</td>
-                                    <td>{{ sub['own'].values[0] }}</td>
-                                </tr>
-
-                                <tr>
-                                    <td>Suppliers</td>
-                                    <td>{{ sub['sup'].values[0] }}</td>
-                                </tr>
-                            </tbody>
-                        </table>
-                    </div>
-                    
-                    <br>
-
-                    <p>
-                        <b>{{ title }}'s landing points can be classified into two groups:</b>
-                    </p>
-
-                    
-                    <ol class='list-group list-group-numbered list-group-flush'>
-                        <li class='list-group-item'>
-                            Caribbean landing points
-                        </li>
-
-                        <li class='list-group-item'>
-                            International landing points
-                        </li>
-                    </ol>
-
-                    <br>
-                    
-                    <p>
-                        Caribbean landing points are landing points associated with CARICOM member states and associate members.
-                        International landing points are all other landing points not associated with CARICOM member states and associate members.<br>
-                    </p>
-                    <p>
-                        <b>Note: </b>Not all countries may have international landing points.
-                    </p>
-                    <p><b>List of Caribbean Landing Points</b></p>
-                    <ol class='list-group list-group-numbered'>
-                        {% for land in land_car %}
-                            <li class='list-group-item list-group-item-action'>
-                                {{ land }}
-                            </li>
-                        {% endfor %}
-                    </ol>
-
-                    {% if land_int %}
-                        <br>
-                        <p><b>List of International Landing Points</b></p>
-                    {% endif %}
-                                    
-                    <ol class='list-group list-group-numbered'>
-                        {% for land in land_int %}
-                            <li class='list-group-item list-group-item-action'>
-                                {{ land }}
-                            </li>
-                        {% endfor %}
-                    </ol> 
-
-                    <br>
-
-                <p>
-                    The {{ title }} submarine cable is shown in the following map.
-                    The Caribbean landing points and international landing points 
-                    mentioned above are displayed from left to right using red and blue markers respectively.
-                </p>
-                <div>
-                    <img class='img-fluid' src="/static/images/Submarine Cables/{{ title }}.png" alt="The Image may not exist or has not loaded.">
-                <p><u>Figure 1: {{ title }} submarine cable with Caribbean and international landing points</u></p>
-
-                <p><i>
-                    Source: Telegeography<br>
-                    
-                    URL: <a href='https://git.io/JyPd4' target="_blank" rel="noopener noreferrer">https://git.io/JyPd4</a><br>
-                    Last Updated: {{ sub['updt'].values[0] }}
-                </i></p>
-            </div>
+{% block content %}
+    <!-- Declaration of Map Title -->
+    <div class='row justify-content-center'>
+        <div class="col-12" >
+            <h5 class="md-10 text-center text-muted">Submarine Cables - {{ title }}</h5>
         </div>
-        
+    </div>
 
-        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-ka7Sk0Gln4gmtz2MlQnikT1wXgYsOg+OMhuP+IlRH9sENBO0LRn5q+8nbTov4+1p" crossorigin="anonymous"></script>
-    </body>
-</html>
+    <div class='row justify-content-center'>
+        <div class='col-10'>
+            <p>
+                The properties of {{ title }} submarine cable is presented in Table 1.
+            </p>
+            
+            <p><u>Table 1: {{ title }} Submarine Cable Properties</u></p>
+            <div class="table-responsive">
+                <table class='table table-sm table-hover'>
+                    <thead>
+                        <tr class='table-primary'>
+                            <th scope="col">Header</th>
+                            <th scope="col">Description</th>
+                        </tr>
+                    </thead>
+
+                    <tbody>
+                        <tr>
+                            <td>Name</td>
+                            <td>{{ sub['name'].values[0] }}</td>
+                        </tr>
+                        
+                        <tr>
+                            <td>Status</td>
+                            <td>
+                                {% if sub['stat'].values[0] == 'True' %}
+                                    Planned
+                                {% endif %}
+
+                                {% if sub['stat'].values[0] == 'False' %}
+                                    Active
+                                {% endif %}
+                            </td>
+                        </tr>
+
+                        <tr>
+                            <td>Length</td>
+                            <td>{{ sub['len_'].values[0] }}</td>
+                        </tr>
+
+                        <tr>
+                            <td>Ready for Service</td>
+                            <td>{{ sub['rfs'].values[0] }}</td>
+                        </tr>
+
+                        <tr>
+                            <td>Owners</td>
+                            <td>{{ sub['own'].values[0] }}</td>
+                        </tr>
+
+                        <tr>
+                            <td>Suppliers</td>
+                            <td>{{ sub['sup'].values[0] }}</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            
+            <br>
+
+            <p>
+                <b>{{ title }}'s landing points can be classified into two groups:</b>
+            </p>
+
+                
+            <ol class='list-group list-group-numbered list-group-flush'>
+                <li class='list-group-item'>
+                    Caribbean landing points
+                </li>
+
+                <li class='list-group-item'>
+                    International landing points
+                </li>
+            </ol>
+
+            <br>
+            
+            <p>
+                Caribbean landing points are landing points associated with CARICOM member states and associate members.
+                International landing points are all other landing points not associated with CARICOM member states and associate members.<br>
+            </p>
+            <p>
+                <b>Note: </b>Not all countries may have international landing points.
+            </p>
+            <p><b>List of Caribbean Landing Points</b></p>
+            <ol class='list-group list-group-numbered'>
+                {% for land in land_car %}
+                    <li class='list-group-item list-group-item-action'>
+                        {{ land }}
+                    </li>
+                {% endfor %}
+            </ol>
+
+            {% if land_int %}
+                <br>
+                <p><b>List of International Landing Points</b></p>
+            {% endif %}
+                            
+            <ol class='list-group list-group-numbered'>
+                {% for land in land_int %}
+                    <li class='list-group-item list-group-item-action'>
+                        {{ land }}
+                    </li>
+                {% endfor %}
+            </ol> 
+
+            <br>
+
+            <p>
+                The {{ title }} submarine cable is shown in the following map.
+                The Caribbean landing points and international landing points 
+                mentioned above are displayed from left to right using red and blue markers respectively.
+            </p>
+            <div>
+                <img class='img-fluid' src="/static/images/Submarine Cables/{{ title }}.png" alt="The Image may not exist or has not loaded.">
+            <p><u>Figure 1: {{ title }} submarine cable with Caribbean and international landing points</u></p>
+
+            <p><i>
+                Source: Telegeography<br>
+                
+                URL: <a href='https://git.io/JyPd4' target="_blank" rel="noopener noreferrer">https://git.io/JyPd4</a><br>
+                Last Updated: {{ sub['updt'].values[0] }}
+            </i></p>
+        </div>
+    </div>
+{% endblock %}

@@ -71,7 +71,7 @@ def root():
         'BB':'Barbados',
         'BZ':'Belize',
         'BM':'Bermuda',
-        'VG':'Virgin Islands U K ',
+        'VG':'British Virgin Islands',
         'KK':'Cayman Islands',
         'DM':'Dominica',
         'GD':'Grenada',
@@ -84,10 +84,11 @@ def root():
         'VC':'Saint Vincent and The Grenadines',
         'SR':'Suriname',
         'TT':'Trinidad and Tobago',
-        'TC':'Turks and Caicos Islands'
+        'TC':'Turks & Caicos Is.'
     }
 
-
+    to_json = ''
+    
     # Loop through all <a> tags in 'soup'.
     for index, j in enumerate(soup.find_all('a')):
         # Ignore index directory - '../'
@@ -222,19 +223,25 @@ def root():
 
             # 'rssac' = Server RSSAC.
             rssac = '<a href = "' + x[ pos1[8] + 7 : pos1[9] - 1] + '"target="_blank" rel="noopener noreferrer">' + x[ pos1[8] + 7 : pos1[9] - 1] + '</a>'
-            
+            rssac_json = x[ pos1[8] + 7 : pos1[9] - 1]
+
+
             # 'con' = Server Contact Email.
             if x[ pos1[1] + 15 : pos1[2] - 1 ] == '\'\'':
                 con = 'NA'
             else:
                 con = x[ pos1[1] + 15 : pos1[2] - 1 ]
 
+            
             # 'peer' = Peering Policy.
             if x[ pos1[7] + 16 : pos1[8] - 1 ] == '\'\'':
                 peer = 'NA'
+                peer_json = 'NA'
             else:
                 peer = '<a href = "' + x[ pos1[7] + 16 : pos1[8] - 1 ] + '"target="_blank" rel="noopener noreferrer">' + x[ pos1[7] + 16 : pos1[8] - 1 ] + '</a>'
-            
+                peer_json = x[ pos1[7] + 16 : pos1[8] - 1 ]
+
+
             # 'id_root' = Root Identifiers.
             if root[ pos2[3] + 13 : pos2[4] - 3 ] == '[]':
                 id_root = 'NA'
@@ -246,10 +253,38 @@ def root():
                 id_nc = 'NA'
             else:
                 id_nc = x[ pos1[5] + 30 : pos1[6] - 1 ]
+
+            id_nc_json = id_nc.replace('\n', '').replace('"', '\'')
             
             # 'lat' and 'lon' contains latitude and longitude coordinates of root servers.
             lat = root[ pos2[5] + 10 : pos2[6] - 3 ]
             lon = root[ pos2[6] + 11 : pos2[7] - 3 ]
+
+            
+            # ---------------------------------------------------------------------------- #
+            #                                Convert to CSV                                #
+            # ---------------------------------------------------------------------------- #
+
+            entry = f'''{{"type": "Feature", "properties": 
+                {{"ctry": "{dict_ctry[ctry]}",
+                "updt": "{sub.replace('/', '')}",
+                "name": "{name}",
+                "url": "{url}",
+                "loc": "{loc}",
+                "oper": "{oper}",
+                "type_": "{type_}",
+                "asn": "{asn}",
+                "ipv4": "{ipv4}",
+                "ipv6": "{ipv6}",
+                "inst": "{inst}",
+                "rssac": "{rssac_json}",
+                "con": "{con}",
+                "peer": "{peer_json}",
+                "id_root": "{id_root}",
+                "id_nc": "{id_nc_json}"
+                }}, "geometry": {{ "type": "Point", "coordinates": [{lon},{lat}] }} }}'''
+            
+            to_json += entry + ','
             
 
             # ---------------------------------------------------------------------------- #
@@ -327,7 +362,7 @@ def root():
 
     # Checks if the table is empty by looking at the table's first entry.
     # 'exist' returns None is empty.
-    exist = Root_srv.query.get(1)
+    exist = Root_srv.query.all()
 
     # If table is full ...
     if exist != None:
@@ -348,3 +383,14 @@ def root():
                 db.session.delete(i)
         # Commit changes to the database.
         db.session.commit()
+    
+    # 'coll' = stores feature collection.
+    coll = f'''{{
+        "type": "FeatureCollection", 
+        "features": [
+            {to_json[:-1]}
+            ]
+            }}'''
+
+    with open('./app/static/json/root_servers.json', 'w', encoding="utf-8") as f:
+        f.write(coll)

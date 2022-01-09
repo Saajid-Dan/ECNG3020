@@ -26,29 +26,6 @@ coords = [10.536421, -61.311951]
 options = Options()
 options.headless = True
 
-dict_ctry = {
-        'AIA':'Anguilla',
-        'ATG':'Antigua and Barbuda',
-        'BHS':'Bahamas',
-        'BRB':'Barbados',
-        'BLZ':'Belize',
-        'BMU':'Bermuda',
-        'VGB':'Virgin Islands U K ',
-        'CYM':'Cayman Islands',
-        'DMA':'Dominica',
-        'GRD':'Grenada',
-        'GUY':'Guyana',
-        'HTI':'Haiti',
-        'JAM':'Jamaica',
-        'MSR':'Montserrat',
-        'KNA':'Saint Kitts and Nevis',
-        'LCA':'Saint Lucia',
-        'VCT':'Saint Vincent and The Grenadines',
-        'SUR':'Suriname',
-        'TTO':'Trinidad and Tobago',
-        'TCA':'Turks and Caicos Islands'
-    }
-
 def create_density_image():
     # Read Population Density data from database to 'dens'.
     dens = Pop_dens.query.all()
@@ -147,18 +124,18 @@ def create_density_image():
 
         m.fit_bounds([sw, ne])
 
-        m.save('./app/static/html/Population Density/' + dict_ctry[j.ctry] + '.html')
+        m.save('./app/static/html/Population Density/' + j.ctry + '.html')
         
         map_url = 'file://{path}/{mapfile}'.format(
             path=os.getcwd(),
-            mapfile="./app/static/html/Population Density/" + dict_ctry[j.ctry] + ".html"
+            mapfile="./app/static/html/Population Density/" + j.ctry + ".html"
             )
 
         browser = webdriver.Firefox(options=options, executable_path="./app/static/webdriver/geckodriver.exe")
         browser.set_window_size(820, 450)
         browser.get(map_url)
         # time.sleep(5)
-        browser.save_screenshot("./app/static/images/Population Density/" + dict_ctry[j.ctry] + ".png")
+        browser.save_screenshot("./app/static/images/Population Density/" + j.ctry + ".png")
         browser.close()
         browser.quit()
    
