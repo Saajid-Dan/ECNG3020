@@ -34,7 +34,7 @@ from app.modules.ixp_image import create_ixp_image
 from app.modules.root_image import create_root_image
 from app.modules.density_image import create_density_image
 
-from app.modules.test import create_indic_graph_test
+# from app.modules.test import create_indic_graph_test
 
 
 @app.route('/')
@@ -399,11 +399,11 @@ def test():
     # create_baskets_graph()
     # create_indic_graph()
     # print("successful")
-    # create_land_image()
+    create_land_image()
     # create_sub_image()
     # create_ixp_image()
     # create_root_image()
     # create_density_image()
-    create_indic_graph_test()
+    # create_indic_graph_test()
     print("Test Completed")
     return render_template('test.html')
