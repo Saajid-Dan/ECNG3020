@@ -123,7 +123,7 @@ def ixp():
         try:
             # Checks for errored data in 'json_mem'
             if 'error' not in json_mem:
-                # Add columns 'id' and 'ctry' to 'mem' dataframe.
+                # Add column and 'ctry' to 'json_mem' dataframe.
                 # Used to link 'json_mem' for reference.
                 # json_mem = json_mem.assign(id = j)
                 json_mem = json_mem.assign(ctry = df_dir.iloc[i]['ctry'])
@@ -168,7 +168,7 @@ def ixp():
             v4 = df_mem.iloc[j]['IPv4']
             v6 = df_mem.iloc[j]['IPv6']
 
-            # Checks if IPv4 data is not a NaN
+            # Checks if IPv4 data is not a NaN.
             if type(v4) != float:
                 for v in v4.values():
                     ctry = str(df_mem.iloc[j]['ctry'])

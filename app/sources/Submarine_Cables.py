@@ -137,7 +137,7 @@ def submarine():
     # ---------------------------------------------------------------------------- #
 
     # ------------------------------ Landing Points ------------------------------ #
-    root = 'https://github.com/telegeography/www.submarinecablemap.com/blob/master/web/public/api/v3/landing-point/'
+
     try:
         # Filter 'df_sub' for Caribbean landing point IDs and append to 'car_'.
         # Filter 'df_sub' for International landing point IDs and append to 'int_'.
@@ -149,12 +149,16 @@ def submarine():
         updt_car = []
         updt_int = []
         
+        # 'sub_car' = Stores associated Caribbean submarine cables to landing points.
+        # 'sub_int' = Stores associated international submarine cables to landing points.
         sub_car = []
         sub_int = []
 
+        # For landing points per submarine cable ...
         for j in df_sub['landing_points'].values:
+            # For landing point per landing points ...
             for k in j:
-                # 'chq' = condition to distinguish Caribbean and international landing points.
+                # Get ID for the landing point.
                 x = k['id']
                 
                 # 'url_tel' = directory of the commit history for JSON file with an ID of 'j'.
@@ -179,39 +183,59 @@ def submarine():
                 updt = updt.replace('Commits on ', '')
 
 
+                # 'chq' = condition to distinguish Caribbean and international landing points.
                 chq = 0
+                # For country ID (l) in Caribbean country IDs (ctry) ...
                 for l in ctry:
+                    # If ID in 'x' is a Caribbean country ID ... 
                     # 'dominican' = Dominican Republic which is not a Caribbean country considered.
                     if l in x and not('dominican' in x):
                         chq += 1
+                # If 'chq' > 0, then ID is a Caribbean country ID.
                 if chq > 0:
+                    # If ID already in 'car_id' list, then don't append and skip iteration.
                     if k['id'] in car_id:
                         continue
+                    # Else append to 'car_id'.
                     else:
+                        # Append ID to 'car_id'.
+                        # Append last updated date to 'updt_car'.
                         car_id.append(k['id'])
                         updt_car.append(updt)
 
+                        # Read landing point JSON file using ID in 'x'.
+                        # Extract cables for ID 'x'.
                         sub = pd.read_json(url_land + x + ".json", lines=True)
                         cables = sub['cables'].values[0]
 
+                        # Formats cables (cables) for JSON writing and append to 'sub_car' list.
                         tmp = ''
                         for cable in cables:
                             tmp += '"' + cable['name'] + '", '
                         sub_car.append('[' + tmp + ']')
+
+                # ID is not a Caribbean country ID.
                 else:
+                    # If ID already in 'int_id' list, then don't append and skip iteration.
                     if k['id'] in int_id:
                         continue
+                    # Else append to 'int_id'.
                     else:
+                        # Append ID to 'int_id'.
+                        # Append last updated date to 'updt_int'.
                         int_id.append(k['id'])
                         updt_int.append(updt)
 
+                        # Read landing point JSON file using ID in 'x'.
+                        # Extract cables for ID 'x'.
                         sub = pd.read_json(url_land + x + ".json", lines=True)
                         cables = sub['cables'].values[0]
-
+                        
+                        # Formats cables (cables) for JSON writing  and append to 'sub_int' list.
                         tmp = ''
                         for cable in cables:
                             tmp += '"' + cable['name'] + '", '
-                        sub_int.append('[' + tmp + ']')   
+                        sub_int.append('[' + tmp + ']')
 
 
         # Filter 'df_land' for Caribbean landing points using IDs in 'car_id' and store into 'df_car' dataframe.
@@ -219,10 +243,19 @@ def submarine():
         df_car = df_land.loc[ [ any(i) for i in zip(*[df_land['id'] == word for word in car_id])] ]
         df_int = df_land.loc[ [ any(i) for i in zip(*[df_land['id'] == word for word in int_id])] ]
 
+        # Add associated cables to 'df_car' and 'df_int' dataframes.
+        # df_car['cab'] = sub_car
+        # df_int['cab'] = sub_int
+
         feat = ''
         for j in range(len(df_car)):
+            # Rename 'Virgin Islands (U.K.)' to 'British Virgin Islands'.
+            cty = df_car.iloc[j]["name"].split(" ,")[-1]
+            if cty == 'Virgin Islands (U.K.)':
+                cty = 'British Virgin Islands'
+
             # Creating cable JSON properties.
-            prop = f'{{"type": "Feature", "properties": {{"id": "{df_car.iloc[j]["id"]}", "updt": "{updt_car[j]}", "name": "{df_car.iloc[j]["name"]}", "ctry": "{df_car.iloc[j]["name"].split(" ,")[-1]}", "car": "Yes"}}, "geometry": {{"type": "Point", "coordinates": [{df_car.iloc[j].geometry.x},{df_car.iloc[j].geometry.y}] }} }}'
+            prop = f'{{"type": "Feature", "properties": {{"id": "{df_car.iloc[j]["id"]}", "updt": "{updt_car[j]}", "name": "{df_car.iloc[j]["name"]}", "ctry": "{cty}", "car": "Yes", "cab": "{sub_car[j]}"}}, "geometry": {{"type": "Point", "coordinates": [{df_car.iloc[j].geometry.x},{df_car.iloc[j].geometry.y}] }} }}'
             
             # Adding all properties into one feature.
             if j == len(df_car) - 1:

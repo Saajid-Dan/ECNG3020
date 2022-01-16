@@ -8,8 +8,6 @@ Project Title:
 #                                    Imports                                   #
 # ---------------------------------------------------------------------------- #
 
-
-import os
 import time
 import pandas as pd
 import folium
@@ -38,6 +36,9 @@ options.headless = True
 # ---------------------------------------------------------------------------- #
 
 def create_land_image():
+    '''
+    Generates PNG Images with Landing Points per Caribbean country.
+    '''
     # Stores Caribbean countries with landing points.
     ctry_lst = []
 
@@ -93,7 +94,7 @@ def create_land_image():
         # 'offset' = ensures landing point geometries have some clearance from the screen border.
         offset = 0.025
         
-        # 'sw' = South west corner. 'ne' = North east corner
+        # 'sw' = South west corner. 'ne' = North east corner.
         sw = [min_lat - offset, min_lon]
         ne = [max_lat + offset, max_lon]
 
@@ -115,7 +116,7 @@ def create_land_image():
         # Wait 5 seconds for webpage to load properly.
         time.sleep(5)
         # Screenshot the map.
-        browser.save_screenshot("./app/static/images/landing/" + items + ".png")
+        browser.save_screenshot("./app/static/images/infrastructure/landing/" + items + ".png")
 
         # Close the tab and browser to close all firefox sessions.
         browser.close()

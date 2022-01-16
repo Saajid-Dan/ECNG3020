@@ -3,7 +3,7 @@
         "features": [
             {"type": "Feature", "properties": 
                 {"ctry": "Belize",
-                "updt": "2022-01-02",
+                "updt": "2022-01-11",
                 "name": "D",
                 "url": "http://www.droot.maxgigapop.net/",
                 "loc": "Belize City",
@@ -20,7 +20,7 @@
                 "id_nc": "NA"
                 }, "geometry": { "type": "Point", "coordinates": [-88.1962133,17.5045661] } },{"type": "Feature", "properties": 
                 {"ctry": "Saint Lucia",
-                "updt": "2022-01-02",
+                "updt": "2022-01-11",
                 "name": "D",
                 "url": "http://www.droot.maxgigapop.net/",
                 "loc": "Castries",
@@ -37,7 +37,7 @@
                 "id_nc": "NA"
                 }, "geometry": { "type": "Point", "coordinates": [-60.9874687,14.0101094] } },{"type": "Feature", "properties": 
                 {"ctry": "Jamaica",
-                "updt": "2022-01-02",
+                "updt": "2022-01-11",
                 "name": "D",
                 "url": "http://www.droot.maxgigapop.net/",
                 "loc": "Kingston",
@@ -54,7 +54,7 @@
                 "id_nc": "NA"
                 }, "geometry": { "type": "Point", "coordinates": [-76.8,17.983333] } },{"type": "Feature", "properties": 
                 {"ctry": "Haiti",
-                "updt": "2022-01-02",
+                "updt": "2022-01-11",
                 "name": "D",
                 "url": "http://www.droot.maxgigapop.net/",
                 "loc": "Port Au Prince",
@@ -71,7 +71,7 @@
                 "id_nc": "NA"
                 }, "geometry": { "type": "Point", "coordinates": [-72.3074326,18.594395] } },{"type": "Feature", "properties": 
                 {"ctry": "Trinidad and Tobago",
-                "updt": "2022-01-02",
+                "updt": "2022-01-11",
                 "name": "D",
                 "url": "http://www.droot.maxgigapop.net/",
                 "loc": "Port of Spain",
@@ -88,7 +88,7 @@
                 "id_nc": "NA"
                 }, "geometry": { "type": "Point", "coordinates": [-61.5019256,10.6549013] } },{"type": "Feature", "properties": 
                 {"ctry": "Grenada",
-                "updt": "2022-01-02",
+                "updt": "2022-01-11",
                 "name": "D",
                 "url": "http://www.droot.maxgigapop.net/",
                 "loc": "St. George's",
@@ -105,7 +105,7 @@
                 "id_nc": "NA"
                 }, "geometry": { "type": "Point", "coordinates": [-61.7487996,12.0560975] } },{"type": "Feature", "properties": 
                 {"ctry": "Saint Lucia",
-                "updt": "2022-01-02",
+                "updt": "2022-01-11",
                 "name": "E",
                 "url": "https://e.root-servers.org/",
                 "loc": "Castries",
@@ -122,7 +122,7 @@
                 "id_nc": "NA"
                 }, "geometry": { "type": "Point", "coordinates": [-60.9935538,14.0089079] } },{"type": "Feature", "properties": 
                 {"ctry": "Jamaica",
-                "updt": "2022-01-02",
+                "updt": "2022-01-11",
                 "name": "E",
                 "url": "https://e.root-servers.org/",
                 "loc": "Kingston",
@@ -139,7 +139,7 @@
                 "id_nc": "NA"
                 }, "geometry": { "type": "Point", "coordinates": [-76.7906302,18.0113349] } },{"type": "Feature", "properties": 
                 {"ctry": "Haiti",
-                "updt": "2022-01-02",
+                "updt": "2022-01-11",
                 "name": "E",
                 "url": "https://e.root-servers.org/",
                 "loc": "Port au Prince",
@@ -156,7 +156,7 @@
                 "id_nc": "NA"
                 }, "geometry": { "type": "Point", "coordinates": [-72.3338694,18.5397282] } },{"type": "Feature", "properties": 
                 {"ctry": "Trinidad and Tobago",
-                "updt": "2022-01-02",
+                "updt": "2022-01-11",
                 "name": "E",
                 "url": "https://e.root-servers.org/",
                 "loc": "Port of Spain",
@@ -173,7 +173,7 @@
                 "id_nc": "NA"
                 }, "geometry": { "type": "Point", "coordinates": [-61.5166666667,10.6666666667] } },{"type": "Feature", "properties": 
                 {"ctry": "Grenada",
-                "updt": "2022-01-02",
+                "updt": "2022-01-11",
                 "name": "E",
                 "url": "https://e.root-servers.org/",
                 "loc": "St. George's",
@@ -190,7 +190,7 @@
                 "id_nc": "NA"
                 }, "geometry": { "type": "Point", "coordinates": [-61.788229,12.007116] } },{"type": "Feature", "properties": 
                 {"ctry": "Suriname",
-                "updt": "2022-01-02",
+                "updt": "2022-01-11",
                 "name": "F",
                 "url": "https://www.isc.org/f-root/",
                 "loc": "Paramaribo",
@@ -207,24 +207,7 @@
                 "id_nc": "NA"
                 }, "geometry": { "type": "Point", "coordinates": [-55.187783,5.452831] } },{"type": "Feature", "properties": 
                 {"ctry": "Haiti",
-                "updt": "2022-01-02",
-                "name": "F",
-                "url": "https://www.isc.org/f-root/",
-                "loc": "Port-au-Prince",
-                "oper": "Internet Systems Consortium, Inc.",
-                "type_": "Local",
-                "asn": "3557",
-                "ipv4": "192.5.5.241",
-                "ipv6": "NA",
-                "inst": "1",
-                "rssac": "http://rssac-stats.isc.org/rssac002/",
-                "con": "f-root@isc.org",
-                "peer": "https://www.isc.org/froot-peering/",
-                "id_root": "NA",
-                "id_nc": "NA"
-                }, "geometry": { "type": "Point", "coordinates": [-72.292503,18.58] } },{"type": "Feature", "properties": 
-                {"ctry": "Haiti",
-                "updt": "2022-01-02",
+                "updt": "2022-01-11",
                 "name": "F",
                 "url": "https://www.isc.org/f-root/",
                 "loc": "Port-au-Prince",
@@ -240,8 +223,25 @@
                 "id_root": "NA",
                 "id_nc": "NA"
                 }, "geometry": { "type": "Point", "coordinates": [-72.29471,18.575394] } },{"type": "Feature", "properties": 
+                {"ctry": "Haiti",
+                "updt": "2022-01-11",
+                "name": "F",
+                "url": "https://www.isc.org/f-root/",
+                "loc": "Port-au-Prince",
+                "oper": "Internet Systems Consortium, Inc.",
+                "type_": "Local",
+                "asn": "3557",
+                "ipv4": "192.5.5.241",
+                "ipv6": "NA",
+                "inst": "1",
+                "rssac": "http://rssac-stats.isc.org/rssac002/",
+                "con": "f-root@isc.org",
+                "peer": "https://www.isc.org/froot-peering/",
+                "id_root": "NA",
+                "id_nc": "NA"
+                }, "geometry": { "type": "Point", "coordinates": [-72.292503,18.58] } },{"type": "Feature", "properties": 
                 {"ctry": "Grenada",
-                "updt": "2022-01-02",
+                "updt": "2022-01-11",
                 "name": "F",
                 "url": "https://www.isc.org/f-root/",
                 "loc": "St. George's",
@@ -258,7 +258,7 @@
                 "id_nc": "NA"
                 }, "geometry": { "type": "Point", "coordinates": [-61.788229,12.007116] } },{"type": "Feature", "properties": 
                 {"ctry": "Suriname",
-                "updt": "2022-01-02",
+                "updt": "2022-01-11",
                 "name": "I",
                 "url": "http://i.root-servers.org/",
                 "loc": "Paramaribo",
@@ -275,7 +275,7 @@
                 "id_nc": "Responds to 'hostname.bind. IN TXT' with 'sN.XXX', (e.g.,  's1.sth') which means server N at site with Netnod identifier 'XXX'. These identifiers  should _not_ be interpreted as airport codes, though that may coincidentally be  the case."
                 }, "geometry": { "type": "Point", "coordinates": [-55.2217,5.847466] } },{"type": "Feature", "properties": 
                 {"ctry": "Trinidad and Tobago",
-                "updt": "2022-01-02",
+                "updt": "2022-01-11",
                 "name": "J",
                 "url": "http://j.root-servers.org/",
                 "loc": "Princes Town",

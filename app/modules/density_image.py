@@ -8,39 +8,47 @@ Project Title:
 #                                    Imports                                   #
 # ---------------------------------------------------------------------------- #
 
+import time
 import pandas as pd
+import folium
 from osgeo import gdal
+import branca
+from selenium import webdriver
+from selenium.webdriver.common.keys import Keys
+from selenium.webdriver.firefox.options import Options
+import base64
 from app import db
 from app.models import Pop_dens
-from datetime import datetime, timezone, timedelta
-import os
-import folium
-import branca
-import time
-from selenium import webdriver
-from selenium.webdriver.firefox.options import Options
 
-# lat and long in decimal degrees
+
+# ---------------------------------------------------------------------------- #
+#                                 Configuration                                #
+# ---------------------------------------------------------------------------- #
+
+# lat and long in decimal degrees - Map coordinates.
 coords = [10.536421, -61.311951]
 
+# Selenium headless mode.
 options = Options()
 options.headless = True
 
+
+# ---------------------------------------------------------------------------- #
+#                      Population Density Images Function                      #
+# ---------------------------------------------------------------------------- #
+
 def create_density_image():
+    '''
+    Generates PNG Images with Population Density overlays per Caribbean country.
+    '''
     # Read Population Density data from database to 'dens'.
     dens = Pop_dens.query.all()
 
     # Loops over data in 'dens'.
     for j in dens:
-        m = folium.Map(location=coords, zoom_start=11, tiles=None, max_bounds=True, )
+        # Instantiate folium map.
+        m = folium.Map(location=coords, zoom_control=False, zoom_start=11, tiles='cartodbpositron', max_bounds=True, )
 
-        # Add Base Map Tile to map 'm'.
-        folium.TileLayer(
-            tiles="cartodbpositron",
-            name="Base Map",
-            max_zoom=11,
-            min_zoom=5,
-            ).add_to(m)
 
         # 'dataset' = Pass TIF URL from 'j.url' to gdal.
         # 'width' and 'height' store width and height of image in the TIF file.
@@ -78,6 +86,7 @@ def create_density_image():
         # 'image' overlay added to map 'm'.
         image.add_to(m)
 
+        # 'legend_html' = legend is created in HTML.
         legend_html = f'''
         {{% macro html(this, kwargs) %}}
         <div style="
@@ -113,29 +122,45 @@ def create_density_image():
         </div>
         {{% endmacro %}}
         '''
+
+        # 'legend' = branca macro element.
+        # Contains 'legend_html'.
         legend = branca.element.MacroElement()
         legend._template = branca.element.Template(legend_html)
+        
+        # Add 'legend' macro to map 'm'.
         m.get_root().add_child(legend)
 
+        # 'offset_lon' = provides clearance at western side of geometry to not be obscured by the legend.
+        # 'offset_lat' = provides clearance at southern side of geometry from the screen border.
         offset_lon = 0.4
         offset_lat = 0.01
+
+        # 'sw' = South west corner. 'ne' = North east corner.
         sw = [lat_min - offset_lat, lon_min - offset_lon]
         ne = [lat_max, lon_max]
 
+        # Add geometry bounds to map 'm'.
         m.fit_bounds([sw, ne])
 
-        m.save('./app/static/html/Population Density/' + j.ctry + '.html')
+        # Extract map 'm' HTML as a string.
+        html_string = m.get_root().render()
         
-        map_url = 'file://{path}/{mapfile}'.format(
-            path=os.getcwd(),
-            mapfile="./app/static/html/Population Density/" + j.ctry + ".html"
-            )
-
-        browser = webdriver.Firefox(options=options, executable_path="./app/static/webdriver/geckodriver.exe")
+        # Convert 'html_string' to base64 to ensure script elements can load on Selenium.
+        html_bs64 = base64.b64encode(html_string.encode('utf-8')).decode()
+        
+        # Create and open a headless firefox browser session.
+        browser = webdriver.Firefox(options=options)
+        # Set browser window size.
         browser.set_window_size(820, 450)
-        browser.get(map_url)
-        # time.sleep(5)
-        browser.save_screenshot("./app/static/images/Population Density/" + j.ctry + ".png")
+        # Pass base64 HTML of map with cable geometry to firefox simulated browser.
+        browser.get("data:text/html;base64," + html_bs64)
+        # Wait 5 seconds for webpage to load properly.
+        time.sleep(5)
+        # Screenshot the map.
+        browser.save_screenshot("./app/static/images/general/density/" + j.ctry + ".png")
+
+        # Close the tab and browser to close all firefox sessions.
         browser.close()
         browser.quit()
    

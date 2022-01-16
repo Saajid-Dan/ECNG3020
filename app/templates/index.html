@@ -27,7 +27,7 @@
     <!-- Map HTML file -->
     <div class='row justify-content-center'>
         <div class="col-10">
-            <iframe id='map' src='/static/html/map.html' width="100%" height="450px" style="border: thin solid rgb(200, 200, 200)"></iframe>
+            <iframe id='map' src='/static/html/map.html' width="100%" height="400px" style="border: thin solid rgb(200, 200, 200)"></iframe>
         </div>
     </div>
     
@@ -75,84 +75,31 @@
         <div class="col-10" >
             <ul>
                 <li>
-                    Please select a country from the two dropdown menus below.
+                    Please select one of the buttons below to reveal the underlying graphs.
                 </li>
                 <li>
-                    The left dropdown menu will update all texts and graphs on the left to match to selected country.
+                    These buttons are Internet Infrastructure, Internet Adoption, and Internet Use.
                 </li>
                 <li>
-                    The right dropdown menu will update all texts and graphs on the right to match to selected country.
+                    These graphs may appear to have no data plotted. Select a country above the graph(s) will add the plot to the graph.
                 </li>
                 <li>
-                    These texts and graphs can be found with the following sections below -
-                General Country Information, Internet Infrastructure, Internet Adoption, and Internet Use.
+                    Multiple countries can be selected at a time.
                 </li>
             </ul>
             
             <p>
-                <b>Note 1: </b>Some graphs may be blank. This means that there was no available data to plot and not an issue loading the graphs.
+                <b>Note 1: </b>Some graphs may have discontinuities as data was either inaccessible or unavailable.
             </p>
 
             <p>
-                <b>Note 2: </b>Some graphs may have discontinuities as data was either inaccessible or unavailable.
+                <b>Note 2: </b>Some country selections may not add a plot to the graph. This is due to no available data to plot.
             </p>
 
             <p>
                 For more detailed information, check out the pages under Data Lising.
                 Data Listing can be found in the navigation toolbar.
             </p>
-        </div>
-    </div>
-
-    <div class='row justify-content-center'>       
-        <div class="col-xs-5 col-sm-5">
-            <select name="country1" class="form-select" id='country1' onchange="changeGraph('country1', 'left1', 'left2', 'left3', 'left4', 'tld-left')" required>
-                <option value='0'>Anguilla (AIA)</option>
-                <option value='1'>Antigua and Barbuda (ATG)</option>
-                <option value='2'>Bahamas (BHS)</option>
-                <option value='3'>Barbados (BRB)</option>
-                <option value='4'>Belize (BLZ)</option>
-                <option value='5'>Bermuda (BMU)</option>
-                <option value='6'>British Virgin Islands (VGB)</option>
-                <option value='7'>Cayman Islands (CYM)</option>
-                <option value='8'>Dominica (DMA)</option>
-                <option value='9'>Grenada (GRD)</option>
-                <option value='10'>Guyana (GUY)</option>
-                <option value='11'>Haiti (HTI)</option>
-                <option value='12'>Jamaica (JAM)</option>
-                <option value='13'>Montserrat (MSR)</option>
-                <option value='14'>St. Kitts and Nevis (KNA)</option>
-                <option value='15'>St. Lucia (LCA)</option>
-                <option value='16'>St. Vincent and the Grenadines (VCT)</option>
-                <option value='17'>Suriname (SUR)</option>
-                <option value='18'>Trinidad and Tobago (TTO)</option>
-                <option value='19'>Turks and Caicos Islands (TCA)</option>
-            </select>
-        </div>
-
-        <div class="col-xs-5 col-sm-5">
-            <select name="country2" class="form-select" id='country2' onchange="changeGraph('country2', 'right1', 'right2', 'right3', 'right4', 'tld-right')" required>
-                <option value='0'>Anguilla (AIA)</option>
-                <option value='1'>Antigua and Barbuda (ATG)</option>
-                <option value='2'>Bahamas (BHS)</option>
-                <option value='3'>Barbados (BRB)</option>
-                <option value='4'>Belize (BLZ)</option>
-                <option value='5'>Bermuda (BMU)</option>
-                <option value='6'>British Virgin Islands (VGB)</option>
-                <option value='7'>Cayman Islands (CYM)</option>
-                <option value='8'>Dominica (DMA)</option>
-                <option value='9'>Grenada (GRD)</option>
-                <option value='10'>Guyana (GUY)</option>
-                <option value='11'>Haiti (HTI)</option>
-                <option value='12'>Jamaica (JAM)</option>
-                <option value='13'>Montserrat (MSR)</option>
-                <option value='14'>St. Kitts and Nevis (KNA)</option>
-                <option value='15'>St. Lucia (LCA)</option>
-                <option value='16'>St. Vincent and the Grenadines (VCT)</option>
-                <option value='17'>Suriname (SUR)</option>
-                <option value='18'>Trinidad and Tobago (TTO)</option>
-                <option value='19'>Turks and Caicos Islands (TCA)</option>
-            </select>
         </div>
     </div>
     
@@ -166,59 +113,10 @@
         <div class="col-10">
             <a class="btn btn-primary" data-bs-toggle="collapse" href="#Collapse4" role="button" aria-expanded="false" aria-controls="Collapse4" style="width: 100%;">Internet Infrastructure</a> 
         </div>
-        
-        <!-- iframe for data -->
-        <div class="col-sm-5 col-10 collapse" id="Collapse4" style="border: thin solid rgb(200, 200, 200); margin-top: 0.5em;">
-            <p>
-                No. of IXPs: <br>
-                No. of TLDs: <br>
-                No. of Landings: <br>
-                No. of Root Servers: <br>
-            </p>
-        </div>
-        
-        <div class="col-sm-5 col-10 collapse" id="Collapse4" style="border: thin solid rgb(200, 200, 200); margin-top: 0.5em;">
-            <p>
-                No. of IXPs: <br>
-                No. of TLDs: <br>
-                No. of Landings: <br>
-                No. of Root Servers: <br>
-            </p>
-        </div>
 
         <!-- iframe for data -->
-        <!-- <div class="col-sm-5 col-10 collapse" id="Collapse4" style="border: thin solid rgb(200, 200, 200); margin-top: 0.5em;">
-            <iframe id='tld-left' src='{{ url_for("tld_page", country="Anguilla") }}' width="100%" height="300px"></iframe>
-            <p style="font-size:12px; text-align: center;">Source: .</p>
-        </div> -->
-        
-        <!-- iframe for data -->
-        <!-- <div class="col-sm-5 col-10 collapse" id="Collapse4" style="border: thin solid rgb(200, 200, 200); margin-top: 0.5em;">
-            <iframe id='tld-right' src='{{ url_for("tld_page", country="Anguilla") }}' width="100%" height="300px"></iframe>
-            <p style="font-size:12px; text-align: center;">Source: .</p>
-        </div> -->
-
-        <!-- iframe for data -->
-        <div class="col-md-5 col-10 collapse" id="Collapse4" style="border: thin solid rgb(200, 200, 200); margin-top: 0.5em;">
-            <iframe id='left1' src='/static/html/none.html' width="100%" height="300px"></iframe>
-            <p style="font-size:12px; text-align: center;">Used with permission from Ookla, LLC – Copyright 20__. All Rights Reserved.</p>
-        </div>
-        
-        <!-- iframe for data -->
-        <div class="col-md-5 col-10 collapse" id="Collapse4" style="border: thin solid rgb(200, 200, 200); margin-top: 0.5em;">
-            <iframe id='right1' src='/static/html/none.html' width="100%" height="300px"></iframe>
-            <p style="font-size:12px; text-align: center;">Used with permission from Ookla, LLC – Copyright 20__. All Rights Reserved.</p>
-        </div>
-
-        <!-- iframe for data -->
-        <div class="col-md-5 col-10 collapse" id="Collapse4" style="border: thin solid rgb(200, 200, 200)">
-            <iframe id='left2' src='/static/html/none.html' width="100%" height="300px"></iframe>
-            <p style="font-size:12px; text-align: center;">Used with permission from Ookla, LLC – Copyright 20__. All Rights Reserved.</p>
-        </div>
-
-        <!-- iframe for data -->
-        <div class="col-md-5 col-10 collapse" id="Collapse4" style="border: thin solid rgb(200, 200, 200)">
-            <iframe id='right2' src='/static/html/none.html' width="100%" height="300px"></iframe>
+        <div class="col-10 collapse" id="Collapse4" style="border: thin solid rgb(200, 200, 200); margin-top: 0.5em;">
+            <iframe id='Iframe' src='/static/html/graph_infr.html' width="100%" height="600"></iframe>
             <p style="font-size:12px; text-align: center;">Used with permission from Ookla, LLC – Copyright 20__. All Rights Reserved.</p>
         </div>
     </div>
@@ -227,20 +125,14 @@
     
     <!-- Collapse Object -->
     <div class='row justify-content-center'>
-            <div class="col-10">
-                <a class="btn btn-primary" data-bs-toggle="collapse" href="#Collapse5" role="button" aria-expanded="false" aria-controls="Collapse5" style="width: 100%;">Internet Adoption</a> 
-            </div>
+        <div class="col-10">
+            <a class="btn btn-primary" data-bs-toggle="collapse" href="#Collapse5" role="button" aria-expanded="false" aria-controls="Collapse5" style="width: 100%;">Internet Adoption</a> 
+        </div>
         
         <!-- iframe for data -->
-        <div class="col-md-5 col-10 collapse" id="Collapse5" style="border: thin solid rgb(200, 200, 200); margin-top: 0.5em;">
-            <iframe id='left3' src='/static/html/baskets0.html' width="100%" height="400px"></iframe>
-            <p style="font-size:12px; text-align: center;">Source: .</p>
-        </div>
-
-        <!-- iframe for data -->
-        <div class="col-md-5 col-10 collapse" id="Collapse5" style="border: thin solid rgb(200, 200, 200); margin-top: 0.5em;">
-            <iframe id='right3' src='/static/html/baskets0.html' width="100%" height="400px"></iframe>
-            <p style="font-size:12px; text-align: center;">Source: .</p>
+        <div class="col-10 collapse" id="Collapse5" style="border: thin solid rgb(200, 200, 200); margin-top: 0.5em;">
+            <iframe id='Iframe' src='/static/html/graph_adop.html' width="100%" height="1000px"></iframe>
+            <!-- <p style="font-size:12px; text-align: center;">Source: .</p> -->
         </div>
     </div>
 
@@ -253,170 +145,23 @@
         </div>
 
         <!-- iframe for data -->
-        <div class="col-md-5 col-10 collapse" id="Collapse6" style="border: thin solid rgb(200, 200, 200); margin-top: 0.5em;">
-            <iframe id='left4' src='/static/html/indicators0.html' width="100%" height="300px"></iframe>
-            <p style="font-size:12px; text-align: center;">Source: .</p>
-        </div>
-
-        <!-- iframe for data -->
-        <div class="col-md-5 col-10 collapse" id="Collapse6" style="border: thin solid rgb(200, 200, 200); margin-top: 0.5em;">
-            <iframe id='right4' src='/static/html/indicators0.html' width="100%" height="300px"></iframe>
-            <p style="font-size:12px; text-align: center;">Source: .</p>
+        <div class="col-10 collapse" id="Collapse6" style="border: thin solid rgb(200, 200, 200); margin-top: 0.5em;">
+            <iframe id='Iframe' src='/static/html/graph_use.html' width="100%" height="700px"></iframe>
+            <!-- <p style="font-size:12px; text-align: center;">Source: .</p> -->
         </div>
     </div>
 
-    
-    <!--- Toggle Country Graphs --->
-    <script>
-        function changeGraph(dropdown,iframe1, iframe2, iframe3, iframe4, iframe5) {
-            var dropdown = document.getElementById(dropdown)
-            var iframe1 = document.getElementById(iframe1)
-            var iframe2 = document.getElementById(iframe2)
-            var iframe3 = document.getElementById(iframe3)
-            var iframe4 = document.getElementById(iframe4)
-            var iframe5 = document.getElementById(iframe5)
+    <!-- <script>
+        let iframe = document.querySelector('#Iframe')
+        iframe.addEventListener('load', function() {
+            iframe.style.height = iframe.contentDocument.body.scrollHeight + 'px';
+        });
 
-            if (dropdown.value == '0'){ 
-                iframe1.src = '/static/html/none.html'
-                iframe2.src = '/static/html/none.html'
-                iframe3.src = '/static/html/baskets0.html'
-                iframe4.src = '/static/html/indicators0.html'
-                iframe5.src = '{{ url_for("tld_page", country="Anguilla") }}'
-            }
-            else if (dropdown.value == '1'){ 
-                iframe1.src = '/static/html/none.html'
-                iframe2.src = '/static/html/none.html'
-                iframe3.src = '/static/html/baskets1.html'
-                iframe4.src = '/static/html/indicators1.html'
-                iframe5.src = '{{ url_for("tld_page", country="Antigua and Barbuda") }}'
-            }
-            else if (dropdown.value == '2'){ 
-                iframe1.src = '/static/html/none.html'
-                iframe2.src = '/static/html/none.html'
-                iframe3.src = '/static/html/baskets2.html'
-                iframe4.src = '/static/html/indicators2.html'
-                iframe5.src = '{{ url_for("tld_page", country="Bahamas") }}'
-            }
-            else if (dropdown.value == '3'){ 
-                iframe1.src = '/static/html/none.html'
-                iframe2.src = '/static/html/none.html'
-                iframe3.src = '/static/html/baskets3.html'
-                iframe4.src = '/static/html/indicators3.html'
-                iframe5.src = '{{ url_for("tld_page", country="Barbados") }}'
-            }
-            else if (dropdown.value == '4'){ 
-                iframe1.src = '/static/html/none.html'
-                iframe2.src = '/static/html/none.html'
-                iframe3.src = '/static/html/baskets4.html'
-                iframe4.src = '/static/html/indicators4.html'
-                iframe5.src = '{{ url_for("tld_page", country="Belize") }}'
-            }
-            else if (dropdown.value == '5'){ 
-                iframe1.src = '/static/html/none.html'
-                iframe2.src = '/static/html/none.html'
-                iframe3.src = '/static/html/baskets5.html'
-                iframe4.src = '/static/html/indicators5.html'
-                iframe5.src = '{{ url_for("tld_page", country="Bermuda") }}'
-            }
-            else if (dropdown.value == '6'){ 
-                iframe1.src = '/static/html/none.html'
-                iframe2.src = '/static/html/none.html'
-                iframe3.src = '/static/html/baskets6.html'
-                iframe4.src = '/static/html/indicators6.html'
-                iframe5.src = '{{ url_for("tld_page", country="British Virgin Islands") }}'
-            }
-            else if (dropdown.value == '7'){ 
-                iframe1.src = '/static/html/none.html'
-                iframe2.src = '/static/html/none.html'
-                iframe3.src = '/static/html/baskets7.html'
-                iframe4.src = '/static/html/indicators7.html'
-                iframe5.src = '{{ url_for("tld_page", country="Cayman Islands") }}'
-            }
-            else if (dropdown.value == '8'){ 
-                iframe1.src = '/static/html/none.html'
-                iframe2.src = '/static/html/none.html'
-                iframe3.src = '/static/html/baskets8.html'
-                iframe4.src = '/static/html/indicators8.html'
-                iframe5.src = '{{ url_for("tld_page", country="Dominica") }}'
-            }
-            else if (dropdown.value == '9'){ 
-                iframe1.src = '/static/html/none.html'
-                iframe2.src = '/static/html/none.html'
-                iframe3.src = '/static/html/baskets9.html'
-                iframe4.src = '/static/html/indicators9.html'
-                iframe5.src = '{{ url_for("tld_page", country="Grenada") }}'
-            }
-            else if (dropdown.value == '10'){ 
-                iframe1.src = '/static/html/none.html'
-                iframe2.src = '/static/html/none.html'
-                iframe3.src = '/static/html/baskets10.html'
-                iframe4.src = '/static/html/indicators10.html'
-                iframe5.src = '{{ url_for("tld_page", country="Guyana") }}'
-            }
-            else if (dropdown.value == '11'){ 
-                iframe1.src = '/static/html/fixed0.html'
-                iframe2.src = '/static/html/mobile0.html'
-                iframe3.src = '/static/html/baskets11.html'
-                iframe4.src = '/static/html/indicators11.html'
-                iframe5.src = '{{ url_for("tld_page", country="Haiti") }}'
-            }
-            else if (dropdown.value == '12'){ 
-                iframe1.src = '/static/html/fixed1.html'
-                iframe2.src = '/static/html/mobile1.html'
-                iframe3.src = '/static/html/baskets12.html'
-                iframe4.src = '/static/html/indicators12.html'
-                iframe5.src = '{{ url_for("tld_page", country="Jamaica") }}'
-            }
-            else if (dropdown.value == '13'){ 
-                iframe1.src = '/static/html/none.html'
-                iframe2.src = '/static/html/none.html'
-                iframe3.src = '/static/html/baskets13.html'
-                iframe4.src = '/static/html/indicators13.html'
-                iframe5.src = '{{ url_for("tld_page", country="Montserrat") }}'
-            }
-            else if (dropdown.value == '14'){ 
-                iframe1.src = '/static/html/none.html'
-                iframe2.src = '/static/html/none.html'
-                iframe3.src = '/static/html/baskets14.html'
-                iframe4.src = '/static/html/indicators14.html'
-                iframe5.src = '{{ url_for("tld_page", country="Saint Kitts and Nevis") }}'
-            }
-            else if (dropdown.value == '15'){ 
-                iframe1.src = '/static/html/none.html'
-                iframe2.src = '/static/html/none.html'
-                iframe3.src = '/static/html/baskets15.html'
-                iframe4.src = '/static/html/indicators15.html'
-                iframe5.src = '{{ url_for("tld_page", country="Saint Lucia") }}'
-            }
-            else if (dropdown.value == '16'){ 
-                iframe1.src = '/static/html/none.html'
-                iframe2.src = '/static/html/none.html'
-                iframe3.src = '/static/html/baskets16.html'
-                iframe4.src = '/static/html/indicators16.html'
-                iframe5.src = '{{ url_for("tld_page", country="Saint Vincent and the Grenadines") }}'
-            }
-            else if (dropdown.value == '17'){ 
-                iframe1.src = '/static/html/fixed2.html'
-                iframe2.src = '/static/html/mobile2.html'
-                iframe3.src = '/static/html/baskets17.html'
-                iframe4.src = '/static/html/indicators17.html'
-                iframe5.src = '{{ url_for("tld_page", country="Suriname") }}'
-            }
-            else if (dropdown.value == '18'){ 
-                iframe1.src = '/static/html/fixed3.html'
-                iframe2.src = '/static/html/mobile3.html'
-                iframe3.src = '/static/html/baskets18.html'
-                iframe4.src = '/static/html/indicators18.html'
-                iframe5.src = '{{ url_for("tld_page", country="Trinidad and Tobago") }}'
-            }
-            else if (dropdown.value == '19'){ 
-                iframe1.src = '/static/html/none.html'
-                iframe2.src = '/static/html/none.html'
-                iframe3.src = '/static/html/baskets19.html'
-                iframe4.src = '/static/html/indicators19.html'
-                iframe5.src = '{{ url_for("tld_page", country="Turks & Caicos Is.") }}'
-            }
-            
+        var frame = document.getElementById("Iframe");
+        frame.onload = function()
+        {
+            frame.style.height = frame.contentWindow.document.body.scrollHeight + 'px';
         }
-    </script>
+    </script> -->
+
 {% endblock %}

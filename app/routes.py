@@ -1,4 +1,4 @@
-from flask import render_template, url_for
+from flask import render_template, url_for, send_from_directory, send_file
 from app import app, db
 from app.forms import Feedback, form_validate
 
@@ -25,9 +25,9 @@ from app.sources.Submarine_Cables import submarine
 from app.sources.Top_Level_Domains import tld
 
 from app.modules.maps import create_map
-from app.modules.speed_index_graph import create_speed_graph
-from app.modules.baskets_graph import create_baskets_graph
-from app.modules.indicators_graph import create_indic_graph
+from app.modules.graph_infr import graph_infr
+from app.modules.graph_adop import graph_adop
+from app.modules.graph_use import graph_use
 from app.modules.landing_image import create_land_image
 from app.modules.submarine_image import create_sub_image
 from app.modules.ixp_image import create_ixp_image
@@ -383,6 +383,166 @@ def indicator_list():
 
     return render_template('indicator_list.html', title= 'ICT Indicators Listing', indic_all = ctry_lst, form=form, url=url)
 
+import time
+from selenium import webdriver
+from selenium.webdriver.common.keys import Keys
+from selenium.webdriver.firefox.options import Options
+from flask import request, make_response, render_template_string
+
+options = Options()
+options.headless = True
+
+@app.route('/child/<root>/<sub>')
+def child(root, sub):
+    from bs4 import BeautifulSoup
+    import requests
+
+    ctry_lst = [
+        'Anguilla',
+        'Antigua and Barbuda',
+        'Bahamas',
+        'Barbados',
+        'Belize',
+        'Bermuda',
+        'British Virgin Islands',
+        'Cayman Islands',
+        'Dominica',
+        'Grenada',
+        'Guyana',
+        'Haiti',
+        'Jamaica',
+        'Montserrat',
+        'Saint Kitts and Nevis',
+        'Saint Lucia',
+        'Saint Vincent and the Grenadines',
+        'Suriname',
+        'Trinidad and Tobago',
+        'Turks & Caicos Is.'
+    ]
+
+    head = request.headers['Host']
+
+    if sub in ctry_lst:
+        sub = url_for(root, country=sub)
+    else:
+        sub = url_for(root, cable=sub)
+
+    source = requests.get('http://' + head + sub).text
+    soup = BeautifulSoup(source, 'lxml')
+
+    a = str(soup).find('<!-- -------------------------- Insert Code Here --------------------------- -->')
+    b = str(soup).find('<!-- -------------------------- Insert Code Here --------------------------- -->', a + 1)
+    
+    html = str(soup)[a:b]
+    html = html.replace('h5', 'h2')
+
+    a = html.find('<audio')
+    b = html.find('</audio>')
+
+    if (a != -1 and b != -1):
+        html = html.replace(html[a:b+8], 'NA')
+
+    html_head = '''
+    <!doctype html>
+    <head>
+        <meta charset="UTF-8">
+        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3" crossorigin="anonymous">
+        <style>
+        body { 
+            font: normal Helvetica, Arial, sans-serif; 
+            letter-spacing: 1.5px;
+            }
+        </style>
+    </head>
+    <body>
+    '''
+
+    html_foot = '''
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-ka7Sk0Gln4gmtz2MlQnikT1wXgYsOg+OMhuP+IlRH9sENBO0LRn5q+8nbTov4+1p" crossorigin="anonymous"></script>
+    </body>
+    '''
+
+    return render_template_string(html_head + html + html_foot)
+
+
+@app.route('/pdf2')
+def pdf2():
+    import pdfkit
+
+    path_wkhtmltopdf = r'C:\Program Files\wkhtmltopdf\bin\wkhtmltopdf.exe'
+    config = pdfkit.configuration(wkhtmltopdf=path_wkhtmltopdf)
+    
+    # rendered = render_template('test.html')
+    
+    # pdf = pdfkit.from_string(rendered, configuration=config)
+    
+    # response = make_response(pdf)
+    # response.headers['Content-Type'] = 'application/pdf'
+    # response.headers['Content-Disposition'] = 'inline; file_name=output.pdf'
+
+    # return response
+    
+    # options = {
+    #     'page-size': 'A4',
+    #     'dpi': 800
+    # }
+
+    head = request.headers['Host']
+    ctry = [
+        # 'Haiti',
+        # 'Jamaica',
+        # 'Suriname',
+        'Anguilla'
+    ]
+    
+    for item in ctry:
+        sub = url_for('child', root='gen_page', sub=item)
+        pdfkit.from_url('http://' + head + sub, "./app/static/pdf/" + item + "_Gen" + ".pdf", configuration=config)
+        
+        sub = url_for('child', root='tld_page', sub=item)
+        pdfkit.from_url('http://' + head + sub, "./app/static/pdf/" + item + "_TLD" + ".pdf", configuration=config)
+
+        sub = url_for('child', root='land_page', sub=item)
+        pdfkit.from_url('http://' + head + sub, "./app/static/pdf/" + item + "_Land" + ".pdf", configuration=config)
+
+    # print("PDF Test Completed")
+    return render_template('test.html')
+
+
+@app.route('/pdf/<path:filename>', methods=['GET', 'POST'])
+def pdf(filename):
+    from pathlib import Path
+    root = Path('.')
+    folder_path = root / 'static/pdf'
+
+    return send_from_directory(folder_path, filename, as_attachment=True)
+
+
+@app.route('/reports', methods=['GET', 'POST'])
+def reports():
+    url = url_for('reports')
+    form = Feedback()
+    if form.validate_on_submit():
+        form_validate(url, form)
+
+    return render_template('reports.html', title='Download Reports', form=form, url=url)
+
+@app.route('/csv/<path:filename>', methods=['GET', 'POST'])
+def csv(filename):
+    from pathlib import Path
+    root = Path('.')
+    folder_path = root / 'static/csv'
+
+    return send_from_directory(folder_path, filename, as_attachment=True)
+
+@app.route('/json/<path:filename>', methods=['GET', 'POST'])
+def json(filename):
+    from pathlib import Path
+    root = Path('.')
+    folder_path = root / 'static/json'
+
+    return send_from_directory(folder_path, filename, as_attachment=True)
+
 @app.route('/test')
 def test():
     # print(population())
@@ -394,16 +554,23 @@ def test():
     # print(speedindex())
     # print(submarine())
     # print(tld())
-    # create_map()
-    # create_speed_graph()
-    # create_baskets_graph()
-    # create_indic_graph()
     # print("successful")
-    create_land_image()
+    # create_map()
+    # print("successful")
+    graph_infr()
+    # print("successful")
+    # graph_adop()
+    # print("successful")
+    # graph_use()
+    # print("successful")
+    # create_land_image()
+    # print("successful")
     # create_sub_image()
+    # print("successful")
     # create_ixp_image()
+    # print("successful")
     # create_root_image()
+    # print("successful")
     # create_density_image()
-    # create_indic_graph_test()
     print("Test Completed")
     return render_template('test.html')

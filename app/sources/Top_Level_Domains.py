@@ -225,26 +225,28 @@ def tld():
 
         
         # ---------------------------------------------------------------------------- #
-        #                                Convert to CSV                                #
+        #                                Convert to JSON                               #
         # ---------------------------------------------------------------------------- #
 
-        to_csv = [cc, type_, cctld, ad_con, tch_con, reg, dates]
-        for i in range(len(to_csv)):
-            to_csv[i] = to_csv[i].replace('</p>', ', ')
-            to_csv[i] = to_csv[i].replace('<br/>', ', ')
-            to_csv[i] = to_csv[i].replace('<p>', '')
-            to_csv[i] = to_csv[i].replace('<u>', '')
-            to_csv[i] = to_csv[i].replace('</u>', '')
-            to_csv[i] = to_csv[i].replace('   ', '')
-            to_csv[i] = to_csv[i].replace('\n', '')
-            to_csv[i] = to_csv[i].replace('\'', '`')
-            to_csv[i] = to_csv[i].replace('<a href="', '')
-            to_csv[i] = to_csv[i].replace('</a>', '')
-            to_csv[i] = to_csv[i].replace('">', ', ')
-            # print(to_csv[i])
+        # Cleaning HTML strings for JSON conversion.
+        data = [cc, type_, cctld, ad_con, tch_con, reg, dates]
+        for i in range(len(data)):
+            data[i] = data[i].replace('</p>', ', ')
+            data[i] = data[i].replace('<br/>', ', ')
+            data[i] = data[i].replace('<p>', '')
+            data[i] = data[i].replace('<u>', '')
+            data[i] = data[i].replace('</u>', '')
+            data[i] = data[i].replace('   ', '')
+            data[i] = data[i].replace('\n', '')
+            data[i] = data[i].replace('\'', '`')
+            data[i] = data[i].replace('<a href="', '')
+            data[i] = data[i].replace('</a>', '')
+            data[i] = data[i].replace('">', ', ')
         
+        # Store data to a pandas dataframe to easily write to a JSON format.
         df = pd.DataFrame(columns=['ctry', 'type', 'ad_con', 'tch_con', 'reg', 'dates'])
 
+        # Clean HTML tables to write to read into a pandas dataframe.
         table = nm_svr.replace(" class='table table-sm table-hover'", '')
         table = table.replace(" class='table-primary'", '')
         table = table.replace("<br/></td>", '</td>')
@@ -256,21 +258,26 @@ def tld():
         table = table.replace("<tbody>", '')
         table = table.replace("</tbody>", '')
 
+        # Store cleaned HTML table to a pandas dataframe to easily write to a JSON format.
+        # Rename headers.
+        # Export dataframe table as a list to write to a JSON.
         df = pd.read_html(table, skiprows=1)[0]
         df.rename({0:'Host Name', 1:'IPv4', 2:'IPv6'}, axis='columns', inplace=True)
         df = df.to_dict('list')
 
+        # Inject cleaned data into a JSON format entry.
         entry = f'''"{ctry_}": {{
-                "cc": "{to_csv[0]}",
-                "type_": "{to_csv[1]}",
-                "cctld": "{to_csv[2]}",
-                "ad_con": "{to_csv[3]}",
-                "tch_con": "{to_csv[4]}",
-                "reg": "{to_csv[5]}",
-                "dates": "{to_csv[6]}",
+                "cc": "{data[0]}",
+                "type_": "{data[1]}",
+                "cctld": "{data[2]}",
+                "ad_con": "{data[3]}",
+                "tch_con": "{data[4]}",
+                "reg": "{data[5]}",
+                "dates": "{data[6]}",
                 "nm_svr": {df}
             }}'''
 
+        # Combine JSON entries.
         to_json += entry + ','
 
 
@@ -352,12 +359,21 @@ def tld():
         # Commit changes to the database.
         db.session.commit()
 
+
+    # ---------------------------------------------------------------------------- #
+    #                                  Write JSON                                  #
+    # ---------------------------------------------------------------------------- #
+
+    # Clean JSON fomrat for writing.
     to_json = to_json.replace('\'', '"')
     to_json = re.sub(r"\bnan\b", '"nan"', to_json)
 
+    # Add open/close braces to complete JSON format.
     coll = f'''{{
         {to_json[:-1]}
     }}
     '''
+
+    # Write JSON file.
     with open('./app/static/json/top_level_domain.json', 'w', encoding="utf-8") as f:
         f.write(coll)

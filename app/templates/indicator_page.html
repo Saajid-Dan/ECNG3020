@@ -2,16 +2,17 @@
 
 {% block content %}
     <!-- Declaration of Map Title -->
-    <div class='row justify-content-center'>
-        <div class="col-12" >
-            <h5 class="md-10 text-center text-muted">ICT Price Baskets - {{ title }}</h5>
+    <div class='row '>
+        <div class="col-1" ></div>
+        <div class="col-10" >
+            <h5 class="md-10 text-muted">ICT Indicators - {{ title }}</h5>
         </div>
     </div>
 
     <div class='row justify-content-center'>
         <div class='col-10'>
             <p>
-                Tables 1, 2, and 3 displays ICT price basket data on fixed and mobile broadband services respectively for {{ title }}.
+                Tables 1, 2, 3, and 4 displays ICT indicators data on fixed and mobile broadband total subscriptions, percentage of individuals using the internet, and total bandwidth usage (in Mbps) respectively for {{ title }}.
             </p>
             
             <p>
@@ -19,8 +20,7 @@
                 This is identified as 'None' in the tables.
             </p>
             <p>
-                <b>Note 2: </b>Each Figure is titled by 'Price Baskets - XXX'.
-                'XXX' refers to an ISO-3 country code.
+                <b>Note 2: </b>Some figures may be blank as there was no data to plot.
             </p>
 
             <p><u>Table 1: Fixed Broadband Total Subscriptions - {{ title }}</u></p>
@@ -55,7 +55,7 @@
     
     <div class='row justify-content-center'>
         <div class="col-10">
-            <img class='img-fluid' src="/static/images/Indicators/Fixed{{ title }}.png" alt="The Image may not exist or has not loaded.">
+            <img class='img-fluid' src="/static/images/use/indicators/Fixed - {{ title }}.png" alt="The Image may not exist or has not loaded.">
             <p><u>Figure 1a: Fixed Broadband Total Subscriptions - {{ title }}</u></p>
         </div>
     </div>
@@ -96,7 +96,7 @@
     
     <div class='row justify-content-center'>
         <div class="col-10">
-            <img class='img-fluid' src="/static/images/Indicators/Mobile{{ title }}.png" alt="The Image may not exist or has not loaded.">
+            <img class='img-fluid' src="/static/images/use/indicators/Mobile - {{ title }}.png" alt="The Image may not exist or has not loaded.">
             <p><u>Figure 2a: Mobile Broadband Total Subscriptions - {{ title }}</u></p>
         </div>
     </div>
@@ -137,7 +137,7 @@
     
     <div class='row justify-content-center'>
         <div class="col-10">
-            <img class='img-fluid' src="/static/images/Indicators/Percent{{ title }}.png" alt="The Image may not exist or has not loaded.">
+            <img class='img-fluid' src="/static/images/use/indicators/Percent - {{ title }}.png" alt="The Image may not exist or has not loaded.">
             <p><u>Figure 3a: Percent of Internet Users - {{ title }}</u></p>
         </div>
     </div>
@@ -178,7 +178,7 @@
     
     <div class='row justify-content-center'>
         <div class="col-10">
-            <img class='img-fluid' src="/static/images/Indicators/Total{{ title }}.png" alt="The Image may not exist or has not loaded.">
+            <img class='img-fluid' src="/static/images/use/indicators/Bandwidth - {{ title }}.png" alt="The Image may not exist or has not loaded.">
             <p><u>Figure 4a: Total Bandwidth Usage - {{ title }}</u></p>
         </div>
     </div>

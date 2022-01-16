@@ -76,7 +76,7 @@ def density():
         'MSR':'Montserrat',
         'KNA':'Saint Kitts and Nevis',
         'LCA':'Saint Lucia',
-        'VCT':'Saint Vincent and The Grenadines',
+        'VCT':'Saint Vincent and the Grenadines',
         'SUR':'Suriname',
         'TTO':'Trinidad and Tobago',
         'TCA':'Turks & Caicos Is.'

@@ -95,7 +95,7 @@ def speedindex():
     # Loops over dataframes in 'mob_' and stores data into the 'Mob_br' database table
     for j in mob_:
         for k in range(len(j)):
-            mnth = str(j.iloc[k]['Month']).split()[0]   # YYYY-MM-DD
+            date = str(j.iloc[k]['Month']).split()[0]   # YYYY-MM-DD
             ctry = j.iloc[k]['Country']
             uni = ctry + '-' + str(j) + '-' + str(k)
             dls = j.iloc[k]['Download Mbps']            # Unit- Mbps
@@ -116,7 +116,7 @@ def speedindex():
                 u = Mob_br(
                     uni = uni,
                     ctry = ctry,
-                    mnth = mnth,
+                    date = date,
                     dls = dls,
                     ups = ups, 
                     ltcy = ltcy, 
@@ -134,7 +134,7 @@ def speedindex():
                 # Overwriting of data in 'u'.
                 u.uni = uni
                 u.ctry = ctry
-                u.mnth = mnth
+                u.date = date
                 u.dls = dls
                 u.ups = ups
                 u.ltcy = ltcy
@@ -149,7 +149,7 @@ def speedindex():
 
     # Checks if the table is empty by looking at the table's first entry.
     # 'exist' returns None is empty.
-    exist = Mob_br.query.get(1)
+    exist = Mob_br.query.all()
 
     # If table is full ...
     if exist != None:
@@ -178,7 +178,7 @@ def speedindex():
     # Loops over dataframes in 'fix_' and stores data into the 'fixed_br' database table
     for j in fix_:
         for k in range(len(j)):
-            mnth = str(j.iloc[k]['Month']).split()[0]   # YYYY-MM-DD
+            date = str(j.iloc[k]['Month']).split()[0]   # YYYY-MM-DD
             ctry = j.iloc[k]['Country']
             uni = ctry + '-' + str(j) + '-' + str(k)
             dls = j.iloc[k]['Download Mbps']            # Unit- Mbps
@@ -198,7 +198,7 @@ def speedindex():
                 u = Fixed_br(
                     uni = uni,
                     ctry = ctry,
-                    mnth = mnth,
+                    date = date,
                     dls = dls,
                     ups = ups, 
                     ltcy = ltcy, 
@@ -216,7 +216,7 @@ def speedindex():
                 # Overwriting of data in 'u'.
                 u.uni = uni
                 u.ctry = ctry
-                u.mnth = mnth
+                u.date = date
                 u.dls = dls
                 u.ups = ups
                 u.ltcy = ltcy

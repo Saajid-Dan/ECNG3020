@@ -14,19 +14,19 @@
                 <b>Note: </b>'NA' means Not Applicable.
             </p>
             
-            <h6 style="font-size: 105%; margin-top: 30px;">General Information</h6>
+            <p style="font-size: 105%;"><b>General Information</b></p>
             {{ gen.gen | safe }}
-            <h6 style="font-size: 105%; margin-top: 30px;">Currency</h6>
+            <p style="font-size: 105%;"><b>Currency</b></p>
             {{ gen.cur | safe }}
-            <h6 style="font-size: 105%; margin-top: 30px;">Area</h6>
+            <p style="font-size: 105%;"><b>Area</b></p>
             {{ gen.area | safe }}
-            <h6 style="font-size: 105%; margin-top: 30px;">Land Use</h6>
+            <p style="font-size: 105%;"><b>Land Use</b></p>
             {{ gen.land | safe }}
-            <h6 style="font-size: 105%; margin-top: 30px;">Languages</h6>
+            <p style="font-size: 105%;"><b>Languages</b></p>
             {{ gen.lang | safe }}
-            <h6 style="font-size: 105%; margin-top: 30px;">Population</h6>
+            <p style="font-size: 105%;"><b>Population</b></p>
             {{ gen.pop | safe }}
-            <h6 style="font-size: 105%; margin-top: 30px;">Population Density</h6>
+            <p style="font-size: 105%;"><b>Population Density</b></p>
             <p><u>Average Density: </u>{{ '%0.1f' | format(dens.dens | float) }} people/sq. km</p>
             
             <!-- ------------------------------ To change ------------------------------ -->
@@ -34,24 +34,24 @@
             <p><u>Minimum Density: </u>{{ '%0.1f' | format(dens.min_ | float) }} people/sq. km</p>
             <p>The following figure displays the population density over {{ title }}.</p>
             
-            <img class='img-fluid' src="/static/images/Population Density/{{ title }}.png" alt="The Image may not exist or has not loaded.">
+            <img class='img-fluid' src="/static/images/general/density/{{ title }}.png" alt="The Image may not exist or has not loaded.">
             <p>
                 <u>Figure 1a: Population Density in {{ title }}</u><br>
             </p>
 
-            <h6 style="font-size: 105%; margin-top: 30px;">Urbanization</h6>
+            <p style="font-size: 105%;"><b>Urbanization</b></p>
             {{ gen.urb | safe }}
-            <h6 style="font-size: 105%; margin-top: 30px;">Electricity Access</h6>
+            <p style="font-size: 105%;"><b>Electricity Access</b></p>
             {{ gen.elec | safe }}
-            <h6 style="font-size: 105%; margin-top: 30px;">Labour Force</h6>
+            <p style="font-size: 105%;"><b>Labour Force</b></p>
             {{ gen.lab | safe }}
-            <h6 style="font-size: 105%; margin-top: 30px;">Labour Force - By Occupation</h6>
+            <p style="font-size: 105%;"><b>Labour Force - By Occupation</b></p>
             {{ gen.occ | safe }}
-            <h6 style="font-size: 105%; margin-top: 30px;">Unemployment Rate</h6>
+            <p style="font-size: 105%;"><b>Unemployment Rate</b></p>
             {{ gen.unem | safe }}
-            <h6 style="font-size: 105%; margin-top: 30px;">Population Below Povery Line</h6>
+            <p style="font-size: 105%;"><b>Population Below Povery Line</b></p>
             {{ gen.pov | safe }}
-            <h6 style="font-size: 105%; margin-top: 30px;">Literacy</h6>
+            <p style="font-size: 105%;"><b>Literacy</b></p>
             {{ gen.lit | safe }}
 
             <br>

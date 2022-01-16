@@ -8,8 +8,6 @@ Project Title:
 #                                    Imports                                   #
 # ---------------------------------------------------------------------------- #
 
-
-import os
 import time
 import ast
 import pandas as pd
@@ -126,7 +124,7 @@ def create_sub_image():
         # Wait 5 seconds for webpage to load properly.
         time.sleep(5)
         # Screenshot the map.
-        browser.save_screenshot("./app/static/images/submarine/" + name + ".png")
+        browser.save_screenshot("./app/static/images/infrastructure/submarine/" + name + ".png")
 
         # Close the tab and browser to close all firefox sessions.
         browser.close()

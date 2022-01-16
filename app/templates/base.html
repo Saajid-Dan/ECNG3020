@@ -20,7 +20,7 @@
         <!-- Primary Navbar -->
         <nav class="navbar navbar-expand-sm navbar-dark bg-primary">
             <div class="container-fluid">
-                <a class="navbar-brand font-size-8" href="#">
+                <a class="navbar-brand font-size-8" href="{{ url_for('index') }}">
                     <img src="https://icon-library.com/images/blue-search-icon/blue-search-icon-15.jpg" width=30 height=30 class="d-inline-block align-top">
                     <span style="font-size:85%">ECNG 3020</span>
                 </a>
@@ -53,7 +53,7 @@
                             </ul>
                           </li>
                         <li class="nav-item">
-                            <a class="nav-link" href="#">Download Reports</a>
+                            <a class="nav-link" href="{{ url_for('reports') }}">Download Reports</a>
                         </li>
 
                     </ul>

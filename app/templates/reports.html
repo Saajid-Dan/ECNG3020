@@ -1,0 +1,124 @@
+{% extends "base.html" %}
+
+{% block content %}
+    <!-- Declaration of Map Title -->
+    <div class='row justify-content-center'>
+        <div class="col-12" >
+            <h5 class="md-10 text-center text-muted">{{ title }}</h5>
+        </div>
+    </div>
+
+    <div class='row justify-content-center'>
+        <div class='col-10'>
+            <p>
+                Most data on this dashboard are available to download in PDF, CSV, and JSON file formats.
+            </p>
+
+            <p><b>Available PDF Files</b></p>
+            <p>
+                PDF files are available to download per country.
+                They can be accessed by selecting one of the following links.
+            </p>
+
+            <p><u>Anguilla PDF Reports</u></p>
+
+            <ol class='list-group list-group-numbered'>
+                <li class='list-group-item list-group-item-action'>
+                    <a href={{ url_for('pdf', filename="Anguilla_TLD.pdf") }}>Anguilla - Top Level Domains</a>
+                </li>
+                <li class='list-group-item list-group-item-action'>
+                    <a href={{ url_for('pdf', filename="Anguilla_Gen.pdf") }}>Anguilla - General Country Information</a>
+                </li>
+                <li class='list-group-item list-group-item-action'>
+                    <a href={{ url_for('pdf', filename="Anguilla_Land.pdf") }}>Anguilla - Landing Points</a>
+                </li>
+            </ol>
+
+            <br>
+
+            <p><b>Available CSV Files</b></p>
+            <p>
+                CSV files can be downloaded by selecting one of the links below.
+            </p>
+
+            <ol class='list-group list-group-numbered'>
+                <li class='list-group-item list-group-item-action'>
+                    <a href={{ url_for('csv', filename="indicators_bandwidth.csv") }}>ICT Indicators - Total Bandwidth Usage</a>
+                </li>
+                <li class='list-group-item list-group-item-action'>
+                    <a href={{ url_for('csv', filename="indicators_fixed.csv") }}>ICT Indicators - Fixed Broadband Subscriptions</a>
+                </li>
+                <li class='list-group-item list-group-item-action'>
+                    <a href={{ url_for('csv', filename="indicators_mobile.csv") }}>ICT Indicators - Mobile Broadband Subscriptions</a>
+                </li>
+                <li class='list-group-item list-group-item-action'>
+                    <a href={{ url_for('csv', filename="indicators_percent.csv") }}>ICT Indicators - Percent of Individuals using the Internet</a>
+                </li>
+
+                <li class='list-group-item list-group-item-action'>
+                    <a href={{ url_for('csv', filename="GNI.csv") }}>ICT Price Baskets - GNI pc</a>
+                </li>
+                <li class='list-group-item list-group-item-action'>
+                    <a href={{ url_for('csv', filename="PPP.csv") }}>ICT Price Baskets - Purchasing Power Parity</a>
+                </li>
+                <li class='list-group-item list-group-item-action'>
+                    <a href={{ url_for('csv', filename="USD.csv") }}>ICT Price Baskets - US Dollar</a>
+                </li>
+
+                <li class='list-group-item list-group-item-action'>
+                    <a href={{ url_for('csv', filename="ixp_dir.csv") }}>Internet Exchange Points - Directory</a>
+                </li>
+                <li class='list-group-item list-group-item-action'>
+                    <a href={{ url_for('csv', filename="ixp_sub.csv") }}>Internet Exchange Points - Subnet Details</a>
+                </li>
+                <li class='list-group-item list-group-item-action'>
+                    <a href={{ url_for('csv', filename="ixp_mem.csv") }}>Internet Exchange Points - Subnet Members</a>
+                </li>
+                
+                <li class='list-group-item list-group-item-action d-flex justify-content-between'>
+                    <div class="ms-2 me-auto">
+                        <div><a href={{ url_for('csv', filename="fixed_speed_index.csv") }}>Caribbean Speed Index - Fixed Broadband</a></div>
+                        Used with permission from Ookla, LLC – Copyright 20__. All Rights Reserved.
+                    </div>
+                </li>
+                <li class='list-group-item list-group-item-action d-flex justify-content-between'>
+                    <div class="ms-2 me-auto">
+                        <div><a href={{ url_for('csv', filename="mobile_speed_index.csv") }}>Caribbean Speed Index - Mobile Broadband</a></div>
+                        Used with permission from Ookla, LLC – Copyright 20__. All Rights Reserved.
+                    </div>
+                </li>
+            </ol>
+            
+            <br>
+
+            <p><b>Available JSON Files</b></p>
+            <p>
+                JSON files can be downloaded by selecting one of the links below.
+            </p>
+
+            <ol class='list-group list-group-numbered'>
+                <li class='list-group-item list-group-item-action'>
+                    <a href={{ url_for('json', filename="general.json") }}>General Country Information - Without Population Density</a>
+                </li>
+                <li class='list-group-item list-group-item-action'>
+                    <a href={{ url_for('json', filename="density.json") }}>General Country Information - Population Density</a>
+                </li>
+
+                <li class='list-group-item list-group-item-action'>
+                    <a href={{ url_for('json', filename="landing_point.json") }}>Landing Points - Caribbean</a>
+                </li>
+                <li class='list-group-item list-group-item-action'>
+                    <a href={{ url_for('json', filename="submarine.json") }}>Submarine Cables</a>
+                </li>
+
+                <li class='list-group-item list-group-item-action'>
+                    <a href={{ url_for('json', filename="top_level_domain.json") }}>Top Level Domains</a>
+                </li>
+
+                <li class='list-group-item list-group-item-action'>
+                    <a href={{ url_for('json', filename="root_servers.json") }}>Root Servers</a>
+                </li>
+            </ol>
+        </div>
+    </div>
+{% endblock %}

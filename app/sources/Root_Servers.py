@@ -265,6 +265,7 @@ def root():
             #                                Convert to CSV                                #
             # ---------------------------------------------------------------------------- #
 
+            # Inject data above into a JSON format entry.
             entry = f'''{{"type": "Feature", "properties": 
                 {{"ctry": "{dict_ctry[ctry]}",
                 "updt": "{sub.replace('/', '')}",
