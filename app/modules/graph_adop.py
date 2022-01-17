@@ -10,11 +10,13 @@ Project Title:
 
 import pandas as pd
 from bokeh.plotting import figure, show, output_file, save
-from bokeh.models import Range1d, HoverTool, Panel, Tabs, Legend, LegendItem, Column, Row
+from bokeh.models import Range1d, HoverTool, Panel, Tabs, Legend, LegendItem, Column, Row, MultiChoice, CustomJS, Button
+from bokeh.events import ButtonClick
 from bokeh.io import export_png
 from math import pi
 from app import db
 from app.models import GNI, PPP, USD
+import codecs
 
 
 # ---------------------------------------------------------------------------- #
@@ -82,91 +84,53 @@ def graph_adop():
     column.sizing_mode = 'stretch_width'
 
 
-    # ---------------------------- Merge Plot Legends ---------------------------- #
-
-    # 'legend_items' = list comprehension that extract legend data from the glyphs in 'lst_glyph'.
-    # Each glyph has graphs with plots that use unique colours.
-    # Plots with a certain colour has their legend data merged together.
-    # Selecting the legend will allow visibility toggled of plots on all figures.
-    # Credit: https://stackoverflow.com/questions/56825350/how-to-add-one-legend-for-that-controlls-multiple-bokeh-figures
-    
-    # 'col_pres' = to store unique colours used in the graphs.
-    # This presents unused colours from writing to the Legend.
-    col_pres = []
-    # Iterates through all glyphs.
-    for j in lst_glyph:
-        # 'col_lin' = gets plot colour.
-        col_lin = j.glyph.line_color
-        # Append plot colour if it is not in 'col_pres'.
-        if col_lin not in col_pres:
-            col_pres.append(col_lin)
-    
-    # Merges plot legends together.
-    legend_items = [
-        # 'LegendItem' = Bokeh legend tool.
-        LegendItem(
-            # 'label' = legend label. The look up table is used to assign a country as the label.
-            label=lkup[color][0],
-            # 'renderers' = bokeh glyphs.
-            renderers=[
-                # Assign a glyph to a legend label by the type of colour.
-                renderer for renderer in lst_glyph if renderer.glyph.line_color==color
-            ]
-        ) 
-        for color in col_pres
-    ]
-    # Sort labels in 'legend_items' in ascending order. 
-    legend_items.sort(key=lambda x: x.label['value'], reverse=False)
-    
-
-    # --------------------------- Create Legend Figure --------------------------- #
-
-    # Legends are not non-standalone objects and has to be in a figure.
-    # Legends in plots can obscure the plot so a dummy figure is used.
-    # Credit: https://stackoverflow.com/questions/56825350/how-to-add-one-legend-for-that-controlls-multiple-bokeh-figures
-
-    # 'dummy1' and 'dummy2' are dummy figures and follow the same process:
-    # 1. Create a dummy plot.
-    # 2. Set the components of the figure invisible
-    # 3. The glyphs referred by the legend need to be present in the figure that holds the legend, so we must add them to the figure renderers.
-    # 4. Set the figure range outside of the range of all glyphs
-    # 5. Add the legend to the dummy figure.
-
-    # 'leg_h' = height for a 2 column legend.
-    leg_h = int(25 * len(legend_items) / 2) + 30
-    
-    # Half Number of Legend Items.
-    count = int(len(legend_items) / 2)
-
-    dummy1 = figure(plot_height=leg_h, plot_width=82, outline_line_alpha=0,toolbar_location=None)
-    for fig_component in [dummy1.grid[0],dummy1.ygrid[0],dummy1.xaxis[0],dummy1.yaxis[0]]:
-        fig_component.visible = False
-    dummy1.renderers += lst_glyph
-    dummy1.x_range.end = -1000
-    dummy1.x_range.start = -999
-    dummy1.add_layout( Legend(click_policy='hide',location='top_left',border_line_alpha=0,items=legend_items[:count]) )
-
-    dummy2 = figure(plot_height=leg_h, plot_width=82, outline_line_alpha=0,toolbar_location=None)
-    for fig_component in [dummy2.grid[0],dummy2.ygrid[0],dummy2.xaxis[0],dummy2.yaxis[0]]:
-        fig_component.visible = False
-    dummy2.renderers += lst_glyph
-    dummy2.x_range.end = -1000
-    dummy2.x_range.start = -999
-    dummy2.add_layout( Legend(click_policy='hide',location='top_left',border_line_alpha=0,items=legend_items[count:]) )
-
-    row = Row(dummy1, dummy2)
-    
-
     # -------------------------- Merge Legend and Graphs ------------------------- # 
 
+    OPTIONS = []
+    values = []
+    for j in lst_glyph:
+        if j.name not in OPTIONS:
+            OPTIONS.append(j.name)
+    OPTIONS.sort(key=lambda x: x, reverse=False)
+
+    print(OPTIONS)
+    
+    multi_choice = MultiChoice(value=[], options=OPTIONS, title='Select a Country:')
+
+    btn_clr = Button(label='Clear Selection')
+    callback_clr = CustomJS(args=dict(multi_choice=multi_choice), code="""multi_choice.value = []""")
+
+    btn_all = Button(label='All Selection')
+    callback_all = CustomJS(args=dict(multi_choice=multi_choice, OPTIONS=OPTIONS), code="""multi_choice.value = OPTIONS""")
+
+    btn_clr.js_on_event(ButtonClick, callback_clr)
+    btn_all.js_on_event(ButtonClick, callback_all)
+
+    callback = CustomJS(args=dict(lst_glyph=lst_glyph, multi_choice=multi_choice, lkup=lkup), code="""
+    for (let i = 0; i < lst_glyph.length; i++) {
+        if (multi_choice.value.includes(lst_glyph[i].name)) {
+            lst_glyph[i].visible = multi_choice.value.includes(lst_glyph[i].name);
+        } else {
+            lst_glyph[i].visible = multi_choice.value.includes("False");
+        }
+    }
+    """)
+
+    multi_choice.js_on_change('value', callback)
+    multi_choice.sizing_mode = 'stretch_width'
+
     # Add the legend and 'tabs' to a Column grid.
-    layout = Column(row, column)
+    layout = Column(multi_choice, btn_clr, btn_all, column)
     # layout = gridplot([[row], [col]], merge_tools=False)
     layout.sizing_mode = 'stretch_width'
 
     output_file('./app/static/html/graph_adop.html')
     save(layout)
 
+    graph = codecs.open('./app/static/html/graph_adop.html', 'r').read()
+    graph = graph.replace('</title>', '</title>\n<style>html {overflow-y: scroll;} .bk { justify-content: end;}</style>')
+    with open('./app/static/html/graph_adop.html', 'w') as f:
+        f.write(graph)
 
 def baskets(cat, title, unit):
     '''
@@ -236,7 +200,7 @@ def baskets(cat, title, unit):
             x_axis_label='Year', 
             y_axis_label= unit,
             width=450, 
-            height= 200
+            height= 250
         )
 
         # Orient x-axis labels by 90 degrees.
@@ -272,8 +236,10 @@ def baskets(cat, title, unit):
             )
 
             # Add tools on the right of figure 'p'.
-            p.add_tools(hover)
+            if index == 0:
+                p.add_tools(hover)
             p.toolbar_location = 'right'
+
             
             # Initially hide scatter plot.
             # Plots can be shown by selecting Legend properties.

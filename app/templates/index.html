@@ -75,13 +75,18 @@
         <div class="col-10" >
             <ul>
                 <li>
-                    Please select one of the buttons below to reveal the underlying graphs.
+                    Select the dropdown to access the graphs for Internet Infrastructure, Internet Adoption, and Internet Use categories.
+                    Internet Infrastructure is selected by default.
                 </li>
                 <li>
-                    These buttons are Internet Infrastructure, Internet Adoption, and Internet Use.
+                    There is a bar entitled <i>"Select a Country:"</i> below the dropdown.
+                    Clicking on the bar will reveal a list of countries.
+                    Selecting a country will add country-based data onto the graphs below the bar.
                 </li>
                 <li>
-                    These graphs may appear to have no data plotted. Select a country above the graph(s) will add the plot to the graph.
+                   There are two buttons under the bar - <i>"Clear Selection"</i>, and <i>"All Selection"</i>.
+                   Selecting <i>"Clear Selection"</i> will clear all selections in the bar.
+                   Selecting <i>"All Selection"</i> will add all available country selections to the bar.
                 </li>
                 <li>
                     Multiple countries can be selected at a time.
@@ -107,61 +112,36 @@
 
     <!-- Iframe Count: 12 -->
 
+    <div class='row justify-content-center'>
+        <div class="col-10">
+            <select name="categories" class="form-select" id='categories' onchange="changeGraph('categories', 'iframe')" required>
+                <option value='0'>Internet Infrastructure</option>
+                <option value='1'>Internet Adoption</option>
+                <option value='2'>Internet Use</option>
+            </select>
+        </div>
+
+        <div class="col-10">
+            <iframe id='iframe' src='/static/html/graph_infr.html' width="100%" height="500px"></iframe>
+        </div>
+    </div>
     
-    <!-- Collapse Object -->
-    <div class='row justify-content-center'>
-        <div class="col-10">
-            <a class="btn btn-primary" data-bs-toggle="collapse" href="#Collapse4" role="button" aria-expanded="false" aria-controls="Collapse4" style="width: 100%;">Internet Infrastructure</a> 
-        </div>
-
-        <!-- iframe for data -->
-        <div class="col-10 collapse" id="Collapse4" style="border: thin solid rgb(200, 200, 200); margin-top: 0.5em;">
-            <iframe id='Iframe' src='/static/html/graph_infr.html' width="100%" height="600"></iframe>
-            <p style="font-size:12px; text-align: center;">Used with permission from Ookla, LLC – Copyright 20__. All Rights Reserved.</p>
-        </div>
-    </div>
-
-    <br>
     
-    <!-- Collapse Object -->
-    <div class='row justify-content-center'>
-        <div class="col-10">
-            <a class="btn btn-primary" data-bs-toggle="collapse" href="#Collapse5" role="button" aria-expanded="false" aria-controls="Collapse5" style="width: 100%;">Internet Adoption</a> 
-        </div>
-        
-        <!-- iframe for data -->
-        <div class="col-10 collapse" id="Collapse5" style="border: thin solid rgb(200, 200, 200); margin-top: 0.5em;">
-            <iframe id='Iframe' src='/static/html/graph_adop.html' width="100%" height="1000px"></iframe>
-            <!-- <p style="font-size:12px; text-align: center;">Source: .</p> -->
-        </div>
-    </div>
+    <script>
+        function changeGraph(dropdown, iframe) {
+            var dropdown = document.getElementById(dropdown)
+            var iframe = document.getElementById(iframe)
 
-    <br>
-
-    <!-- Collapse Object -->
-    <div class='row justify-content-center'>
-        <div class="col-10">
-            <a class="btn btn-primary" data-bs-toggle="collapse" href="#Collapse6" role="button" aria-expanded="false" aria-controls="Collapse6" style="width: 100%;">Internet Use</a> 
-        </div>
-
-        <!-- iframe for data -->
-        <div class="col-10 collapse" id="Collapse6" style="border: thin solid rgb(200, 200, 200); margin-top: 0.5em;">
-            <iframe id='Iframe' src='/static/html/graph_use.html' width="100%" height="700px"></iframe>
-            <!-- <p style="font-size:12px; text-align: center;">Source: .</p> -->
-        </div>
-    </div>
-
-    <!-- <script>
-        let iframe = document.querySelector('#Iframe')
-        iframe.addEventListener('load', function() {
-            iframe.style.height = iframe.contentDocument.body.scrollHeight + 'px';
-        });
-
-        var frame = document.getElementById("Iframe");
-        frame.onload = function()
-        {
-            frame.style.height = frame.contentWindow.document.body.scrollHeight + 'px';
+            if (dropdown.value == '0'){ 
+                iframe.src = '/static/html/graph_infr.html'
+            }
+            else if (dropdown.value == '1'){
+                iframe.src = '/static/html/graph_adop.html'
+            }
+            else if (dropdown.value == '2'){
+                iframe.src = '/static/html/graph_use.html'
+            }
         }
-    </script> -->
+    </script>
 
 {% endblock %}

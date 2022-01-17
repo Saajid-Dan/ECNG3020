@@ -10,11 +10,13 @@ Project Title:
 
 import pandas as pd
 from bokeh.plotting import figure, show, output_file, save
-from bokeh.models import ColumnDataSource, FactorRange, HoverTool, Panel, Tabs, Legend, LegendItem, Column, Row
+from bokeh.models import ColumnDataSource, FactorRange, HoverTool, Panel, Tabs, Legend, LegendItem, Column, Row, MultiChoice, CustomJS, Button
+from bokeh.events import ButtonClick
 from bokeh.io import export_png
 from math import pi
 from app import db
 from app.models import Mob_br, Fixed_br
+import codecs
 
 
 # ---------------------------------------------------------------------------- #
@@ -32,31 +34,34 @@ col_all = ["#7cd2c5","#713cc6","#8cd847","#c849bd",
 
 # 'lkup' = look up table that assigns hex colours to a Caribbean country.
 lkup = {
-    '#7cd2c5': ['AIA', 'Anguilla'],
-    '#713cc6': ['ATG', 'Antigua and Barbuda'],
-    '#8cd847': ['BHS', 'Bahamas'],
-    '#c849bd': ['BRB', 'Barbados'],
-    '#71d487': ['BLZ', 'Belize'],
-    '#cd4574': ['BMU', 'Bermuda'],
-    '#d6c244': ['VGB', 'British Virgin Islands'],
-    '#6a70d0': ['CYM', 'Cayman Islands'],
-    '#5e7e2f': ['DMA', 'Dominica'],
-    '#4e2660': ['GRD', 'Grenada'],
-    '#ceca96': ['GUY', 'Guyana'],
-    '#d75033': ['HTI', 'Haiti'],
-    '#8cb3d6': ['JAM', 'Jamaica'],
-    '#ae7638': ['MSR', 'Montserrat'],
-    '#c78ac5': ['KNA', 'Saint Kitts and Nevis'],
-    '#527a60': ['LCA', 'Saint Lucia'],
-    '#783333': ['VCT', 'Saint Vincent and the Grenadines'],
-    '#586488': ['SUR', 'Suriname'],
-    '#cd928f': ['TTO', 'Trinidad and Tobago'],
-    '#39332a': ['TCA', 'Turks & Caicos Is.'],
+    '#7cd2c5': ['0', 'Anguilla'],
+    '#713cc6': ['1', 'Antigua and Barbuda'],
+    '#8cd847': ['2', 'Bahamas'],
+    '#c849bd': ['3', 'Barbados'],
+    '#71d487': ['4', 'Belize'],
+    '#cd4574': ['5', 'Bermuda'],
+    '#d6c244': ['6', 'British Virgin Islands'],
+    '#6a70d0': ['7', 'Cayman Islands'],
+    '#5e7e2f': ['8', 'Dominica'],
+    '#4e2660': ['9', 'Grenada'],
+    '#ceca96': ['10', 'Guyana'],
+    '#d75033': ['11', 'Haiti'],
+    '#8cb3d6': ['12', 'Jamaica'],
+    '#ae7638': ['13', 'Montserrat'],
+    '#c78ac5': ['14', 'Saint Kitts and Nevis'],
+    '#527a60': ['15', 'Saint Lucia'],
+    '#783333': ['16', 'Saint Vincent and the Grenadines'],
+    '#586488': ['17', 'Suriname'],
+    '#cd928f': ['18', 'Trinidad and Tobago'],
+    '#39332a': ['19', 'Turks & Caicos Is.'],
 }
 
 # 'lst_glyph' = global variable that stores bokeh glyphs.
 # Used to merge the legends from each glyph.
 lst_glyph = []
+
+
+lst = []
 
 
 # ---------------------------------------------------------------------------- #
@@ -68,6 +73,7 @@ def graph_infr():
     Adds a unified legend to all graphs.
     '''
     global lst_glyph            # Global variable.
+    global lst
 
 
     # ---------------------------------- Graphs ---------------------------------- #
@@ -76,95 +82,60 @@ def graph_infr():
     tabs_mob = speed(Mob_br, 'Mobile Broadband')     # Mobile broadband speed index graphs.
     tabs_fix = speed(Fixed_br, 'Fixed Broadband')    # Fixed broadband speed index graphs.
 
+    num = 2
+
     # Add graphs to a bokeh Column grid with responsive widths.
     column = Column(tabs_mob, tabs_fix)
     column.sizing_mode = 'stretch_width'
 
 
-    # ---------------------------- Merge Plot Legends ---------------------------- #
-
-    # 'legend_items' = list comprehension that extract legend data from the glyphs in 'lst_glyph'.
-    # Each glyph has graphs with plots that use unique colours.
-    # Plots with a certain colour has their legend data merged together.
-    # Selecting the legend will allow visibility toggled of plots on all figures.
-    # Credit: https://stackoverflow.com/questions/56825350/how-to-add-one-legend-for-that-controlls-multiple-bokeh-figures
-    
-    # 'col_pres' = to store unique colours used in the graphs.
-    # This presents unused colours from writing to the Legend.
-    col_pres = []
-    # Iterates through all glyphs.
-    for j in lst_glyph:
-        # 'col_lin' = gets plot colour.
-        col_lin = j.glyph.line_color
-        # Append plot colour if it is not in 'col_pres'.
-        if col_lin not in col_pres:
-            col_pres.append(col_lin)
-
-    # Merges plot legends together.
-    legend_items = [
-        # 'LegendItem' = Bokeh legend tool.
-        LegendItem(
-            # 'label' = legend label. The look up table is used to assign a country as the label.
-            label=lkup[color][0],
-            # 'renderers' = bokeh glyphs.
-            renderers=[
-                # Assign a glyph to a legend label by the type of colour.
-                renderer for renderer in lst_glyph if renderer.glyph.line_color==color
-            ]
-        ) 
-        for color in col_pres
-    ]
-    # Sort labels in 'legend_items' in ascending order. 
-    legend_items.sort(key=lambda x: x.label['value'], reverse=False)
-    
-
-    # --------------------------- Create Legend Figure --------------------------- #
-
-    # Legends are not non-standalone objects and has to be in a figure.
-    # Legends in plots can obscure the plot so a dummy figure is used.
-    # Credit: https://stackoverflow.com/questions/56825350/how-to-add-one-legend-for-that-controlls-multiple-bokeh-figures
-
-    # 'dummy1' and 'dummy2' are dummy figures and follow the same process:
-    # 1. Create a dummy plot.
-    # 2. Set the components of the figure invisible
-    # 3. The glyphs referred by the legend need to be present in the figure that holds the legend, so we must add them to the figure renderers.
-    # 4. Set the figure range outside of the range of all glyphs
-    # 5. Add the legend to the dummy figure.
-
-    # 'leg_h' = height for a 2 column legend.
-    leg_h = int(25 * len(legend_items) / 2) + 30
-    
-    # Half Number of Legend Items.
-    count = int(len(legend_items) / 2)
-
-    dummy1 = figure(plot_height=leg_h, plot_width=82, outline_line_alpha=0,toolbar_location=None)
-    for fig_component in [dummy1.grid[0],dummy1.ygrid[0],dummy1.xaxis[0],dummy1.yaxis[0]]:
-        fig_component.visible = False
-    dummy1.renderers += lst_glyph
-    dummy1.x_range.end = -1000
-    dummy1.x_range.start = -999
-    dummy1.add_layout( Legend(click_policy='hide',location='top_left',border_line_alpha=0,items=legend_items[:count]) )
-
-    dummy2 = figure(plot_height=leg_h, plot_width=82, outline_line_alpha=0,toolbar_location=None)
-    for fig_component in [dummy2.grid[0],dummy2.ygrid[0],dummy2.xaxis[0],dummy2.yaxis[0]]:
-        fig_component.visible = False
-    dummy2.renderers += lst_glyph
-    dummy2.x_range.end = -1000
-    dummy2.x_range.start = -999
-    dummy2.add_layout( Legend(click_policy='hide',location='top_left',border_line_alpha=0,items=legend_items[count:]) )
-
-    row = Row(dummy1, dummy2)
-    
-
     # -------------------------- Merge Legend and Graphs ------------------------- # 
 
+    OPTIONS = []
+    values = []
+    for j in lst_glyph:
+        if j.name not in OPTIONS:
+            OPTIONS.append(j.name)
+    OPTIONS.sort(key=lambda x: x, reverse=False)
+
+    print(OPTIONS)
+    
+    multi_choice = MultiChoice(value=[], options=OPTIONS, title='Select a Country:')
+
+    btn_clr = Button(label='Clear Selection')
+    callback_clr = CustomJS(args=dict(multi_choice=multi_choice), code="""multi_choice.value = []""")
+
+    btn_all = Button(label='All Selection')
+    callback_all = CustomJS(args=dict(multi_choice=multi_choice, OPTIONS=OPTIONS), code="""multi_choice.value = OPTIONS""")
+
+    btn_clr.js_on_event(ButtonClick, callback_clr)
+    btn_all.js_on_event(ButtonClick, callback_all)
+
+    callback = CustomJS(args=dict(lst_glyph=lst_glyph, lst=lst, multi_choice=multi_choice, lkup=lkup), code="""
+    for (let i = 0; i < lst_glyph.length; i++) {
+        if (multi_choice.value.includes(lst_glyph[i].name)) {
+            lst_glyph[i].visible = multi_choice.value.includes(lst_glyph[i].name);
+        } else {
+            lst_glyph[i].visible = multi_choice.value.includes("False");
+        }
+    }
+    """)
+
+    multi_choice.js_on_change('value', callback)
+    multi_choice.sizing_mode = 'stretch_width'
+
     # Add the legend and 'tabs' to a Column grid.
-    layout = Column(row, column)
+    layout = Column(multi_choice, btn_clr, btn_all, column)
     # layout = gridplot([[row], [col]], merge_tools=False)
     layout.sizing_mode = 'stretch_width'
 
     output_file('./app/static/html/graph_infr.html')
     save(layout)
+
+    graph = codecs.open('./app/static/html/graph_infr.html', 'r').read()
+    graph = graph.replace('</title>', '</title>\n<style>html {overflow-y: scroll;} .bk { justify-content: end;}</style>')
+    with open('./app/static/html/graph_infr.html', 'w') as f:
+        f.write(graph)
 
 
 def speed(cat, title):
@@ -172,6 +143,7 @@ def speed(cat, title):
     Plots Bokeh figures for download, upload, latency, and jitter vs date and add to a bokeh tabs group.
     '''
     global lst_glyph            # Global variable.
+    global lst
 
     # 'mnth' is a dictionary that relates numerical month (key) to three letter abbreviated month (value).
     mnth = {'01':'Jan', '02':'Feb', '03':'Mar',
@@ -250,7 +222,7 @@ def speed(cat, title):
             x_axis_label ='Date', 
             y_axis_label = unit[i],
             width = 450, 
-            height = 200
+            height = 250
         )
         
         # Orient x-axis labels by 90 degrees.
@@ -264,9 +236,14 @@ def speed(cat, title):
             r1 = p.line(x=x, y=k, line_width=2, color=col[index], name=ctry_lst[index])
             r2 = p.circle(x, k, color=col[index], size=5, name=ctry_lst[index])
 
+            # print(r1.name)
+
             # Add glyphs to 'lst_glyph'.
             lst_glyph += [r1]
             lst_glyph += [r2]
+
+            lst += [ctry_lst[index]]
+            lst += [ctry_lst[index]]
 
             # Remove toolbar to export as PNG.
             p.sizing_mode = 'fixed'
@@ -281,7 +258,9 @@ def speed(cat, title):
             )
 
             # Add tools on the right of figure 'p'.
-            p.add_tools(hover)
+            
+            if index == 0:
+                p.add_tools(hover)
             p.toolbar_location = 'right'
 
             # Initially hide scatter plot.
