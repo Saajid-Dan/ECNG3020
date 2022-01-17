@@ -253,6 +253,8 @@ def submarine():
             cty = df_car.iloc[j]["name"].split(" ,")[-1]
             if cty == 'Virgin Islands (U.K.)':
                 cty = 'British Virgin Islands'
+            if cty == 'Turks and Caicos Islands':
+                cty = 'Turks & Caicos Is.'
 
             # Creating cable JSON properties.
             prop = f'{{"type": "Feature", "properties": {{"id": "{df_car.iloc[j]["id"]}", "updt": "{updt_car[j]}", "name": "{df_car.iloc[j]["name"]}", "ctry": "{cty}", "car": "Yes", "cab": "{sub_car[j]}"}}, "geometry": {{"type": "Point", "coordinates": [{df_car.iloc[j].geometry.x},{df_car.iloc[j].geometry.y}] }} }}'
@@ -486,6 +488,11 @@ def submarine():
         lat = df_car.iloc[j].geometry.y
         lon = df_car.iloc[j].geometry.x
         ctry = name.split(', ')[-1]
+        if ctry == 'Virgin Islands (U.K.)':
+            ctry = 'British Virgin Islands'
+        if ctry == 'Turks and Caicos Islands':
+            ctry = 'Turks & Caicos Is.'
+            
         car = "Yes"
         updt = updt_car[j]
         cab = sub_car[j] 

@@ -1,9 +1,12 @@
-from flask import render_template, url_for, send_from_directory, send_file
+from flask import render_template, url_for, send_from_directory, request, render_template_string
 from app import app, db
 from app.forms import Feedback, form_validate
 
 import geopandas as gpd
 import ast
+from bs4 import BeautifulSoup
+import requests
+import pdfkit
 
 from app.models import Tld
 from app.models import Land
@@ -383,19 +386,9 @@ def indicator_list():
 
     return render_template('indicator_list.html', title= 'ICT Indicators Listing', indic_all = ctry_lst, form=form, url=url)
 
-import time
-from selenium import webdriver
-from selenium.webdriver.common.keys import Keys
-from selenium.webdriver.firefox.options import Options
-from flask import request, make_response, render_template_string
-
-options = Options()
-options.headless = True
 
 @app.route('/child/<root>/<sub>')
 def child(root, sub):
-    from bs4 import BeautifulSoup
-    import requests
 
     ctry_lst = [
         'Anguilla',
@@ -422,7 +415,9 @@ def child(root, sub):
 
     head = request.headers['Host']
 
-    if sub in ctry_lst:
+    if sub == 'none':
+        sub = url_for(root)
+    elif sub in ctry_lst:
         sub = url_for(root, country=sub)
     else:
         sub = url_for(root, cable=sub)
@@ -464,58 +459,97 @@ def child(root, sub):
 
     return render_template_string(html_head + html + html_foot)
 
+from PyPDF2 import PdfFileMerger, PdfFileReader
+from pathlib import Path
 
-@app.route('/pdf2')
-def pdf2():
-    import pdfkit
-
+@app.route('/create_pdf')
+def create_pdf():
     path_wkhtmltopdf = r'C:\Program Files\wkhtmltopdf\bin\wkhtmltopdf.exe'
     config = pdfkit.configuration(wkhtmltopdf=path_wkhtmltopdf)
-    
-    # rendered = render_template('test.html')
-    
-    # pdf = pdfkit.from_string(rendered, configuration=config)
-    
-    # response = make_response(pdf)
-    # response.headers['Content-Type'] = 'application/pdf'
-    # response.headers['Content-Disposition'] = 'inline; file_name=output.pdf'
 
-    # return response
-    
-    # options = {
-    #     'page-size': 'A4',
-    #     'dpi': 800
-    # }
 
-    head = request.headers['Host']
-    ctry = [
-        # 'Haiti',
-        # 'Jamaica',
-        # 'Suriname',
-        'Anguilla'
-    ]
-    
-    for item in ctry:
-        sub = url_for('child', root='gen_page', sub=item)
-        pdfkit.from_url('http://' + head + sub, "./app/static/pdf/" + item + "_Gen" + ".pdf", configuration=config)
-        
-        sub = url_for('child', root='tld_page', sub=item)
-        pdfkit.from_url('http://' + head + sub, "./app/static/pdf/" + item + "_TLD" + ".pdf", configuration=config)
+    def merge_pdf(config, cat, query):
+        head = request.headers['Host']
+        merger = PdfFileMerger()
 
-        sub = url_for('child', root='land_page', sub=item)
-        pdfkit.from_url('http://' + head + sub, "./app/static/pdf/" + item + "_Land" + ".pdf", configuration=config)
+        sub = url_for('child', root=cat + '_list', sub='none')
+        pdfkit.from_url('http://' + head + sub, "./app/temp/listing.pdf", configuration=config)
+        pdf = "./app/temp/listing.pdf"
+        merger.append(pdf, import_bookmarks=False)
+
+        for item in query:
+            sub = url_for('child', root=cat + '_page', sub=item)
+            pdfkit.from_url('http://' + head + sub, "./app/temp/" + item + ".pdf", configuration=config)
+            pdf = "./app/temp/" + item + ".pdf"
+            merger.append(pdf, import_bookmarks=False)
+        merger.write("./app/static/pdf/" + cat + ".pdf")
+        merger.close()
+
+        # https://stackoverflow.com/questions/185936/how-to-delete-the-contents-of-a-folder
+        [f.unlink() for f in Path("./app/temp").glob("*") if f.is_file()] 
+
+
+    tld = Tld.query.order_by(Tld.ctry_).with_entities(Tld.ctry_).all()
+    tld = sorted(set([v[0] for v in tld]))
+    merge_pdf(config, 'tld', tld)
+
+    land = Land.query.order_by(Land.ctry).filter_by(car='Yes').with_entities(Land.ctry).all()
+    land = sorted(set([v[0] for v in land]))
+    merge_pdf(config, 'land', land)
+
+    cable_lst = []
+    file_sub = open('./app/static/json/submarine.json', 'r')
+    gdf_sub = gpd.read_file(file_sub)
+    for j in range(len(gdf_sub)):
+        cable_lst.append(gdf_sub.iloc[j]['name'])
+    merge_pdf(config, 'sub', cable_lst)
+
+    ixp = Ixp_dir.query.order_by(Ixp_dir.ctry).with_entities(Ixp_dir.ctry).all()
+    ixp = sorted(set([v[0] for v in ixp]))
+    merge_pdf(config, 'ixp', ixp)
+
+    root = Root_srv.query.order_by(Root_srv.ctry).with_entities(Root_srv.ctry).all()
+    root = sorted(set([v[0] for v in root]))
+    merge_pdf(config, 'root', root)
+
+    gen = Gen_pop.query.order_by(Gen_pop.ctry_).with_entities(Gen_pop.ctry_).all()
+    gen = sorted(set([v[0] for v in gen]))
+    merge_pdf(config, 'gen', gen)
+
+    speed = Fixed_br.query.order_by(Fixed_br.ctry).with_entities(Fixed_br.ctry).all()
+    speed = sorted(set([v[0] for v in speed]))
+    merge_pdf(config, 'speed', speed)
+
+    basket = GNI.query.order_by(GNI.ctry).with_entities(GNI.ctry).all()
+    basket = sorted(set([v[0] for v in basket]))
+    merge_pdf(config, 'basket', basket)
+
+    ctry_lst = [
+            'Anguilla',
+            'Antigua and Barbuda',
+            'Bahamas',
+            'Barbados',
+            'Belize',
+            'Bermuda',
+            'British Virgin Islands',
+            'Cayman Islands',
+            'Dominica',
+            'Grenada',
+            'Guyana',
+            'Haiti',
+            'Jamaica',
+            'Montserrat',
+            'Saint Kitts and Nevis',
+            'Saint Lucia',
+            'Saint Vincent and the Grenadines',
+            'Suriname',
+            'Trinidad and Tobago',
+            'Turks & Caicos Is.'
+        ]
+    merge_pdf(config, 'indicator', ctry_lst)
 
     # print("PDF Test Completed")
     return render_template('test.html')
-
-
-@app.route('/pdf/<path:filename>', methods=['GET', 'POST'])
-def pdf(filename):
-    from pathlib import Path
-    root = Path('.')
-    folder_path = root / 'static/pdf'
-
-    return send_from_directory(folder_path, filename, as_attachment=True)
 
 
 @app.route('/reports', methods=['GET', 'POST'])
@@ -526,6 +560,14 @@ def reports():
         form_validate(url, form)
 
     return render_template('reports.html', title='Download Reports', form=form, url=url)
+
+@app.route('/pdf/<path:filename>', methods=['GET', 'POST'])
+def pdf(filename):
+    from pathlib import Path
+    root = Path('.')
+    folder_path = root / 'static/pdf'
+
+    return send_from_directory(folder_path, filename, as_attachment=True)
 
 @app.route('/csv/<path:filename>', methods=['GET', 'POST'])
 def csv(filename):
@@ -552,17 +594,17 @@ def test():
     # print(density())
     # print(root())
     # print(speedindex())
-    # print(submarine())
+    print(submarine())
     # print(tld())
     # print("successful")
     # create_map()
     # print("successful")
     # graph_infr()
     # print("successful")
-    graph_adop()
-    print("successful")
-    graph_use()
-    print("successful")
+    # graph_adop()
+    # print("successful")
+    # graph_use()
+    # print("successful")
     # create_land_image()
     # print("successful")
     # create_sub_image()

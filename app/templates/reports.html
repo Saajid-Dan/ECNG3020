@@ -12,25 +12,43 @@
         <div class='col-10'>
             <p>
                 Most data on this dashboard are available to download in PDF, CSV, and JSON file formats.
+                They are grouped by the categories specified under Data Listing.
             </p>
 
             <p><b>Available PDF Files</b></p>
             <p>
-                PDF files are available to download per country.
-                They can be accessed by selecting one of the following links.
+                PDF files can be downloaded by selecting one of the links below.
             </p>
-
-            <p><u>Anguilla PDF Reports</u></p>
 
             <ol class='list-group list-group-numbered'>
                 <li class='list-group-item list-group-item-action'>
-                    <a href={{ url_for('pdf', filename="Anguilla_TLD.pdf") }}>Anguilla - Top Level Domains</a>
+                    <a href={{ url_for('pdf', filename="gen.pdf") }}>General Country Information</a>
+                </li>
+
+                <li class='list-group-item list-group-item-action'>
+                    <a href={{ url_for('pdf', filename="indicator.pdf") }}>ICT Indicators</a>
                 </li>
                 <li class='list-group-item list-group-item-action'>
-                    <a href={{ url_for('pdf', filename="Anguilla_Gen.pdf") }}>Anguilla - General Country Information</a>
+                    <a href={{ url_for('pdf', filename="basket.pdf") }}>ICT Price Baskets</a>
+                </li>
+                
+                <li class='list-group-item list-group-item-action'>
+                    <a href={{ url_for('pdf', filename="land.pdf") }}>Landing Points</a>
                 </li>
                 <li class='list-group-item list-group-item-action'>
-                    <a href={{ url_for('pdf', filename="Anguilla_Land.pdf") }}>Anguilla - Landing Points</a>
+                    <a href={{ url_for('pdf', filename="sub.pdf") }}>Submarine Cables</a>
+                </li>
+                <li class='list-group-item list-group-item-action'>
+                    <a href={{ url_for('pdf', filename="ixp.pdf") }}>Internet Exchange Points</a>
+                </li>
+                <li class='list-group-item list-group-item-action'>
+                    <a href={{ url_for('pdf', filename="tld.pdf") }}>Top Level Domains</a>
+                </li>
+                <li class='list-group-item list-group-item-action'>
+                    <a href={{ url_for('pdf', filename="root.pdf") }}>Root Servers</a>
+                </li>
+                <li class='list-group-item list-group-item-action'>
+                    <a href={{ url_for('pdf', filename="speed.pdf") }}>Caribbean Speed Index</a>
                 </li>
             </ol>
 
