@@ -15,17 +15,18 @@ from app.models import Root_srv
 from app.models import Gen_pop, Pop_dens
 from app.models import Fixed_br, Mob_br
 from app.models import GNI, PPP, USD
-from app.models import ICT_fix, ICT_mob, ICT_per, ICT_bw
+from app.models import indicators
 
 from app.sources.General_Population import population
 from app.sources.ICT_Baskets import baskets
-from app.sources.ICT_Indicators import indicators
+from app.sources.ICT_Indicators import ict_indicators
 from app.sources.Internet_Exchange_Points import ixp
 from app.sources.Population_Density import density
 from app.sources.Root_Servers import root
 from app.sources.Speed_Index import speedindex
 from app.sources.Submarine_Cables import submarine
 from app.sources.Top_Level_Domains import tld
+from app.sources.peeringdb_ixp import peer_ixp
 
 from app.modules.maps import create_map
 from app.modules.graph_infr import graph_infr
@@ -36,6 +37,7 @@ from app.modules.submarine_image import create_sub_image
 from app.modules.ixp_image import create_ixp_image
 from app.modules.root_image import create_root_image
 from app.modules.density_image import create_density_image
+from app.modules.report import generate_report
 
 # from app.modules.test import create_indic_graph_test
 
@@ -298,61 +300,20 @@ def basket_list():
 
 @app.route('/indicator/<country>', methods=['GET', 'POST'])
 def indicator_page(country):
+    fix = indicators.query.filter_by(ctry=country).all()
+    mob = indicators.query.filter_by(ctry=country).all()
+    per = indicators.query.filter_by(ctry=country).all()
+    bw = indicators.query.filter_by(ctry=country).all()
 
-    dict_ctry = {
-        'Anguilla':[ ICT_fix.ai, ICT_mob.ai, ICT_per.ai, ICT_bw.ai ],
-        'Antigua and Barbuda':[ ICT_fix.ag, ICT_mob.ag, ICT_per.ag, ICT_bw.ag ],
-        'Bahamas':[ ICT_fix.bs, ICT_mob.bs, ICT_per.bs, ICT_bw.bs ],
-        'Barbados':[ ICT_fix.bb, ICT_mob.bb, ICT_per.bb, ICT_bw.bb ],
-        'Belize':[ ICT_fix.bz, ICT_mob.bz, ICT_per.bz, ICT_bw.bz ],
-        'Bermuda':[ ICT_fix.bm, ICT_mob.bm, ICT_per.bm, ICT_bw.bm ],
-        'British Virgin Islands':[ ICT_fix.vg, ICT_mob.vg, ICT_per.vg, ICT_bw.vg ],
-        'Cayman Islands':[ ICT_fix.ky, ICT_mob.ky, ICT_per.ky, ICT_bw.ky ],
-        'Dominica':[ ICT_fix.dm, ICT_mob.dm, ICT_per.dm, ICT_bw.dm ],
-        'Grenada':[ ICT_fix.gd, ICT_mob.gd, ICT_per.gd, ICT_bw.gd ],
-        'Guyana':[ ICT_fix.gy, ICT_mob.gy, ICT_per.gy, ICT_bw.gy ],
-        'Haiti':[ ICT_fix.ht, ICT_mob.ht, ICT_per.ht, ICT_bw.ht ],
-        'Jamaica':[ ICT_fix.jm, ICT_mob.jm, ICT_per.jm, ICT_bw.jm ],
-        'Montserrat':[ ICT_fix.ms, ICT_mob.ms, ICT_per.ms, ICT_bw.ms ],
-        'Saint Kitts and Nevis':[ ICT_fix.kn, ICT_mob.kn, ICT_per.kn, ICT_bw.kn ],
-        'Saint Lucia':[ ICT_fix.lc, ICT_mob.lc, ICT_per.lc, ICT_bw.lc ],
-        'Saint Vincent and The Grenadines':[ ICT_fix.vc, ICT_mob.vc, ICT_per.vc, ICT_bw.vc ],
-        'Suriname':[ ICT_fix.sr, ICT_mob.sr, ICT_per.sr, ICT_bw.sr ],
-        'Trinidad and Tobago':[ ICT_fix.tt, ICT_mob.tt, ICT_per.tt, ICT_bw.tt ],
-        'Turks & Caicos Is.':[ ICT_fix.tc, ICT_mob.tc, ICT_per.tc, ICT_bw.tc ]
-    }
-    
-    cat = dict_ctry[country]
-    
-    fix_yr =  ICT_fix.query.order_by(ICT_fix.yrs).all()
-    mob_yr =  ICT_mob.query.order_by(ICT_mob.yrs).all()
-    per_yr =  ICT_per.query.order_by(ICT_per.yrs).all()
-    bw_yr =  ICT_bw.query.order_by(ICT_bw.yrs).all()
-
-    fix = ICT_fix.query.order_by(ICT_fix.yrs).with_entities(cat[0])
-    mob = ICT_mob.query.order_by(ICT_mob.yrs).with_entities(cat[1])
-    per = ICT_per.query.order_by(ICT_per.yrs).with_entities(cat[2])
-    bw = ICT_bw.query.order_by(ICT_bw.yrs).with_entities(cat[3])
+    year =  indicators.query.order_by(indicators.year).all()
+    year = list(dict.fromkeys(year))
 
     url = url_for('indicator_page', country=country)
     form = Feedback()
     if form.validate_on_submit():
         form_validate(url, form)
 
-    return render_template(
-        'indicator_page.html', 
-        title=country, 
-        fix_yr=fix_yr, 
-        mob_yr=mob_yr, 
-        per_yr=per_yr, 
-        bw_yr=bw_yr, 
-        fix=fix, 
-        mob=mob, 
-        per=per, 
-        bw=bw,
-        form=form,
-        url=url
-        )
+    return render_template('indicator_page.html', title=country, year=year, fix=fix, mob=mob, per=per, bw=bw, form=form, url=url)
 
 @app.route('/indicator', methods=['GET', 'POST'])
 def indicator_list():
@@ -589,12 +550,13 @@ def json(filename):
 def test():
     # print(population())
     # print(baskets())
-    # print(indicators())
+    # print(ict_indicators())
     # print(ixp())
+    # print(peer_ixp())
     # print(density())
     # print(root())
     # print(speedindex())
-    print(submarine())
+    # print(submarine())
     # print(tld())
     # print("successful")
     # create_map()
@@ -614,5 +576,6 @@ def test():
     # create_root_image()
     # print("successful")
     # create_density_image()
+    # generate_report()
     print("Test Completed")
     return render_template('test.html')

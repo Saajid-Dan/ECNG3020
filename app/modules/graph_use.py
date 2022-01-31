@@ -15,7 +15,7 @@ from bokeh.events import ButtonClick
 from bokeh.io import export_png
 from math import pi
 from app import db
-from app.models import ICT_fix, ICT_mob, ICT_per, ICT_bw
+from app.models import indicators
 import codecs
 
 
@@ -75,7 +75,7 @@ def graph_use():
     # ---------------------------------- Graphs ---------------------------------- #
 
     # Graphs.
-    tabs_ind = indicators()             # ICT Indicators graphs.
+    tabs_ind = ict_indicators()             # ICT Indicators graphs.
 
     # Add graphs to a bokeh Column grid with responsive widths.
     column = Column(tabs_ind)
@@ -130,15 +130,12 @@ def graph_use():
     with open('./app/static/html/graph_use.html', 'w') as f:
         f.write(graph)
 
-def indicators():
+def ict_indicators():
     '''
     Plots Bokeh figures for fixed and mobile broadband total subscriptions, percent of 
     ICT users in a country, and total bandwidth usage and add to a bokeh tabs group.
     '''
     global lst_glyph            # Global variable.
-    
-    # 'cat' = contains the four database tables.
-    cat = [ICT_fix, ICT_mob, ICT_per, ICT_bw]
 
     # Tab labels.
     tab_lab = [
@@ -168,6 +165,19 @@ def indicators():
     fig = []
     lst_col = []
 
+    year = indicators.query.with_entities(indicators.year).all()
+    x = [value for value, in year]          # x-axis coordinates.
+    x = list(dict.fromkeys(x))
+
+    # Stores a list of countries the the 'cat' database into 'ctry_lst'.
+    ctry_lst = []
+    ctry = indicators.query.order_by(indicators.ctry).with_entities(indicators.ctry)
+    for j in ctry:
+        if j[0] not in ctry_lst:
+           ctry_lst.append(j[0])
+
+    cat = [indicators.fix, indicators.mob, indicators.per, indicators.bw]
+
     # Loops over the four tables.
     # 'i' = iterator. 'j' = database table from 'cat'.
     for i, j in enumerate(cat):
@@ -175,30 +185,30 @@ def indicators():
         # The queries return a list of tuples.
         # 'year' = data from the 'yrs' header.
         # 'aia' to 'tca' = indicators data from Anguilla to Turks and Caicos Islands (ascending).
-        year = j.query.with_entities(j.yrs).all()
-        aia = j.query.with_entities(j.ai).order_by(j.yrs).all()
-        atg = j.query.with_entities(j.ag).order_by(j.yrs).all()
-        bhs = j.query.with_entities(j.bs).order_by(j.yrs).all()
-        brb = j.query.with_entities(j.bb).order_by(j.yrs).all()
-        blz = j.query.with_entities(j.bz).order_by(j.yrs).all()
-        bmu = j.query.with_entities(j.bm).order_by(j.yrs).all()
-        vgb = j.query.with_entities(j.vg).order_by(j.yrs).all()
-        cym = j.query.with_entities(j.ky).order_by(j.yrs).all()
-        dma = j.query.with_entities(j.dm).order_by(j.yrs).all()
-        grd = j.query.with_entities(j.gd).order_by(j.yrs).all()
-        guy = j.query.with_entities(j.gy).order_by(j.yrs).all()
-        hti = j.query.with_entities(j.ht).order_by(j.yrs).all()
-        jam = j.query.with_entities(j.jm).order_by(j.yrs).all()
-        msr = j.query.with_entities(j.ms).order_by(j.yrs).all()
-        kna = j.query.with_entities(j.kn).order_by(j.yrs).all()
-        lca = j.query.with_entities(j.lc).order_by(j.yrs).all()
-        vct = j.query.with_entities(j.vc).order_by(j.yrs).all()
-        sur = j.query.with_entities(j.sr).order_by(j.yrs).all()
-        tto = j.query.with_entities(j.tt).order_by(j.yrs).all()
-        tca = j.query.with_entities(j.tc).order_by(j.yrs).all()
+
+        aia = indicators.query.order_by(indicators.year).filter_by(ctry=ctry_lst[0]).with_entities(j).all()
+        atg = indicators.query.order_by(indicators.year).filter_by(ctry=ctry_lst[1]).with_entities(j).all()
+        bhs = indicators.query.order_by(indicators.year).filter_by(ctry=ctry_lst[2]).with_entities(j).all()
+        brb = indicators.query.order_by(indicators.year).filter_by(ctry=ctry_lst[3]).with_entities(j).all()
+        blz = indicators.query.order_by(indicators.year).filter_by(ctry=ctry_lst[4]).with_entities(j).all()
+        bmu = indicators.query.order_by(indicators.year).filter_by(ctry=ctry_lst[5]).with_entities(j).all()
+        vgb = indicators.query.order_by(indicators.year).filter_by(ctry=ctry_lst[6]).with_entities(j).all()
+        cym = indicators.query.order_by(indicators.year).filter_by(ctry=ctry_lst[7]).with_entities(j).all()
+        dma = indicators.query.order_by(indicators.year).filter_by(ctry=ctry_lst[8]).with_entities(j).all()
+        grd = indicators.query.order_by(indicators.year).filter_by(ctry=ctry_lst[9]).with_entities(j).all()
+        guy = indicators.query.order_by(indicators.year).filter_by(ctry=ctry_lst[10]).with_entities(j).all()
+        hti = indicators.query.order_by(indicators.year).filter_by(ctry=ctry_lst[11]).with_entities(j).all()
+        jam = indicators.query.order_by(indicators.year).filter_by(ctry=ctry_lst[12]).with_entities(j).all()
+        msr = indicators.query.order_by(indicators.year).filter_by(ctry=ctry_lst[13]).with_entities(j).all()
+        kna = indicators.query.order_by(indicators.year).filter_by(ctry=ctry_lst[14]).with_entities(j).all()
+        lca = indicators.query.order_by(indicators.year).filter_by(ctry=ctry_lst[15]).with_entities(j).all()
+        vct = indicators.query.order_by(indicators.year).filter_by(ctry=ctry_lst[16]).with_entities(j).all()
+        sur = indicators.query.order_by(indicators.year).filter_by(ctry=ctry_lst[17]).with_entities(j).all()
+        tto = indicators.query.order_by(indicators.year).filter_by(ctry=ctry_lst[18]).with_entities(j).all()
+        tca = indicators.query.order_by(indicators.year).filter_by(ctry=ctry_lst[19]).with_entities(j).all()
         
         # Unpack tuples in a list.
-        x = [value for value, in year]          # x-axis coordinates.
+        
         aia = [value for value, in aia]
         atg = [value for value, in atg]
         bhs = [value for value, in bhs]

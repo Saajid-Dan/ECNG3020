@@ -34,20 +34,20 @@
                     </thead>
                     
                     <tbody>
-                        {% for item in fix_yr %}
+                        {% for item in fix %}
                             <tr>
-                                <td>{{ item.yrs }}</td>
-                                {% if fix[loop.index - 1][0] != None %}
-                                    <td>{{ '%0.0f' | format(fix[loop.index - 1][0] | float) }}</td>
+                                <td>{{ item.year }}</td>
+                                {% if item.fix != None %}
+                                    <td>{{ '%0.0f' | format(item.fix | float) }}</td>
                                 {% else %}
                                     <td>None</td>
-                                {% endif %}
+                                {% endif %}  
                             </tr>
                         {% endfor %} 
                     </tbody>
                 </table>
             </div>
-            <p><i>Last Updated: {{ fix_yr[0].updt }}</i></p>
+            <p><i>Last Updated: {{ fix[0].updt }}</i></p>
             <br>
             <p>Data from Table 1 can be graphically depicted in Figure 1a.</p>
         </div>
@@ -75,11 +75,11 @@
                     </thead>
                     
                     <tbody>
-                        {% for item in mob_yr %}
+                        {% for item in mob %}
                             <tr>
-                                <td>{{ item.yrs }}</td>
-                                {% if mob[loop.index - 1][0] != None %}
-                                    <td>{{ '%0.0f' | format(mob[loop.index - 1][0] | float) }}</td>
+                                <td>{{ item.year }}</td>
+                                {% if item.mob != None %}
+                                    <td>{{ '%0.0f' | format(item.mob | float) }}</td>
                                 {% else %}
                                     <td>None</td>
                                 {% endif %}
@@ -88,7 +88,7 @@
                     </tbody>
                 </table>
             </div>
-            <p><i>Last Updated: {{ mob_yr[0].updt }}</i></p>
+            <p><i>Last Updated: {{ mob[0].updt }}</i></p>
             <br>
             <p>Data from Table 2 can be graphically depicted in Figure 2a.</p>
         </div>
@@ -116,11 +116,11 @@
                     </thead>
                     
                     <tbody>
-                        {% for item in per_yr %}
+                        {% for item in per %}
                             <tr>
-                                <td>{{ item.yrs }}</td>
-                                {% if per[loop.index - 1][0] != None %}
-                                    <td>{{ '%0.0f' | format(per[loop.index - 1][0] | float) }}</td>
+                                <td>{{ item.year }}</td>
+                                {% if item.per != None %}
+                                    <td>{{ '%0.0f' | format(item.per | float) }}</td>
                                 {% else %}
                                     <td>None</td>
                                 {% endif %}
@@ -129,7 +129,7 @@
                     </tbody>
                 </table>
             </div>
-            <p><i>Last Updated: {{ per_yr[0].updt }}</i></p>
+            <p><i>Last Updated: {{ per[0].updt }}</i></p>
             <br>
             <p>Data from Table 3 can be graphically depicted in Figure 3a.</p>
         </div>
@@ -157,20 +157,20 @@
                     </thead>
                     
                     <tbody>
-                        {% for item in bw_yr %}
+                        {% for item in bw %}
                             <tr>
-                                <td>{{ item.yrs }}</td>
-                                {% if bw[loop.index - 1][0] != None %}
-                                    <td>{{ '%0.0f' | format(bw[loop.index - 1][0] | float) }}</td>
+                                <td>{{ item.year }}</td>
+                                {% if item.bw != None %}
+                                    <td>{{ '%0.0f' | format(item.bw | float) }}</td>
                                 {% else %}
                                     <td>None</td>
                                 {% endif %}
-                                </tr>
+                            </tr>
                         {% endfor %} 
                     </tbody>
                 </table>
             </div>
-            <p><i>Last Updated: {{ bw_yr[0].updt }}</i></p>
+            <p><i>Last Updated: {{ bw[0].updt }}</i></p>
             <br>
             <p>Data from Table 4 can be graphically depicted in Figure 4a.</p>
         </div>
