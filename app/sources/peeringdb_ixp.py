@@ -130,8 +130,8 @@ def peer_ixp():
         db.session.add(u)
         db.session.commit()
 
-        # Remove outdated database entries.
-        remove_outdated(Peer_ix, time)
+    # Remove outdated database entries.
+    remove_outdated(Peer_ix, time)
 
 
     # Open JSON from url.
@@ -212,8 +212,8 @@ def peer_ixp():
         db.session.add(u)
         db.session.commit()
 
-        # Remove outdated database entries.
-        remove_outdated(Peer_fac, time)
+    # Remove outdated database entries.
+    remove_outdated(Peer_fac, time)
 
 
 
@@ -278,8 +278,8 @@ def peer_ixp():
         db.session.add(u)
         db.session.commit()
 
-        # Remove outdated database entries.
-        remove_outdated(Peer_net, time)
+    # Remove outdated database entries.
+    remove_outdated(Peer_net, time)
 
 
 # -------------- Remove outdated data from 'db_table' database table -------------- #

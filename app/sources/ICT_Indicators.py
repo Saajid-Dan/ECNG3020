@@ -177,7 +177,7 @@ def ict_indicators():
 
 
     time = datetime.now(timezone(timedelta(seconds=-14400))).strftime("%Y-%m-%d %H:%M:%S %z")
-
+    
     for j in range(len(yrs)):
         # print(yrs[j])
 
@@ -210,8 +210,8 @@ def ict_indicators():
             db.session.add(u)
             db.session.commit()
 
-            # Remove outdated database entries.
-            remove_outdated(indicators, time)
+        # Remove outdated database entries.
+        remove_outdated(indicators, time)
 
 
 # -------------- Remove outdated data from 'db_table' database table -------------- #
@@ -220,7 +220,7 @@ def remove_outdated(db_table, time):
     # Checks if the table is empty by looking at the table's first entry.
     # 'exist' returns None is empty.
     exist = db_table.query.all()
-
+    
     # If table is full ...
     if exist != None:
         # Retrieve all data from 'db_table' and store into 'u'.

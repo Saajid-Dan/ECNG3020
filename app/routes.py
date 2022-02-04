@@ -546,13 +546,160 @@ def json(filename):
 
     return send_from_directory(folder_path, filename, as_attachment=True)
 
+
+from flask import jsonify, redirect, Response
+from sqlalchemy import inspect, MetaData
+from flask_wtf import FlaskForm
+from wtforms import SelectField, SubmitField
+from wtforms.validators import ValidationError
+import pandas as pd
+from dicttoxml import dicttoxml
+from json import loads
+import xmltodict
+import csv
+
+class Form(FlaskForm):
+    tables = SelectField('tables', choices=[])
+    columns = SelectField('columns', choices=[])
+    values = SelectField('values', choices=[])
+    formats = SelectField('formats', choices=[('CSV', 'CSV'), ('JSON', 'JSON'), ('XML', 'XML')])
+    submit = SubmitField(label=('Populate Tables'))
+    query = SubmitField(label=('Submit Query'))
+
+@app.route('/report', methods=['GET', 'POST'])
+def report():
+    
+    form = Form()
+
+    # Query criteria
+    cols = ['ctry', 'year', 'date', 'ctry_', 'name', 'org_name', 'country', 'pop_yr']
+
+    # Get Table Names
+    insp = inspect(db.engine)
+    table_names = insp.get_table_names()
+    table_names.insert(0, 'Select a Table')
+    # Remove table
+    table_names.remove('alembic_version')
+    
+    if form.is_submitted():
+        if form.submit.data:
+            print('success')
+            form.tables.choices = [ (table, table) for table in table_names ]
+            form.tables.default = 'Select a Table'
+            form.process()
+
+        if form.query.data:
+            w = form.tables.data
+            x = form.columns.data
+            y = form.values.data
+            z = form.formats.data
+
+            if x == None or y == None:
+                return redirect(url_for('report'))
+
+            # Retrieve table's metadata to get column data
+            meta_data = db.MetaData(bind=db.engine)
+            db.MetaData.reflect(meta_data)
+            
+            # Converts a table string to an sqlalchemy object
+            u = meta_data.tables[w]	# First table name string
+
+            col = getattr(u.columns, x)
+            p = db.session.query(u).filter(col == y).all()
+            
+            data = [dict(r) for r in p]
+            dict_data = data
+            response = jsonify(dict_data)
+
+            if z == 'CSV':
+                df = pd.json_normalize(loads(response.data))
+                csv = df.to_csv(encoding='utf-8', index=False)
+                return Response(csv, mimetype='application/csv', headers={'Content-Disposition':'attachment;filename={}.csv'.format(w)})
+
+            if z == 'JSON':
+                json = response.data
+                return Response(json, mimetype='text/json', headers={'Content-Disposition':'attachment;filename={}.json'.format(w)})
+            
+            if z == 'XML':
+                xml = dicttoxml(loads(response.data), attr_type=False)
+                return Response(xml, mimetype='text/xml', headers={'Content-Disposition':'attachment;filename={}.xml'.format(w)})
+
+            return redirect(url_for('report'))
+
+    return render_template('report.html', form=form)
+
+
+@app.route('/report/<table>')
+def columns(table):
+
+    # Query criteria
+    query_cols = ['ctry', 'year', 'date', 'ctry_', 'name', 'org_name', 'country', 'pop_yr']
+
+    # Retrieve table's metadata to get column data
+    meta_data = db.MetaData(bind=db.engine)
+    db.MetaData.reflect(meta_data)
+
+    lst_cols = []
+
+    if table == 'Select a Table':
+        return jsonify({'columns' : lst_cols})
+        
+    # Converts a table string to an sqlalchemy object
+    u = meta_data.tables[table]	# First table name string
+
+    for col in u.columns:
+        str_col = str(col).split('.')[-1]
+        if str_col in query_cols:
+            col_obj = {}
+            col_obj['id'] = str_col
+            col_obj['name'] = str_col
+            lst_cols.append(col_obj)
+
+    return jsonify({'columns' : lst_cols})
+
+@app.route('/report/<table>/<column>')
+def values(table, column):
+    
+    # Retrieve table's metadata to get column data
+    meta_data = db.MetaData(bind=db.engine)
+    db.MetaData.reflect(meta_data)
+
+    lst_vals = []
+    
+    if table == 'Select a Table':
+        return jsonify({'values' : lst_vals})
+
+    # Converts a table string to an sqlalchemy object
+    u = meta_data.tables[table]	# First table name string
+
+    for col in u.columns:
+        str_col = str(col).split('.')[-1]
+        if str_col == column:
+
+            # Returns a list of tuples for all values in column 0
+            p = db.session.query(u).with_entities(col).all()
+            
+            # Unpack tuples in a list.
+            p = [value for value, in p]
+
+            # Remove duplicates from list.
+            p = list(dict.fromkeys(p))
+
+            for j in p:
+                val_obj = {}
+                val_obj['id'] = j 
+                val_obj['name'] = j
+                lst_vals.append(val_obj)
+
+    return jsonify({'values' : lst_vals})
+
 @app.route('/test')
 def test():
     # print(population())
     # print(baskets())
     # print(ict_indicators())
     # print(ixp())
-    # print(peer_ixp())
+    print(peer_ixp())
     # print(density())
     # print(root())
     # print(speedindex())
