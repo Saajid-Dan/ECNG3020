@@ -42,6 +42,6 @@ class Machine_format(FlaskForm):
     generate = SubmitField(label=('Submit Selection'))
 
 class Report(FlaskForm):
-    save = SubmitField(label=('Download PDF Report'))
+    save = SubmitField(label=('Save as a PDF'))
 
 
