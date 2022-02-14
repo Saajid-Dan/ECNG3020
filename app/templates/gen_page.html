@@ -1,6 +1,11 @@
 {% extends "base.html" %}
 
 {% block content %}
+
+{% include '_report.html' %}
+
+<!-- boundary -->
+
     <!-- Declaration of Map Title -->
     <div class='row justify-content-center'>
         <div class="col-12" >
@@ -15,23 +20,23 @@
             </p>
             
             <p style="font-size: 105%;"><b>General Information</b></p>
-            {{ gen.gen | safe }}
+            {{ gen.general | safe }}
             <p style="font-size: 105%;"><b>Currency</b></p>
-            {{ gen.cur | safe }}
+            {{ gen.currency | safe }}
             <p style="font-size: 105%;"><b>Area</b></p>
             {{ gen.area | safe }}
             <p style="font-size: 105%;"><b>Land Use</b></p>
-            {{ gen.land | safe }}
+            {{ gen.land_use | safe }}
             <p style="font-size: 105%;"><b>Languages</b></p>
-            {{ gen.lang | safe }}
+            {{ gen.language | safe }}
             <p style="font-size: 105%;"><b>Population</b></p>
-            {{ gen.pop | safe }}
+            {{ gen.tot_pop | safe }}
             <p style="font-size: 105%;"><b>Population Density</b></p>
-            <p><u>Average Density: </u>{{ '%0.1f' | format(dens.dens | float) }} people/sq. km</p>
+            <p><u>Average Density: </u>{{ '%0.1f' | format(dens.avg_dens | float) }} people/sq. km</p>
             
             <!-- ------------------------------ To change ------------------------------ -->
-            <p><u>Maximum Density: </u>{{ '%0.1f' | format(dens.max_ | float) }} people/sq. km</p>
-            <p><u>Minimum Density: </u>{{ '%0.1f' | format(dens.min_ | float) }} people/sq. km</p>
+            <p><u>Maximum Density: </u>{{ '%0.1f' | format(dens.max_dens | float) }} people/sq. km</p>
+            <p><u>Minimum Density: </u>{{ '%0.1f' | format(dens.min_dens | float) }} people/sq. km</p>
             <p>The following figure displays the population density over {{ title }}.</p>
             
             <img class='img-fluid' src="/static/images/general/density/{{ title }}.png" alt="The Image may not exist or has not loaded.">
@@ -40,28 +45,31 @@
             </p>
 
             <p style="font-size: 105%;"><b>Urbanization</b></p>
-            {{ gen.urb | safe }}
+            {{ gen.urbanize | safe }}
             <p style="font-size: 105%;"><b>Electricity Access</b></p>
-            {{ gen.elec | safe }}
+            {{ gen.elec_acc | safe }}
             <p style="font-size: 105%;"><b>Labour Force</b></p>
-            {{ gen.lab | safe }}
+            {{ gen.lab_frc | safe }}
             <p style="font-size: 105%;"><b>Labour Force - By Occupation</b></p>
-            {{ gen.occ | safe }}
+            {{ gen.lab_occ | safe }}
             <p style="font-size: 105%;"><b>Unemployment Rate</b></p>
-            {{ gen.unem | safe }}
+            {{ gen.unem_rt | safe }}
             <p style="font-size: 105%;"><b>Population Below Povery Line</b></p>
-            {{ gen.pov | safe }}
+            {{ gen.poverty | safe }}
             <p style="font-size: 105%;"><b>Literacy</b></p>
-            {{ gen.lit | safe }}
+            {{ gen.literacy | safe }}
 
             <br>
             <br>
             <p><i>
                 Source: CIA's World Factbook<br>
                 URL: <a href='https://www.cia.gov/the-world-factbook/' target="_blank" rel="noopener noreferrer">https://www.cia.gov/the-world-factbook/</a><br>
-                Last Updated: {{ gen.updt | safe }}
+                Last Updated: {{ gen.updated | safe }}
             </i></p>
             
         </div>
     </div>
+
+<!-- boundary -->
+
 {% endblock %}

@@ -1,0 +1,150 @@
+{% extends "base.html" %}
+
+{% block content %}
+    <div class='row justify-content-center'>
+        <div class='col-10'>
+            <h5 class="md-10 text-center text-muted">Get Datasets</h5>
+            <p>
+                Datasets are available to download in the CSV, JSON, and XML format.
+                They can be accessed by generating a query using the dropdowns below.
+                <ul>
+                    <li>Dropdown 1 - Database Table Selection</li>
+                    <li>Dropdown 2 - Filter by a Column</li>
+                    <li>Dropdown 3 - Filter by a Column's value</li>
+                    <li>Dropdown 4 - Output Format</li>
+                </ul>
+                
+                <b>Query Example:</b>
+                <br>
+                Select a <i>Database Table</i> and Filter the Table for a <i>Database Column</i> Equal To <i>Database Value</i>. 
+                <br>
+                <b>Note:</b> Database Tables are titled by [Abbreviated Source]_[Category].
+                <br>
+                <br>
+
+            </p>
+            <form action = "{{url_for('machine')}}" method=post novalidate>
+                {{form1.hidden_tag()}}
+                {{ form1.csrf_token }}
+                
+                <h5 class="md-10 text-center text-muted">Dataset Queries</h5>
+
+                
+
+                Database Table:
+                {{ form1.tables(class = "form-select") }}
+
+                <br>
+
+                Database Column:
+                {{ form1.columns(class = "form-select") }}
+
+                <br>
+                
+                Database Value:
+                {{ form1.values(class = "form-select") }}
+                
+                <br>
+                
+                Select Downloadable Format:
+                {{ form1.formats(class = "form-select") }}
+                <br>
+                
+                <div class='row justify-content-center'>
+                    <div class='col-12 col-sm-6' style="padding-bottom: 4px;">
+                        {{form1.populate(class = "form-control btn btn-danger")}}
+                    </div>
+    
+                    <div class='col-12 col-sm-6' style="padding-bottom: 4px;">
+                        {{form1.generate(class = "form-control btn btn-success")}}
+                    </div>
+                </div>
+
+                <br>
+                {{ form1.comment.label }}
+                {{form1.comment(style="height:200px;",class = "form-control")}}
+                <br>
+                
+            </form> 
+        </div>
+    </div>
+
+    <script>
+        let table_select = document.getElementById("tables");
+        let column_select = document.getElementById('columns');
+        let value_select = document.getElementById('values');
+        let format_select = document.getElementById('formats');
+        let comment_select = document.getElementById("comment");
+    
+        table_select.onchange = function() {
+            table = table_select.value;
+
+            fetch( '/machine/' + table + '/None').then(function(response) {
+                response.json().then(function(data) {
+                    let optionHTML = '';
+                    
+                    var inc = 1;
+                    for (let item of data.data) {
+                        if (inc == 1) {
+                            var column = item.name;
+                        }
+                        inc += 1;
+                        optionHTML += '<option value="' + item.id + '">' + item.name + '</option>';
+                    }
+                    column_select.innerHTML = optionHTML;
+
+                    update_values(table, column);
+                });
+            }); 
+        }
+
+        column_select.onchange = function() {
+            table = table_select.value;
+            column = column_select.value;
+            value = value_select.value;
+            format = format_select.value;
+            comment = comment_select.value;
+
+            update_values(table, column);
+        }
+
+        value_select.onchange = function() {
+            value = value_select.value;
+            update_preview(value);
+        }
+
+        format_select.onchange = function() {
+            value = value_select.value;
+            update_preview(value);
+        }
+
+        function update_values(table, column) {
+            fetch( '/machine/' + table + '/' + column ).then(function(response) {
+                response.json().then(function(data) {
+                    let optionHTML = '';
+                    for (let item of data.data) {
+                        optionHTML += '<option value="' + item.id + '">' + item.name + '</option>';
+                    }
+                    value_select.innerHTML = optionHTML;
+                    value = value_select.value;
+                    update_preview(value);
+                });
+            });
+        }
+
+        function update_preview(value) {
+            table = table_select.value;
+            column = column_select.value;
+            format = format_select.value;
+            comment = comment_select.value;
+
+            fetch( '/machine/' + table + '/' + column + '/' + value + '/' + format).then(function(response) {
+                response.text().then(function(data) {
+                    let optionHTML = '<textarea class="form-control" id="previous" name="previous">' + response + '</textarea>';
+                    comment_select.innerHTML = data;
+                });
+            });
+        }
+
+    </script>
+{% endblock %}

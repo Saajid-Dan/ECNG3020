@@ -1,0 +1,6 @@
+<form action = "" method=post>
+    {{form_pdf.hidden_tag()}}
+    {{ form_pdf.csrf_token }}
+    {{form_pdf.save(class = "form-control")}}
+</form>
+<hr>

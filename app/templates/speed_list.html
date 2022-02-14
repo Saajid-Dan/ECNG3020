@@ -16,9 +16,9 @@
             </p>
             <div>
                 <ol class='list-group list-group-numbered'>
-                    {% for ctry in speed_all %}
+                    {% for ctry in speed %}
                         <li class='list-group-item list-group-item-action'>
-                            <a href={{ url_for('speed_page', country=ctry) }}>{{ ctry }}</a>
+                            <a href={{ url_for('speed_page', path=ctry) }}>{{ ctry }}</a>
                         </li>
                     {% endfor %}
                 </ol>                   

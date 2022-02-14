@@ -15,7 +15,7 @@ from bokeh.events import ButtonClick
 from bokeh.io import export_png
 from math import pi
 from app import db
-from app.models import Mob_br, Fixed_br
+from app.models import Ookla_mobile_bband, Ookla_fixed_bband
 import codecs
 
 
@@ -79,8 +79,8 @@ def graph_infr():
     # ---------------------------------- Graphs ---------------------------------- #
 
     # Graphs.
-    tabs_mob = speed(Mob_br, 'Mobile Broadband')     # Mobile broadband speed index graphs.
-    tabs_fix = speed(Fixed_br, 'Fixed Broadband')    # Fixed broadband speed index graphs.
+    tabs_mob = speed(Ookla_mobile_bband, 'Mobile Broadband')     # Mobile broadband speed index graphs.
+    tabs_fix = speed(Ookla_fixed_bband, 'Fixed Broadband')    # Fixed broadband speed index graphs.
 
     num = 2
 
@@ -98,7 +98,7 @@ def graph_infr():
             OPTIONS.append(j.name)
     OPTIONS.sort(key=lambda x: x, reverse=False)
 
-    print(OPTIONS)
+    # print(OPTIONS)
     
     multi_choice = MultiChoice(value=[], options=OPTIONS, title='Select a Country:')
 
@@ -167,7 +167,7 @@ def speed(cat, title):
 
     # Stores a list of countries the the 'cat' database into 'ctry_lst'.
     ctry_lst = []
-    ctry = cat.query.order_by(cat.ctry).with_entities(cat.ctry)
+    ctry = cat.query.order_by(cat.country).with_entities(cat.country)
     for j in ctry:
         if j[0] not in ctry_lst:
            ctry_lst.append(j[0])
@@ -187,10 +187,10 @@ def speed(cat, title):
 
     # 'hdr' = headers in the database table 'cat'.
     # 'cat' contains 'Fixed_br' and 'Mob_br' database tables.
-    hdrs = [cat.dls, cat.ups, cat.ltcy, cat.jitt]
+    hdrs = [cat.dl_spd, cat.up_spd, cat.ltcy, cat.jitt]
 
     # Query dates in 'cat' and unpack resulting list of tuples.
-    date = cat.query.filter_by(ctry=ctry_lst[0]).with_entities(cat.date).all()
+    date = cat.query.filter_by(country=ctry_lst[0]).with_entities(cat.date).all()
     date = [value for value, in date]
 
     # Take dates (k) in 'date' and format YYYY-MM-DD into a tuple as (YYYY, MM DD).
@@ -211,7 +211,7 @@ def speed(cat, title):
         for ctry in ctry_lst:
             # Query header (hdr) in list headers (hdrs) for y-coordinates data per country in 'ctry_lst'. 
             # The query produces a list of tuples which must be unpacked into a list.
-            data = cat.query.filter_by(ctry=ctry).with_entities(hdr)
+            data = cat.query.filter_by(country=ctry).with_entities(hdr)
             data = [value for value, in data]
             y.append(data)
             

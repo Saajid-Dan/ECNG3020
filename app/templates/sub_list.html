@@ -15,9 +15,9 @@
             </p>
             <div>
                 <ol class='list-group list-group-numbered'>
-                    {% for sub in sub_all %}
+                    {% for sub in sub %}
                         <li class='list-group-item list-group-item-action'>
-                            <a href={{ url_for('sub_page', cable=sub) }}>{{ sub }}</a>
+                            <a href={{ url_for('sub_page', path=sub) }}>{{ sub }}</a>
                         </li>
                     {% endfor %}
                 </ol>                   

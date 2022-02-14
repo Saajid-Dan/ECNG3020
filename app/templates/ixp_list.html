@@ -14,11 +14,24 @@
                 All information on internet exchange points are grouped by CARICOM member states and associate members
                 and can be accessed by selecting one of the following links below.
             </p>
+
             <div>
+                <h5 class="md-10 text-center text-muted">Packet Clearing House</h5>
                 <ol class='list-group list-group-numbered'>
-                    {% for ctry in ixp_all %}
+                    {% for ctry in ixp1 %}
                         <li class='list-group-item list-group-item-action'>
-                            <a href={{ url_for('ixp_page', country=ctry) }}>{{ ctry }}</a>
+                            <a href={{ url_for('ixp_page_pch', path=ctry) }}>{{ ctry }}</a>
+                        </li>
+                    {% endfor %}
+                </ol>                   
+            </div>
+            <br>
+            <div>
+                <h5 class="md-10 text-center text-muted">PeeringDB</h5>
+                <ol class='list-group list-group-numbered'>
+                    {% for ctry in ixp2 %}
+                        <li class='list-group-item list-group-item-action'>
+                            <a href={{ url_for('ixp_page_pdb', path=ctry) }}>{{ ctry }}</a>
                         </li>
                     {% endfor %}
                 </ol>                   

@@ -1,0 +1,28 @@
+{% extends "base.html" %}
+
+{% block content %}
+    <!-- Declaration of Map Title -->
+    <div class='row justify-content-center'>
+        <div class="col-12" >
+            <h5 class="md-10 text-center text-muted">{{ title }}</h5>
+        </div>
+    </div>
+
+    <div class='row justify-content-center'>
+        <div class='col-10'>
+            <p>
+                All information on facilities are grouped by CARICOM member states and associate members
+                and can be accessed by selecting one of the following links below.
+            </p>
+            <div>
+                <ol class='list-group list-group-numbered'>
+                    {% for item in fac %}
+                        <li class='list-group-item list-group-item-action'>
+                            <a href={{ url_for('facility_page', path=item) }}>{{ item }}</a>
+                        </li>
+                    {% endfor %}
+                </ol>                   
+            </div>
+        </div>
+    </div>
+{% endblock %}

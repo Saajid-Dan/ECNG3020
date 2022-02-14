@@ -18,7 +18,7 @@ from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.firefox.options import Options
 import base64
 from app import db
-from app.models import Pop_dens
+from app.models import Wpop_density
 
 
 # ---------------------------------------------------------------------------- #
@@ -42,7 +42,7 @@ def create_density_image():
     Generates PNG Images with Population Density overlays per Caribbean country.
     '''
     # Read Population Density data from database to 'dens'.
-    dens = Pop_dens.query.all()
+    dens = Wpop_density.query.all()
 
     # Loops over data in 'dens'.
     for j in dens:
@@ -53,7 +53,7 @@ def create_density_image():
         # 'dataset' = Pass TIF URL from 'j.url' to gdal.
         # 'width' and 'height' store width and height of image in the TIF file.
         # 'gt' = Extracts geospatial coordinates from the TIF file.
-        dataset = gdal.Open(j.url, 1)
+        dataset = gdal.Open(j.url_tif, 1)
         width = dataset.RasterXSize
         height = dataset.RasterYSize
         gt = dataset.GetGeoTransform()
@@ -158,7 +158,7 @@ def create_density_image():
         # Wait 5 seconds for webpage to load properly.
         time.sleep(5)
         # Screenshot the map.
-        browser.save_screenshot("./app/static/images/general/density/" + j.ctry + ".png")
+        browser.save_screenshot("./app/static/images/general/density/" + j.country + ".png")
 
         # Close the tab and browser to close all firefox sessions.
         browser.close()

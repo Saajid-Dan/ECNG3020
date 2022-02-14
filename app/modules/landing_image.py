@@ -16,7 +16,7 @@ from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.firefox.options import Options
 import base64
 from app import db
-from app.models import Land
+from app.models import Telegeography_landing
 
 
 # ---------------------------------------------------------------------------- #
@@ -43,7 +43,7 @@ def create_land_image():
     ctry_lst = []
 
     # 'ctry' = stores list of tuples that contain countries associated to Caribbean landing points.
-    ctry = Land.query.filter_by(car='Yes').with_entities(Land.ctry)
+    ctry = Telegeography_landing.query.filter_by(in_caribbean='Yes').with_entities(Telegeography_landing.country)
     for j in ctry:
         # 'j[0]' = first element of tuple is the country.
         ctry_lst.append(j[0])
@@ -54,7 +54,7 @@ def create_land_image():
     # Loop over 'ctry_lst' and query 'Land' database for countries in 'ctry_lst'.
     for items in ctry_lst:
         # 'land_pts' = contains a tuple of lat and lon coords for a country (items) in 'ctry_lst'.
-        land_pts = db.session.query(Land.lat, Land.lon).filter_by(ctry=items)
+        land_pts = db.session.query(Telegeography_landing.lat, Telegeography_landing.lon).filter_by(country=items)
 
         # Instantiate folium map.
         m = folium.Map(location=coords, zoom_control=False, zoom_start=11, tiles='cartodbpositron', max_bounds=True, )

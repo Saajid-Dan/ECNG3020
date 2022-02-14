@@ -17,7 +17,7 @@ from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.firefox.options import Options
 import base64
 from app import db
-from app.models import Root_srv
+from app.models import Iana_root_server
 
 
 # ---------------------------------------------------------------------------- #
@@ -44,18 +44,18 @@ def create_root_image():
     ctry_lst = []
 
     # 'root_ctry' = contains all entries from 'Root_srv' database.
-    root_ctry = Root_srv.query.all()
+    root_ctry = Iana_root_server.query.all()
 
     # Loop over 'root_ctry' entries and add unique Caribbean countries to 'ctry_lst'.
     for j in root_ctry:
         if j not in ctry_lst:
-            ctry_lst.append(j.ctry)
+            ctry_lst.append(j.country)
 
     # Loop over countries in 'ctry_lst'.
     for j in ctry_lst:
         # Extract lat, lon, and server name for country 'j'.
         # 'root_' = returns lat, lon, and server name as a tuple.
-        root_ = db.session.query(Root_srv.lat, Root_srv.lon, Root_srv.name).filter_by(ctry=j).all()
+        root_ = db.session.query(Iana_root_server.lat, Iana_root_server.lon, Iana_root_server.name).filter_by(country=j).all()
 
         # Instantiate folium map.
         m = folium.Map(location=coords, zoom_control=False, zoom_start=11, tiles='cartodbpositron', max_bounds=True, )

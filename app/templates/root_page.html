@@ -1,6 +1,11 @@
 {% extends "base.html" %}
 
 {% block content %}
+
+{% include '_report.html' %}
+
+<!-- boundary -->
+
     <!-- Declaration of Map Title -->
     <div class='row justify-content-center'>
         <div class="col-12" >
@@ -37,7 +42,7 @@
 
                             <tr>
                                 <td>Location</td>
-                                <td>{{ item.loc}}</td>
+                                <td>{{ item.location}}</td>
                             </tr>
 
                             <tr>
@@ -52,12 +57,12 @@
                             
                             <tr>
                                 <td>Operator</td>
-                                <td>{{ item.oper }}</td>
+                                <td>{{ item.srv_operator }}</td>
                             </tr>
                             
                             <tr>
                                 <td>Type</td>
-                                <td>{{ item.type_ }}</td>
+                                <td>{{ item.srv_type }}</td>
                             </tr>
 
                             <tr>
@@ -77,7 +82,7 @@
 
                             <tr>
                                 <td>No. of Instances</td>
-                                <td>{{ item.inst }}</td>
+                                <td>{{ item.num_inst }}</td>
                             </tr>
 
                             <tr>
@@ -87,12 +92,12 @@
 
                             <tr>
                                 <td>Contact</td>
-                                <td>{{ item.con }}</td>
+                                <td>{{ item.srv_contact }}</td>
                             </tr>
 
                             <tr>
                                 <td>Peering Policy</td>
-                                <td>{{ item.peer | safe }}</td>
+                                <td>{{ item.peer_pol | safe }}</td>
                             </tr>
 
                             <tr>
@@ -107,12 +112,12 @@
 
                             <tr>
                                 <td>Last Updated</td>
-                                <td>{{ item.updt }}</td>
+                                <td>{{ item.updated }}</td>
                             </tr>
 
                             <tr>
                                 <td>Server Homepage</td>
-                                <td><a href={{ item.url }} target="_blank" rel="noopener noreferrer">{{ item.url }}</a></td>
+                                <td><a href={{ item.url_home }} target="_blank" rel="noopener noreferrer">{{ item.url }}</a></td>
                             </tr>
                         </tbody>
                     </table>
@@ -134,4 +139,5 @@
             </i></p>
         </div>
     </div>
+<!-- boundary -->
 {% endblock %}

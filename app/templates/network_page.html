@@ -1,0 +1,169 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+{% include '_report.html' %}
+
+<!-- boundary -->
+
+    <!-- Declaration of Map Title -->
+    <div class='row justify-content-center'>
+        <div class="col-12" >
+            <h5 class="md-10 text-center text-muted">Networks - {{ title }}</h5>
+        </div>
+    </div>
+
+    <div class='row justify-content-center'>
+        <div class='col-10'>
+            <p>
+                The following table(s) display information on the {{ title }} network.
+            </p>
+            
+            <p>
+                <b>Note: </b>Some data could not be obtained due to inaccessibility or unavailability. This will present itself as blank entries in the following tables.
+            </p>
+
+            <p><u>Table 1a: {{ net.name }} Network Properties</u></p>
+
+            <div class="table-responsive">
+                <table class='table table-sm table-hover'>
+                    <thead>
+                        <tr class='table-primary'>
+                            <th colspan="2">Network Properties</th>
+                        </tr>
+                    </thead>
+
+                    <tbody>
+                        <tr>
+                            <td>Short Name</td>
+                            <td>{{ net.name }}</td>
+                        </tr>
+
+                        <tr>
+                            <td>Long Name</td>
+                            <td>{{ net.name_long }}</td>
+                        </tr>
+
+                        <tr>
+                            <td>Organisation</td>
+                            <td>{{ net.org_name }}</td>
+                        </tr>
+
+                        <tr>
+                            <td>Status</td>
+                            <td>{{ net.status }}</td>
+                        </tr>
+                        
+                        <tr>
+                            <td>Autonomous System Number</td>
+                            <td>{{ net.asm }}</td>
+                        </tr>
+
+                        <tr>
+                            <td>Looking Glass URL</td>
+                            <td>{{ net.look_glass }}</td>
+                        </tr>
+
+                        <tr>
+                            <td>Route Server URL</td>
+                            <td>{{ net.route_srv }}</td>
+                        </tr>
+
+                        <tr>
+                            <td>IRR as-set</td>
+                            <td>{{ net.irr_as_set }}</td>
+                        </tr>
+                        
+                        <tr>
+                            <td>Network Type</td>
+                            <td>{{ net.info_type }}</td>
+                        </tr>
+
+                        <tr>
+                            <td>IPv4 Prefixes</td>
+                            <td>{{ net.ipv4_prfs }}</td>
+                        </tr>
+
+                        <tr>
+                            <td>IPv6 Prefixes</td>
+                            <td>{{ net.ipv6_prfs }}</td>
+                        </tr>
+                        
+                        <tr>
+                            <td>Traffic Levels</td>
+                            <td>{{ net.traf_lvl }}</td>
+                        </tr>
+                        
+                        <tr>
+                            <td>Traffic Ratios</td>
+                            <td>{{ net.traf_ratio }}</td>
+                        </tr>
+
+                        <tr>
+                            <td>Geographic Scope</td>
+                            <td>{{ net.geo_scope }}</td>
+                        </tr>
+
+                        <tr>
+                            <td>Unicast Protocol</td>
+                            <td>{{ net.prot_unicast }}</td>
+                        </tr>
+
+                        <tr>
+                            <td>Multicast Protocol</td>
+                            <td>{{ net.prot_multicast }}</td>
+                        </tr>
+
+                        <tr>
+                            <td>IPv6 Protocol</td>
+                            <td>{{ net.prot_ipv6 }}</td>
+                        </tr>
+                        
+                        <tr>
+                            <td>Never via Route Servers Protocol</td>
+                            <td>{{ net.prot_nvr_by_rt_srv }}</td>
+                        </tr>
+
+                        <tr>
+                            <td>Policy URL</td>
+                            <td>{{ net.policy_url }}</td>
+                        </tr>
+
+                        <tr>
+                            <td>General Policy</td>
+                            <td>{{ net.policy_general }}</td>
+                        </tr>
+
+                        <tr>
+                            <td>Policy Locations</td>
+                            <td>{{ net.policy_locations }}</td>
+                        </tr>
+
+                        <tr>
+                            <td>Policy Contracts</td>
+                            <td>{{ net.policy_contracts }}</td>
+                        </tr>
+                        
+                        <tr>
+                            <td>Last Updated</td>
+                            <td>{{ net.updated }}</td>
+                        </tr>
+
+                        <tr>
+                            <td>Network Homepage</td>
+                            <td><a href={{ net.url_home }} target="_blank" rel="noopener noreferrer">{{ net.url_home }}</a></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            <br>
+           
+            <p><i>
+                Source: PeeringDB<br>
+                
+                URL: <a href={{ net.source }} target="_blank" rel="noopener noreferrer">{{ net.source }}</a><br>
+            </i></p>
+        </div>
+    </div>
+<!-- boundary -->
+{% endblock %}

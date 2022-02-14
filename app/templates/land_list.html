@@ -16,9 +16,9 @@
             </p>
             <div>
                 <ol class='list-group list-group-numbered'>
-                    {% for land in land_all %}
+                    {% for land in land %}
                         <li class='list-group-item list-group-item-action'>
-                            <a href={{ url_for('land_page', country=land) }}>{{ land }}</a>
+                            <a href={{ url_for('land_page', path=land) }}>{{ land }}</a>
                         </li>
                     {% endfor %}
                 </ol>                   

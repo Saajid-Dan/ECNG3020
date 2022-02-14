@@ -15,7 +15,7 @@ from bokeh.events import ButtonClick
 from bokeh.io import export_png
 from math import pi
 from app import db
-from app.models import GNI, PPP, USD
+from app.models import Itu_basket_gni, Itu_basket_ppp, Itu_basket_usd
 import codecs
 
 
@@ -75,9 +75,9 @@ def graph_adop():
     # ---------------------------------- Graphs ---------------------------------- #
 
     # Graphs.
-    tabs_gni = baskets(GNI, 'GNI pc', 'GNI per capita (%)')         # ICT Baskets graphs - GNI pc.
-    tabs_ppp = baskets(PPP, 'PPP', 'Purchasing Power Parity')       # ICT Baskets graphs - PPP.
-    tabs_usd = baskets(USD, 'USD', 'USD ($)')                       # ICT Baskets graphs - USD.
+    tabs_gni = baskets(Itu_basket_gni, 'GNI pc', 'GNI per capita (%)')         # ICT Baskets graphs - GNI pc.
+    tabs_ppp = baskets(Itu_basket_ppp, 'PPP', 'Purchasing Power Parity')       # ICT Baskets graphs - PPP.
+    tabs_usd = baskets(Itu_basket_usd, 'USD', 'USD ($)')                       # ICT Baskets graphs - USD.
 
     # Add graphs to a bokeh Column grid with responsive widths.
     column = Column(tabs_gni, tabs_ppp, tabs_usd)
@@ -93,7 +93,7 @@ def graph_adop():
             OPTIONS.append(j.name)
     OPTIONS.sort(key=lambda x: x, reverse=False)
 
-    print(OPTIONS)
+    # print(OPTIONS)
     
     multi_choice = MultiChoice(value=[], options=OPTIONS, title='Select a Country:')
 
@@ -153,7 +153,7 @@ def baskets(cat, title, unit):
 
     # Stores a list of countries the the 'cat' database into 'ctry_lst'.
     ctry_lst = []
-    ctry = cat.query.order_by(cat.ctry).with_entities(cat.ctry)
+    ctry = cat.query.order_by(cat.country).with_entities(cat.country)
     for j in ctry:
         if j[0] not in ctry_lst:
            ctry_lst.append(j[0])
@@ -180,7 +180,7 @@ def baskets(cat, title, unit):
         # yrs = Years extracted from the 'cat' table via query.
         # 'yrs' used as the x-axis coordinates.
         # These queries are returned as a list of tuples.
-        yrs = db.session.query(cat.year).filter_by(ctry=ctry_lst[0]).all()
+        yrs = db.session.query(cat.date).filter_by(country=ctry_lst[0]).all()
         x = [value for value, in yrs]
         
         # 'y' = stores a list of y-axis coordinates per country.
@@ -188,7 +188,7 @@ def baskets(cat, title, unit):
         for ctry in ctry_lst:
             # Query header (hdr) in list headers (hdrs) for y-coordinates data per country in 'ctry_lst'. 
             # The query produces a list of tuples which must be unpacked into a list.
-            data = db.session.query(hdr).filter_by(ctry=ctry).all()
+            data = db.session.query(hdr).filter_by(country=ctry).all()
             data = [value for value, in data]
             data = [float('NaN') if v is None else v for v in data]
             y.append(data)

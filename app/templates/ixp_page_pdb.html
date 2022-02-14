@@ -1,0 +1,161 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+{% include '_report.html' %}
+
+<!-- boundary -->
+
+    <!-- Declaration of Map Title -->
+    <div class='row justify-content-center'>
+        <div class="col-12" >
+            <h5 class="md-10 text-center text-muted">Internet Exchange Points (PeeringDB) - {{ title }}</h5>
+        </div>
+    </div>
+
+    <div class='row justify-content-center'>
+        <div class='col-10'>
+            <p>
+                The following table(s) display information on the internet exchange point(s) in {{ title }}.
+            </p>
+            
+            <p>
+                <b>Note: </b>Some data could not be obtained due to inaccessibility or unavailability. This will present itself as blank entries in the following tables.
+            </p>
+
+            {% for item in ixp %}
+                <p><u>Table {{ loop.index }}a: IXP {{ loop.index }} - {{ item.name }}</u></p>
+
+                <div class="table-responsive">
+                    <table class='table table-sm table-hover'>
+                        <thead>
+                            <tr class='table-primary'>
+                                <th colspan="2">IXP {{ loop.index }}</th>
+                            </tr>
+                        </thead>
+
+                        <tbody>
+                            <tr>
+                                <td>Short Name</td>
+                                <td>{{ item.name }}</td>
+                            </tr>
+
+                            <tr>
+                                <td>Long Name</td>
+                                <td>{{ item.name_long }}</td>
+                            </tr>
+
+                            <tr>
+                                <td>Organisation</td>
+                                <td>{{ item.org_name }}</td>
+                            </tr>
+                            
+                            <tr>
+                                <td>City</td>
+                                <td>{{ item.city }}</td>
+                            </tr>
+
+                            <tr>
+                                <td>Status</td>
+                                <td>{{ item.status }}</td>
+                            </tr>
+
+                            <tr>
+                                <td>Media</td>
+                                <td>{{ item.media }}</td>
+                            </tr>
+
+                            <tr>
+                                <td>Unicast Protocol</td>
+                                <td>{{ item.status }}</td>
+                            </tr>
+
+                            <tr>
+                                <td>Multicast Protocol</td>
+                                <td>{{ item.prot_unicast }}</td>
+                            </tr>
+
+                            <tr>
+                                <td>IPv6 Protocol</td>
+                                <td>{{ item.prot_multicast }}</td>
+                            </tr>
+
+                            <tr>
+                                <td>Unicast Protocol</td>
+                                <td>{{ item.prot_ipv6 }}</td>
+                            </tr>
+                            
+                            <tr>
+                                <td>Technical Email</td>
+                                <td>{{ item.tech_email }}</td>
+                            </tr>
+                            
+                            <tr>
+                                <td>Technical Phone</td>
+                                <td>{{ item.tech_phone }}</td>
+                            </tr>
+                            
+                            <tr>
+                                <td>Policy Email</td>
+                                <td>{{ item.policy_email }}</td>
+                            </tr>
+
+                            <tr>
+                                <td>Policy Phone</td>
+                                <td>{{ item.policy_phone }}</td>
+                            </tr>
+
+                            <tr>
+                                <td>Sales Email</td>
+                                <td>{{ item.sale_email }}</td>
+                            </tr>
+
+                            <tr>
+                                <td>Sales Phone</td>
+                                <td>{{ item.sale_phone }}</td>
+                            </tr>
+
+                            <tr>
+                                <td>Service Level</td>
+                                <td>{{ item.svc_lvl }}</td>
+                            </tr>
+
+                            <tr>
+                                <td>Terms</td>
+                                <td>{{ item.terms }}</td>
+                            </tr>
+
+                            <tr>
+                                <td>Local Facilities</td>
+                                <td>{{ fac[loop.index - 1] }}</td>
+                            </tr>
+
+                            <tr>
+                                <td>Last Updated</td>
+                                <td>{{ item.updated }}</td>
+                            </tr>
+
+                            <tr>
+                                <td>IXP Homepage</td>
+                                <td><a href={{ item.url_home }} target="_blank" rel="noopener noreferrer">{{ item.url_home }}</a></td>
+                            </tr>
+
+                            <tr>
+                                <td>IXP Statistics</td>
+                                <td><a href={{ item.url_stats }} target="_blank" rel="noopener noreferrer">{{ item.url_stats }}</a></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <br>
+            {% endfor %}
+
+            <p><i>
+                Source: PeeringDB<br>
+                
+                URL: <a href={{ ixp[-1].source }} target="_blank" rel="noopener noreferrer">{{ ixp[-1].source }}</a><br>
+            </i></p>
+        </div>
+    </div>
+<!-- boundary -->
+{% endblock %}

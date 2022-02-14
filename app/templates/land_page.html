@@ -1,6 +1,11 @@
 {% extends "base.html" %}
 
 {% block content %}
+
+{% include '_report.html' %}
+
+<!-- boundary -->
+
     <!-- Declaration of Map Title -->
     <div class='row justify-content-center'>
         <div class="col-12" >
@@ -38,7 +43,7 @@
                                     <td>{{ '%0.3f' | format(item.lon | float) }}</td>
                                     <td>
                                         {% for cable in cables[loop.index - 1] %}
-                                            <a href={{ url_for('sub_page', cable=cable) }}>{{ cable }}</a>, 
+                                            <a href={{ url_for('sub_page', path=cable) }}>{{ cable }}</a>, 
                                         {% endfor %}
                                     </td>
                                 </tr>
@@ -66,4 +71,5 @@
             </i></p>
         </div>
     </div>
+<!-- boundary -->
  {% endblock %}

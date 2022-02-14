@@ -1,6 +1,11 @@
 {% extends "base.html" %}
 
 {% block content %}
+
+{% include '_report.html' %}
+
+<!-- boundary -->
+
     <!-- Declaration of Map Title -->
     <div class='row justify-content-center'>
         <div class="col-12" >
@@ -27,17 +32,17 @@
                     <tbody>
                         <tr>
                             <td>Name</td>
-                            <td>{{ sub['name'].values[0] }}</td>
+                            <td>{{ sub.name }}</td>
                         </tr>
                         
                         <tr>
                             <td>Status</td>
                             <td>
-                                {% if sub['stat'].values[0] == 'True' %}
+                                {% if sub.status == 'True' %}
                                     Planned
                                 {% endif %}
 
-                                {% if sub['stat'].values[0] == 'False' %}
+                                {% if sub.status == 'False' %}
                                     Active
                                 {% endif %}
                             </td>
@@ -45,22 +50,22 @@
 
                         <tr>
                             <td>Length</td>
-                            <td>{{ sub['len_'].values[0] }}</td>
+                            <td>{{ sub.length }}</td>
                         </tr>
 
                         <tr>
                             <td>Ready for Service</td>
-                            <td>{{ sub['rfs'].values[0] }}</td>
+                            <td>{{ sub.rfs }}</td>
                         </tr>
 
                         <tr>
                             <td>Owners</td>
-                            <td>{{ sub['own'].values[0] }}</td>
+                            <td>{{ sub.owners }}</td>
                         </tr>
 
                         <tr>
                             <td>Suppliers</td>
-                            <td>{{ sub['sup'].values[0] }}</td>
+                            <td>{{ sub.suppliers }}</td>
                         </tr>
                     </tbody>
                 </table>
@@ -94,7 +99,7 @@
             </p>
             <p><b>List of Caribbean Landing Points</b></p>
             <ol class='list-group list-group-numbered'>
-                {% for land in land_car %}
+                {% for land in car %}
                     <li class='list-group-item list-group-item-action'>
                         {{ land }}
                     </li>
@@ -107,7 +112,7 @@
             {% endif %}
                             
             <ol class='list-group list-group-numbered'>
-                {% for land in land_int %}
+                {% for land in int %}
                     <li class='list-group-item list-group-item-action'>
                         {{ land }}
                     </li>
@@ -129,8 +134,9 @@
                 Source: Telegeography<br>
                 
                 URL: <a href='https://git.io/JyPd4' target="_blank" rel="noopener noreferrer">https://git.io/JyPd4</a><br>
-                Last Updated: {{ sub['updt'].values[0] }}
+                Last Updated: {{ sub.updated }}
             </i></p>
         </div>
     </div>
+<!-- boundary -->
 {% endblock %}

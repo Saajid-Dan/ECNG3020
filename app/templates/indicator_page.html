@@ -1,6 +1,11 @@
 {% extends "base.html" %}
 
 {% block content %}
+
+{% include '_report.html' %}
+
+<!-- boundary -->
+
     <!-- Declaration of Map Title -->
     <div class='row '>
         <div class="col-1" ></div>
@@ -34,9 +39,9 @@
                     </thead>
                     
                     <tbody>
-                        {% for item in fix %}
+                        {% for item in indic %}
                             <tr>
-                                <td>{{ item.year }}</td>
+                                <td>{{ item.date }}</td>
                                 {% if item.fix != None %}
                                     <td>{{ '%0.0f' | format(item.fix | float) }}</td>
                                 {% else %}
@@ -47,7 +52,7 @@
                     </tbody>
                 </table>
             </div>
-            <p><i>Last Updated: {{ fix[0].updt }}</i></p>
+            <p><i>Last Updated: {{ indic[0].updated }}</i></p>
             <br>
             <p>Data from Table 1 can be graphically depicted in Figure 1a.</p>
         </div>
@@ -75,9 +80,9 @@
                     </thead>
                     
                     <tbody>
-                        {% for item in mob %}
+                        {% for item in indic %}
                             <tr>
-                                <td>{{ item.year }}</td>
+                                <td>{{ item.date }}</td>
                                 {% if item.mob != None %}
                                     <td>{{ '%0.0f' | format(item.mob | float) }}</td>
                                 {% else %}
@@ -88,7 +93,7 @@
                     </tbody>
                 </table>
             </div>
-            <p><i>Last Updated: {{ mob[0].updt }}</i></p>
+            <p><i>Last Updated: {{ indic[0].updated }}</i></p>
             <br>
             <p>Data from Table 2 can be graphically depicted in Figure 2a.</p>
         </div>
@@ -116,9 +121,9 @@
                     </thead>
                     
                     <tbody>
-                        {% for item in per %}
+                        {% for item in indic %}
                             <tr>
-                                <td>{{ item.year }}</td>
+                                <td>{{ item.date }}</td>
                                 {% if item.per != None %}
                                     <td>{{ '%0.0f' | format(item.per | float) }}</td>
                                 {% else %}
@@ -129,7 +134,7 @@
                     </tbody>
                 </table>
             </div>
-            <p><i>Last Updated: {{ per[0].updt }}</i></p>
+            <p><i>Last Updated: {{ indic[0].updated }}</i></p>
             <br>
             <p>Data from Table 3 can be graphically depicted in Figure 3a.</p>
         </div>
@@ -157,9 +162,9 @@
                     </thead>
                     
                     <tbody>
-                        {% for item in bw %}
+                        {% for item in indic %}
                             <tr>
-                                <td>{{ item.year }}</td>
+                                <td>{{ item.date }}</td>
                                 {% if item.bw != None %}
                                     <td>{{ '%0.0f' | format(item.bw | float) }}</td>
                                 {% else %}
@@ -170,7 +175,7 @@
                     </tbody>
                 </table>
             </div>
-            <p><i>Last Updated: {{ bw[0].updt }}</i></p>
+            <p><i>Last Updated: {{ indic[0].updated }}</i></p>
             <br>
             <p>Data from Table 4 can be graphically depicted in Figure 4a.</p>
         </div>
@@ -191,4 +196,7 @@
             </i></p>
         </div>
     </div>
+
+<!-- boundary -->
+
 {% endblock %}

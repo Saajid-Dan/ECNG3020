@@ -11,14 +11,14 @@
     <div class='row justify-content-center'>
         <div class='col-10'>
             <p>
-                All information on root servers are grouped by CARICOM member states and associate members
+                All information are grouped by CARICOM member states and associate members
                 and can be accessed by selecting one of the following links below.
             </p>
             <div>
                 <ol class='list-group list-group-numbered'>
-                    {% for ctry in gen_all %}
+                    {% for ctry in gen %}
                         <li class='list-group-item list-group-item-action'>
-                            <a href={{ url_for('gen_page', country=ctry) }}>{{ ctry }}</a>
+                            <a href={{ url_for('gen_page', path=ctry) }}>{{ ctry }}</a>
                         </li>
                     {% endfor %}
                 </ol>                   

@@ -14,9 +14,10 @@ import codecs
 import pandas as pd
 import geopandas as gpd
 from osgeo import gdal
+from shapely import wkt
 import ast
 from app import db
-from app.models import Land, Ixp_dir, Pop_dens, Root_srv
+from app.models import Pch_ixp_dir, Pdb_facility, Wpop_density, Iana_root_server, Telegeography_landing, Telegeography_submarine
 
 
 def create_map():
@@ -66,7 +67,7 @@ def create_map():
     m.add_child(feature_ixp)
 
     # Read IXP directory data from database to 'ixp'.
-    ixp = Ixp_dir.query.all()
+    ixp = Pch_ixp_dir.query.all()
     
     # Add IXP points to map 'm'.
     for j in ixp:
@@ -77,7 +78,7 @@ def create_map():
         )
 
         # 'name' = IXP name
-        name = '<a href = "' + j.url + '"target="_blank" rel="noopener noreferrer">' + j.name + '</a>'
+        name = '<a href = "' + j.url_home + '"target="_blank" rel="noopener noreferrer">' + j.name + '</a>'
 
         # 'ipv4_avg' = IPv4 Average Throughput
         ipv4_avg = float(j.ipv4_avg)
@@ -111,16 +112,16 @@ def create_map():
             folium.Popup(
                 f'''<h4>Internet Exchange Point</h4>
                 <p style="line-height: 15px; margin-top: 0px; margin-bottom: 5px;"><b>Name: </b>{name}</p>
-                <p style="line-height: 15px; margin-top: 5px; margin-bottom: 5px;"><b>Country: </b>{j.ctry}</p>
+                <p style="line-height: 15px; margin-top: 5px; margin-bottom: 5px;"><b>Country: </b>{j.country}</p>
                 <p style="line-height: 15px; margin-top: 5px; margin-bottom: 5px;"><b>City: </b>{j.city}</p>
-                <p style="line-height: 15px; margin-top: 5px; margin-bottom: 5px;"><b>Status: </b>{j.stat}</p>
+                <p style="line-height: 15px; margin-top: 5px; margin-bottom: 5px;"><b>Status: </b>{j.status}</p>
                 <p style="line-height: 15px; margin-top: 5px; margin-bottom: 5px;"><b>Date Established: </b>{j.date}</p>
-                <p style="line-height: 15px; margin-top: 5px; margin-bottom: 5px;"><b>No. of Prefixes: </b>{j.prfs}</p>
-                <p style="line-height: 15px; margin-top: 5px; margin-bottom: 5px;"><b>No. of Participants: </b>{j.prts}</p>
+                <p style="line-height: 15px; margin-top: 5px; margin-bottom: 5px;"><b>No. of Prefixes: </b>{j.num_prfs}</p>
+                <p style="line-height: 15px; margin-top: 5px; margin-bottom: 5px;"><b>No. of Participants: </b>{j.num_prts}</p>
                 <p style="line-height: 15px; margin-top: 5px; margin-bottom: 5px;"><b>IPv4 Average Throughput: </b>{ipv4_avg}</p>
                 <p style="line-height: 15px; margin-top: 5px; margin-bottom: 5px;"><b>IPv4 Peak Throughput: </b>{ipv4_pk}</p>
                 <p style="line-height: 15px; margin-top: 5px; margin-bottom: 5px;"><b>IPv6 Average Throughput: </b>{ipv6_avg}</p>
-                <p style="line-height: 15px; margin-top: 5px; margin-bottom: 5px;"><b>Last Updated: </b>{j.updt}</p>''',
+                <p style="line-height: 15px; margin-top: 5px; margin-bottom: 5px;"><b>Last Updated: </b>{j.updated}</p>''',
                 max_width = 275,
                 min_width = 275
             )
@@ -130,11 +131,60 @@ def create_map():
 
 
     # ---------------------------------------------------------------------------- #
+    #                                  Facilities                                  #
+    # ---------------------------------------------------------------------------- #
+
+    # -------------------------- Add Facilities to Map -------------------------- #
+
+    # 'feature_fac' = Folium feature group for Facilities.
+    feature_fac = FeatureGroupSubGroup(mcg, 'Facilities')
+    m.add_child(feature_fac)
+
+    # Read fac data from database to 'fac'.
+    fac = Pdb_facility.query.all()
+
+    # Add fac points to map 'm'.
+    for j in fac:
+        # Create fac marker.
+        fac_pt = folium.Marker(
+            location = [float(j.lat), float(j.lon)],
+            icon = folium.Icon(color='lightred')
+        )
+
+        # 'name' = Facility name and URL to homepage.
+        name = '<a href = "' + j.url_home + '"target="_blank" rel="noopener noreferrer">' + j.name + '</a>'
+
+        # Create marker popup message.
+        fac_pt = fac_pt.add_child(
+            folium.Popup(
+                f'''<h4>Facility</h4>
+                <p style="line-height: 15px; margin-top: 0px; margin-bottom: 5px;"><b>Facility Name: </b>{name}</p>
+                <p style="line-height: 15px; margin-top: 0px; margin-bottom: 5px;"><b>Status: </b>{j.status}</p>
+                <p style="line-height: 15px; margin-top: 5px; margin-bottom: 5px;"><b>Country: </b>{j.country}</p>
+                <p style="line-height: 15px; margin-top: 5px; margin-bottom: 5px;"><b>City: </b>{j.city}</p>
+                <p style="line-height: 15px; margin-top: 5px; margin-bottom: 5px;"><b>Address Line 1: </b>{j.address1}</p>
+                <p style="line-height: 15px; margin-top: 5px; margin-bottom: 5px;"><b>Address Line 2: </b>{j.address2}</p>
+                <p style="line-height: 15px; margin-top: 5px; margin-bottom: 5px;"><b>State: </b>{j.state}</p>
+                <p style="line-height: 15px; margin-top: 5px; margin-bottom: 5px;"><b>Zip Code: </b>{j.zipcode}</p>
+                <p style="line-height: 15px; margin-top: 5px; margin-bottom: 5px;"><b>Organisation: </b>{j.org_name}</p>
+                <p style="line-height: 15px; margin-top: 5px; margin-bottom: 5px;"><b>Sales Email: </b>{j.sale_email}</p>
+                <p style="line-height: 15px; margin-top: 5px; margin-bottom: 5px;"><b>Sales Phone: </b>{j.sale_phone}</p>
+                <p style="line-height: 15px; margin-top: 5px; margin-bottom: 5px;"><b>Technical Email: </b>{j.tech_email}</p>
+                <p style="line-height: 15px; margin-top: 5px; margin-bottom: 5px;"><b>Technical Phone: </b>{j.tech_phone}</p>
+                <p style="line-height: 15px; margin-top: 5px; margin-bottom: 5px;"><b>Last Updated: </b>{j.updated}</p>''',
+                max_width = 275,
+                min_width = 275
+            )
+        )
+        # Add marker to map 'm'.
+        fac_pt.add_to(feature_fac)
+
+    # ---------------------------------------------------------------------------- #
     #                              Population Density                              #
     # ---------------------------------------------------------------------------- #
 
     # Read Population Density data from database to 'dens'.
-    dens = Pop_dens.query.all()
+    dens = Wpop_density.query.all()
 
     # max_pop - Variable used to store maximum population density in all Caribbean countries.
     max_pop = 0
@@ -147,7 +197,7 @@ def create_map():
         # 'dataset' = Pass TIF URL from 'j.url' to gdal.
         # 'width' and 'height' store width and height of image in the TIF file.
         # 'gt' = Extracts geospatial coordinates from the TIF file.
-        dataset = gdal.Open(j.url, 1)
+        dataset = gdal.Open(j.url_tif, 1)
         width = dataset.RasterXSize
         height = dataset.RasterYSize
         gt = dataset.GetGeoTransform()
@@ -222,7 +272,7 @@ def create_map():
     m.add_child(feature_root)
 
     # Read root server data from database to 'root'.
-    root = Root_srv.query.all()
+    root = Iana_root_server.query.all()
 
     # Add root server points to map 'm'.
     for j in root:
@@ -233,27 +283,27 @@ def create_map():
         )
 
         # 'name' = Server name and URL to homepage.
-        name = '<a href = "' + j.url + '"target="_blank" rel="noopener noreferrer">' + j.name + ' Root</a>'
+        name = '<a href = "' + j.url_home + '"target="_blank" rel="noopener noreferrer">' + j.name + ' Root</a>'
 
         # Create marker popup message.
         root_pt = root_pt.add_child(
             folium.Popup(
                 f'''<h4>Root Name Server</h4>
-                <p style="line-height: 15px; margin-top: 0px; margin-bottom: 5px;"><b>Server Name: </b>{j.name}</p>
-                <p style="line-height: 15px; margin-top: 5px; margin-bottom: 5px;"><b>Country: </b>{j.ctry}</p>
-                <p style="line-height: 15px; margin-top: 5px; margin-bottom: 5px;"><b>Location: </b>{j.loc}</p>
-                <p style="line-height: 15px; margin-top: 5px; margin-bottom: 5px;"><b>Operator: </b>{j.oper}</p>
-                <p style="line-height: 15px; margin-top: 5px; margin-bottom: 5px;"><b>Server Type: </b>{j.type_}</p>
+                <p style="line-height: 15px; margin-top: 0px; margin-bottom: 5px;"><b>Server Name: </b>{name}</p>
+                <p style="line-height: 15px; margin-top: 5px; margin-bottom: 5px;"><b>Country: </b>{j.country}</p>
+                <p style="line-height: 15px; margin-top: 5px; margin-bottom: 5px;"><b>Location: </b>{j.location}</p>
+                <p style="line-height: 15px; margin-top: 5px; margin-bottom: 5px;"><b>Operator: </b>{j.srv_operator}</p>
+                <p style="line-height: 15px; margin-top: 5px; margin-bottom: 5px;"><b>Server Type: </b>{j.srv_type}</p>
                 <p style="line-height: 15px; margin-top: 5px; margin-bottom: 5px;"><b>Autonomous Server Number: </b>{j.asn}</p>
                 <p style="line-height: 15px; margin-top: 5px; margin-bottom: 5px;"><b>IPv4 Address: </b>{j.ipv4}</p>
                 <p style="line-height: 15px; margin-top: 5px; margin-bottom: 5px;"><b>IPv6 Address: </b>{j.ipv6}</p>
-                <p style="line-height: 15px; margin-top: 5px; margin-bottom: 5px;"><b>No. of Instances: </b>{j.inst}</p>
+                <p style="line-height: 15px; margin-top: 5px; margin-bottom: 5px;"><b>No. of Instances: </b>{j.num_inst}</p>
                 <p style="line-height: 15px; margin-top: 5px; margin-bottom: 5px;"><b>RSSAC: </b>{j.rssac}</p>
-                <p style="line-height: 15px; margin-top: 5px; margin-bottom: 5px;"><b>Contact Email: </b>{j.con}</p>
-                <p style="line-height: 15px; margin-top: 5px; margin-bottom: 5px;"><b>Peering Policy: </b>{j.peer}</p>
+                <p style="line-height: 15px; margin-top: 5px; margin-bottom: 5px;"><b>Contact Email: </b>{j.srv_contact}</p>
+                <p style="line-height: 15px; margin-top: 5px; margin-bottom: 5px;"><b>Peering Policy: </b>{j.peer_pol}</p>
                 <p style="line-height: 15px; margin-top: 5px; margin-bottom: 5px;"><b>Indentifiers: </b>{j.id_root}</p>
                 <p style="line-height: 15px; margin-top: 5px; margin-bottom: 5px;"><b>Identifier Naming Convention: </b>{j.id_nc}</p>
-                <p style="line-height: 15px; margin-top: 5px; margin-bottom: 5px;"><b>Last Updated: </b>{j.updt}</p>''',
+                <p style="line-height: 15px; margin-top: 5px; margin-bottom: 5px;"><b>Last Updated: </b>{j.updated}</p>''',
                 max_width = 275,
                 min_width = 275
             )
@@ -277,10 +327,10 @@ def create_map():
     m.add_child(feature_int)
 
     # Read landing points data from database to 'land'.
-    land = Land.query.all()
+    land = Telegeography_landing.query.all()
     for j in land:
         # If landing point is situated in the Caribbean
-        if j.car == 'Yes':
+        if j.in_caribbean == 'Yes':
             # Create landing point marker.
             car_land = folium.Marker(
                 location = [j.lat, j.lon],
@@ -291,8 +341,8 @@ def create_map():
                 folium.Popup(
                     f'''<h4>Caribbean Landing Point</h4>
                     <p style="line-height: 15px; margin-top: 0px; margin-bottom: 5px;"><b>Location: </b>{j.name}</p>
-                    <p style="line-height: 15px; margin-top: 5px; margin-bottom: 5px;"><b>Country: </b>{j.ctry}</p>
-                    <p style="line-height: 15px; margin-top: 5px; margin-bottom: 5px;"><b>Last Updated: </b>{j.updt}</p>''',
+                    <p style="line-height: 15px; margin-top: 5px; margin-bottom: 5px;"><b>Country: </b>{j.country}</p>
+                    <p style="line-height: 15px; margin-top: 5px; margin-bottom: 5px;"><b>Last Updated: </b>{j.updated}</p>''',
                     max_width = 275,
                     min_width = 275
                 )
@@ -301,7 +351,7 @@ def create_map():
             car_land.add_to(feature_car)
 
         # If landing point is not situated in the Caribbean
-        elif j.car == 'No':
+        elif j.in_caribbean == 'No':
             # Create landing point marker.
             car_land = folium.Marker(
                 location = [j.lat, j.lon],
@@ -312,8 +362,8 @@ def create_map():
                 folium.Popup(
                     f'''<h4>International Landing Point</h4>
                     <p style="line-height: 15px; margin-top: 0px; margin-bottom: 5px;"><b>Location: </b>{j.name}</p>
-                    <p style="line-height: 15px; margin-top: 5px; margin-bottom: 5px;"><b>Country: </b>{j.ctry}</p>
-                    <p style="line-height: 15px; margin-top: 5px; margin-bottom: 5px;"><b>Last Updated: </b>{j.updt}</p>''',
+                    <p style="line-height: 15px; margin-top: 5px; margin-bottom: 5px;"><b>Country: </b>{j.country}</p>
+                    <p style="line-height: 15px; margin-top: 5px; margin-bottom: 5px;"><b>Last Updated: </b>{j.updated}</p>''',
                     max_width = 275,
                     min_width = 275
                 )
@@ -344,35 +394,48 @@ def create_map():
     # 'feature_sub' = Folium feature group for submarine cables 
     feature_sub = folium.FeatureGroup('Submarine Cables').add_to(m)
 
-    for j in range(len(gdf_sub)):
-        # 'stat' = stores the cables status as 'True' or 'False'. 
-        stat = gdf_sub.iloc[j]['stat']
+    # Read submarine cable data from database to 'sub'.
+    sub = Telegeography_submarine.query.all()
+
+    # Add cable geometries to map 'm'.
+    for j in sub:
+        # String representation of cable geometry.
+        geo = j.geometry
         
-        # If cable's status is 'True', then the cable is 'Active'.
-        if stat == 'False':
+        # Read into a pandas dataframe.
+        df_geo = pd.DataFrame({'geometry':[geo]})
+        # Convert pandas geometry column data into WKT object.
+        df_geo['geometry'] = df_geo['geometry'].apply(wkt.loads)
+        # Convert pandas dataframe to a geopandas dataframe.
+        gdf = gpd.GeoDataFrame(df_geo)
+        # WKT object is now a shapely geometry object.
+        geo = gdf.geometry[0]
+        print(j.status, type(j.status))
+        if j.status == 'False':
+            # If cable's status is 'False', then the cable is 'Active'.
             stat = 'Active'
 
             # 'cable' = Folium geometry element with cable's coordinates.
             cable = folium.GeoJson(
-                gdf_sub.iloc[j].geometry,
+                geo,
                 style_function = lambda x:style1,
-                name = gdf_sub.iloc[j]['name']
+                name = j.name
             )
-        
-        # If cable's status is 'False', then the cable is 'Planned'.
+
+        # If cable's status is 'True', then the cable is 'Planned'.
         else:
             stat = 'Planned'
 
             # 'cable' = Folium geometry element with cable's coordinates.
             cable = folium.GeoJson(
-                gdf_sub.iloc[j].geometry,
+                geo,
                 style_function = lambda x:style2,
-                name = gdf_sub.iloc[j]['name']
+                name = j.name
             )
         
         # 'lnd_pt' = string representation of a landing points list
         # 'lnd_pt' needs to be converted into a list.
-        lnd_pt = gdf_sub.iloc[j]['lnd']
+        lnd_pt = j.land_pts
         lnd_pt = ast.literal_eval(lnd_pt)
 
         # 'lnd_dat' = to store a string of landing points.
@@ -388,13 +451,16 @@ def create_map():
         # 'rfs' = cable's ready for service.
         # 'sup' = cable suppliers.
         # 'own' = cable owners.
-        # 'updt' = last updated date.
-        name = '<a href = "' + gdf_sub.iloc[j]['url'] + '"target="_blank" rel="noopener noreferrer">' + gdf_sub.iloc[j]['name'] + '</a>'
-        length = gdf_sub.iloc[j]['len_']
-        rfs = gdf_sub.iloc[j]['rfs']
-        sup = gdf_sub.iloc[j]['sup']
-        own = gdf_sub.iloc[j]['own']
-        updt = gdf_sub.iloc[j]['updt']
+        # 'updt' = last updated date.'
+        if j.url_home == None:
+            name = j.name
+        else:
+            name = '<a href = "' + j.url_home + '"target="_blank" rel="noopener noreferrer">' + j.name + '</a>'
+        length = j.length
+        rfs = j.rfs
+        sup = j.suppliers
+        own = j.owners
+        updt = j.updated
         
         # iframe = folium.element.Iframe(html=html, width=275)
         # Add popup messages to cable geometries

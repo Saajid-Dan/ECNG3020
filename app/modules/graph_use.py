@@ -15,7 +15,7 @@ from bokeh.events import ButtonClick
 from bokeh.io import export_png
 from math import pi
 from app import db
-from app.models import indicators
+from app.models import Itu_indicator
 import codecs
 
 
@@ -91,7 +91,7 @@ def graph_use():
             OPTIONS.append(j.name)
     OPTIONS.sort(key=lambda x: x, reverse=False)
 
-    print(OPTIONS)
+    # print(OPTIONS)
     
     multi_choice = MultiChoice(value=[], options=OPTIONS, title='Select a Country:')
 
@@ -165,18 +165,18 @@ def ict_indicators():
     fig = []
     lst_col = []
 
-    year = indicators.query.with_entities(indicators.year).all()
+    year = Itu_indicator.query.with_entities(Itu_indicator.date).all()
     x = [value for value, in year]          # x-axis coordinates.
     x = list(dict.fromkeys(x))
 
     # Stores a list of countries the the 'cat' database into 'ctry_lst'.
     ctry_lst = []
-    ctry = indicators.query.order_by(indicators.ctry).with_entities(indicators.ctry)
+    ctry = Itu_indicator.query.order_by(Itu_indicator.country).with_entities(Itu_indicator.country)
     for j in ctry:
         if j[0] not in ctry_lst:
            ctry_lst.append(j[0])
 
-    cat = [indicators.fix, indicators.mob, indicators.per, indicators.bw]
+    cat = [Itu_indicator.fix, Itu_indicator.mob, Itu_indicator.per, Itu_indicator.bw]
 
     # Loops over the four tables.
     # 'i' = iterator. 'j' = database table from 'cat'.
@@ -186,26 +186,26 @@ def ict_indicators():
         # 'year' = data from the 'yrs' header.
         # 'aia' to 'tca' = indicators data from Anguilla to Turks and Caicos Islands (ascending).
 
-        aia = indicators.query.order_by(indicators.year).filter_by(ctry=ctry_lst[0]).with_entities(j).all()
-        atg = indicators.query.order_by(indicators.year).filter_by(ctry=ctry_lst[1]).with_entities(j).all()
-        bhs = indicators.query.order_by(indicators.year).filter_by(ctry=ctry_lst[2]).with_entities(j).all()
-        brb = indicators.query.order_by(indicators.year).filter_by(ctry=ctry_lst[3]).with_entities(j).all()
-        blz = indicators.query.order_by(indicators.year).filter_by(ctry=ctry_lst[4]).with_entities(j).all()
-        bmu = indicators.query.order_by(indicators.year).filter_by(ctry=ctry_lst[5]).with_entities(j).all()
-        vgb = indicators.query.order_by(indicators.year).filter_by(ctry=ctry_lst[6]).with_entities(j).all()
-        cym = indicators.query.order_by(indicators.year).filter_by(ctry=ctry_lst[7]).with_entities(j).all()
-        dma = indicators.query.order_by(indicators.year).filter_by(ctry=ctry_lst[8]).with_entities(j).all()
-        grd = indicators.query.order_by(indicators.year).filter_by(ctry=ctry_lst[9]).with_entities(j).all()
-        guy = indicators.query.order_by(indicators.year).filter_by(ctry=ctry_lst[10]).with_entities(j).all()
-        hti = indicators.query.order_by(indicators.year).filter_by(ctry=ctry_lst[11]).with_entities(j).all()
-        jam = indicators.query.order_by(indicators.year).filter_by(ctry=ctry_lst[12]).with_entities(j).all()
-        msr = indicators.query.order_by(indicators.year).filter_by(ctry=ctry_lst[13]).with_entities(j).all()
-        kna = indicators.query.order_by(indicators.year).filter_by(ctry=ctry_lst[14]).with_entities(j).all()
-        lca = indicators.query.order_by(indicators.year).filter_by(ctry=ctry_lst[15]).with_entities(j).all()
-        vct = indicators.query.order_by(indicators.year).filter_by(ctry=ctry_lst[16]).with_entities(j).all()
-        sur = indicators.query.order_by(indicators.year).filter_by(ctry=ctry_lst[17]).with_entities(j).all()
-        tto = indicators.query.order_by(indicators.year).filter_by(ctry=ctry_lst[18]).with_entities(j).all()
-        tca = indicators.query.order_by(indicators.year).filter_by(ctry=ctry_lst[19]).with_entities(j).all()
+        aia = Itu_indicator.query.order_by(Itu_indicator.date).filter_by(country=ctry_lst[0]).with_entities(j).all()
+        atg = Itu_indicator.query.order_by(Itu_indicator.date).filter_by(country=ctry_lst[1]).with_entities(j).all()
+        bhs = Itu_indicator.query.order_by(Itu_indicator.date).filter_by(country=ctry_lst[2]).with_entities(j).all()
+        brb = Itu_indicator.query.order_by(Itu_indicator.date).filter_by(country=ctry_lst[3]).with_entities(j).all()
+        blz = Itu_indicator.query.order_by(Itu_indicator.date).filter_by(country=ctry_lst[4]).with_entities(j).all()
+        bmu = Itu_indicator.query.order_by(Itu_indicator.date).filter_by(country=ctry_lst[5]).with_entities(j).all()
+        vgb = Itu_indicator.query.order_by(Itu_indicator.date).filter_by(country=ctry_lst[6]).with_entities(j).all()
+        cym = Itu_indicator.query.order_by(Itu_indicator.date).filter_by(country=ctry_lst[7]).with_entities(j).all()
+        dma = Itu_indicator.query.order_by(Itu_indicator.date).filter_by(country=ctry_lst[8]).with_entities(j).all()
+        grd = Itu_indicator.query.order_by(Itu_indicator.date).filter_by(country=ctry_lst[9]).with_entities(j).all()
+        guy = Itu_indicator.query.order_by(Itu_indicator.date).filter_by(country=ctry_lst[10]).with_entities(j).all()
+        hti = Itu_indicator.query.order_by(Itu_indicator.date).filter_by(country=ctry_lst[11]).with_entities(j).all()
+        jam = Itu_indicator.query.order_by(Itu_indicator.date).filter_by(country=ctry_lst[12]).with_entities(j).all()
+        msr = Itu_indicator.query.order_by(Itu_indicator.date).filter_by(country=ctry_lst[13]).with_entities(j).all()
+        kna = Itu_indicator.query.order_by(Itu_indicator.date).filter_by(country=ctry_lst[14]).with_entities(j).all()
+        lca = Itu_indicator.query.order_by(Itu_indicator.date).filter_by(country=ctry_lst[15]).with_entities(j).all()
+        vct = Itu_indicator.query.order_by(Itu_indicator.date).filter_by(country=ctry_lst[16]).with_entities(j).all()
+        sur = Itu_indicator.query.order_by(Itu_indicator.date).filter_by(country=ctry_lst[17]).with_entities(j).all()
+        tto = Itu_indicator.query.order_by(Itu_indicator.date).filter_by(country=ctry_lst[18]).with_entities(j).all()
+        tca = Itu_indicator.query.order_by(Itu_indicator.date).filter_by(country=ctry_lst[19]).with_entities(j).all()
         
         # Unpack tuples in a list.
         

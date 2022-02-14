@@ -48,13 +48,15 @@
                               <li><a class="dropdown-item" href="{{ url_for('land_list') }}">Landing Points</a></li>
                               <li><a class="dropdown-item" href="{{ url_for('sub_list') }}">Submarine Cables</a></li>
                               <li><a class="dropdown-item" href="{{ url_for('ixp_list') }}">Internet Exchange Points</a></li>
+                              <li><a class="dropdown-item" href="{{ url_for('facility_list') }}">Facilities</a></li>
+                              <li><a class="dropdown-item" href="{{ url_for('network_list') }}">Networks</a></li>
                               <li><a class="dropdown-item" href="{{ url_for('tld_list') }}">Top Level Domains</a></li>
                               <li><a class="dropdown-item" href="{{ url_for('root_list') }}">Root Servers</a></li>
                               <li><a class="dropdown-item" href="{{ url_for('speed_list') }}">Caribbean Speed Index</a></li>
                             </ul>
                           </li>
                         <li class="nav-item">
-                            <a class="nav-link" href="{{ url_for('reports') }}">Download Reports</a>
+                            <a class="nav-link" href="{{ url_for('machine') }}">Get Datasets</a>
                         </li>
 
                     </ul>
@@ -71,7 +73,7 @@
         </div>
 
         <hr>
-
+        
         <!-- -------------------------- Insert Code Here --------------------------- -->
 
         {% block content %}{% endblock %}

@@ -17,7 +17,7 @@ from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.firefox.options import Options
 import base64
 from app import db
-from app.models import Ixp_dir
+from app.models import Pch_ixp_dir
 
 
 # ---------------------------------------------------------------------------- #
@@ -44,18 +44,18 @@ def create_ixp_image():
     ctry_lst = []
 
     # 'ixp_ctry' = contains all entries from 'Ixp_dir' database.
-    ixp_ctry = Ixp_dir.query.all()
+    ixp_ctry = Pch_ixp_dir.query.all()
 
     # Loop over 'ixp_ctry' entries and add unique Caribbean countries to 'ctry_lst'.
     for j in ixp_ctry:
         if j not in ctry_lst:
-            ctry_lst.append(j.ctry)
+            ctry_lst.append(j.country)
 
     # Loop over countries in 'ctry_lst'.
     for j in ctry_lst:
         # Extract lat, lon, and server name for country 'j'.
         # 'ixp_' = returns lat, lon, and ixp name as a tuple.
-        ixp_ = db.session.query(Ixp_dir.lat, Ixp_dir.lon, Ixp_dir.name).filter_by(ctry=j).all()
+        ixp_ = db.session.query(Pch_ixp_dir.lat, Pch_ixp_dir.lon, Pch_ixp_dir.name).filter_by(country=j).all()
 
         # Instantiate folium map.
         m = folium.Map(location=coords, zoom_control=False, zoom_start=11, tiles='cartodbpositron', max_bounds=True, )

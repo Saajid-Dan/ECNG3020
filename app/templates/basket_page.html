@@ -1,6 +1,11 @@
 {% extends "base.html" %}
 
 {% block content %}
+
+{% include '_report.html' %}
+
+<!-- boundary -->
+
     <!-- Declaration of Map Title -->
     <div class='row justify-content-center'>
         <div class="col-12" >
@@ -38,7 +43,7 @@
                     <tbody>
                         {% for item in gni %}
                             <tr>
-                                <td>{{ item.year }}</td>
+                                <td>{{ item.date }}</td>
                                 <td>{{ item.fix }}</td>
                                 <td>{{ item.mob }}</td>
                                 <td>{{ item.low }}</td>
@@ -105,7 +110,7 @@
                     <tbody>
                         {% for item in ppp %}
                             <tr>
-                                <td>{{ item.year }}</td>
+                                <td>{{ item.date }}</td>
                                 <td>{{ item.fix }}</td>
                                 <td>{{ item.mob }}</td>
                                 <td>{{ item.low }}</td>
@@ -172,7 +177,7 @@
                     <tbody>
                         {% for item in usd %}
                             <tr>
-                                <td>{{ item.year }}</td>
+                                <td>{{ item.date }}</td>
                                 <td>{{ item.fix }}</td>
                                 <td>{{ item.mob }}</td>
                                 <td>{{ item.low }}</td>
@@ -226,8 +231,9 @@
             <p><i>
                 Source: ITU ICT Price Baskets<br>
                 URL: <a href='https://www.itu.int/en/ITU-D/Statistics/Dashboards/Pages/IPB.aspx' target="_blank" rel="noopener noreferrer">https://www.itu.int/en/ITU-D/Statistics/Dashboards/Pages/IPB.aspx</a><br>
-                Last Updated: {{ gni[0].updt }}
+                Last Updated: {{ gni[0].updated }}
             </i></p>
         </div>
     </div>
+<!-- boundary -->
 {% endblock %}

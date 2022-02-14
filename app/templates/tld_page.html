@@ -1,6 +1,11 @@
 {% extends "base.html" %}
 
 {% block content %}
+
+{% include '_report.html' %}
+
+<!-- boundary -->
+
     <!-- Declaration of Map Title -->
     <div class='row justify-content-center'>
         <div class="col-12" >
@@ -11,7 +16,7 @@
     <div class='row justify-content-center'>
         <div class='col-10'>          
             <p>
-                {{ title }} has a domain name of {{ tld.cc }} which is a {{ tld.type_ }}.
+                {{ title }} has a domain name of {{ tld.country_code }} which is a {{ tld.tld_type }}.
             </p>
             
             <p style="font-size: 105%;"><b>ccTLD Manager</b></p>
@@ -21,32 +26,33 @@
             
             <p style="font-size: 105%;"><b>Administrative Contact</b></p>
             <span>
-                {{ tld.ad_con | safe }}
+                {{ tld.admin_contact | safe }}
             </span>
 
             <p style="font-size: 105%;"><b>Technical Contact</b></p>
             <span>
-                {{ tld.tch_con | safe }}
+                {{ tld.tech_contact | safe }}
             </span>
 
             <p style="font-size: 105%;"><b>Name Servers</b></p>
             <span>
-                {{ tld.nm_svr | safe }}
+                {{ tld.name_srv | safe }}
             </span>
 
             <br>
             
             <p style="font-size: 105%;"><b>Registry Information</b></p>
             <span>
-                {{ tld.reg | safe }} 
+                {{ tld.info_registry | safe }} 
             </span>
 
             <p><i>
                 Source: Internet Assigned Numbers Authority (IANA)<br>
                 URL: <a href='https://www.iana.org/domains/root/db' target="_blank" rel="noopener noreferrer">https://www.iana.org/domains/root/db</a><br>
-                {{ tld.dates | safe }}
+                {{ tld.date | safe }}
             </i></p>
             
         </div>
     </div>
+<!-- boundary -->
 {% endblock %}
