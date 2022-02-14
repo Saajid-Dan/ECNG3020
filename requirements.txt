@@ -75,7 +75,7 @@ MarkupSafe
 matplotlib
 mkl-fft==1.3.0
 mkl-random
-mkl-service==2.3.0
+mkl-service
 mpld3==0.5.5
 multidict==5.1.0
 munch==2.5.0
