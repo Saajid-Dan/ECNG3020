@@ -15,27 +15,28 @@ from json import loads
 
 from app.models import *
 
-from app.sources.cia_general import cia_general
-from app.sources.iana_root_servers import iana_root_servers
-from app.sources.iana_tld import iana_tld
-from app.sources.itu_baskets import itu_baskets
-from app.sources.itu_indicators import itu_indicators
-from app.sources.ookla_speed_index import ookla_speed_index
-from app.sources.pch_ixp import pch_ixp
-from app.sources.peeringdb_ixp import peeringdb_ixp
-from app.sources.telegeography_submarine import telegeography_submarine
-from app.sources.worldpop_density import worldpop_density
+# from app.sources.cia_general import cia_general
+# from app.sources.iana_root_servers import iana_root_servers
+# from app.sources.iana_tld import iana_tld
+# from app.sources.itu_baskets import itu_baskets
+# from app.sources.itu_indicators import itu_indicators
+# from app.sources.ookla_speed_index import ookla_speed_index
+# from app.sources.pch_ixp import pch_ixp
+# from app.sources.peeringdb_ixp import peeringdb_ixp
+# from app.sources.telegeography_submarine import telegeography_submarine
+# from app.sources.worldpop_density import worldpop_density
 
-from app.modules.maps import create_map
-from app.modules.graph_infr import graph_infr
-from app.modules.graph_adop import graph_adop
-from app.modules.graph_use import graph_use
-from app.modules.landing_image import create_land_image
-from app.modules.submarine_image import create_sub_image
-from app.modules.ixp_image import create_ixp_image
-from app.modules.root_image import create_root_image
-from app.modules.density_image import create_density_image
-from app.modules.facility_image import create_fac_image
+# from app.modules.maps import create_map
+# from app.modules.graph_infr import graph_infr
+# from app.modules.graph_adop import graph_adop
+# from app.modules.graph_use import graph_use
+# from app.modules.landing_image import create_land_image
+# from app.modules.submarine_image import create_sub_image
+# from app.modules.ixp_image import create_ixp_image
+# from app.modules.root_image import create_root_image
+# from app.modules.density_image import create_density_image
+# from app.modules.facility_image import create_fac_image
+from app.modules.test import runrun
 
 @app.route('/')
 @app.route('/index', methods=['GET', 'POST'])
@@ -387,7 +388,7 @@ def sub_list():
     url = url_for('sub_list')
     form = Feedback()
     form_validate(url, form)
-        
+    
     return render_template('sub_list.html', title= 'Submarine Cable Listing', sub=cable_lst, form=form, url=url)
 
 
@@ -420,6 +421,63 @@ def tld_list():
 
 
 # ------------------------------- Report Routes ------------------------------ #
+
+@app.route('/pdf2/<path1>/<path2>')
+def pdf2(path1, path2):
+    from selenium import webdriver
+    from selenium.webdriver.firefox.options import Options
+    from PIL import Image
+    import codecs
+
+    options = Options()
+    options.headless = True
+
+    head = request.headers['Host']
+    url = url_for('strip_base', path1=path1, path2=path2)
+    
+    #set chromodriver.exe path
+    driver = webdriver.Firefox(options=options)
+    driver.maximize_window()
+    #launch URL
+    driver.get('http://' + head + url)
+    #get window size
+    s = driver.get_window_size()
+    #obtain browser height and width
+    w = driver.execute_script('return document.body.parentNode.scrollWidth')
+    h = driver.execute_script('return document.body.parentNode.scrollHeight')
+    #set to new window size
+    driver.set_window_size(w, h)
+    #obtain screenshot of page within body tag
+    image = driver.find_element_by_tag_name('body').screenshot_as_base64
+    # image = driver.find_element_by_tag_name('body').screenshot('test.png')
+    
+
+    driver.set_window_size(s['width'], s['height'])
+    driver.quit()
+
+    html = f'''
+    <html>
+    <head>
+    </head>
+    <body>
+    <img src="data:image/png;base64, {image}" alt="Red dot" />
+    </body>
+    </html>
+
+    '''
+
+    # return html
+    # image = codecs.decode(image, "base64")
+    image = Image.open("data:image/png;base64, {}".format(image))
+    # print(type(image))
+    # print()
+    # image = Image.frombytes('RGB', data = image)
+    # image = Image.open(io.BytesIO(image))
+    # image = Image.open(image, 'rb')
+    image = image.convert('RGB')
+    # im.save("./tutorialspoint.pdf")
+    # return
+    return Response(image, mimetype='application/pdf', headers={'Content-Disposition':'attachment;filename={}.pdf'.format('report')})
 
 @app.route('/pdf/<path1>/<path2>')
 def pdf(path1, path2):
@@ -493,7 +551,7 @@ def machine():
     # The databases are designed having as much common names.
     # Not all database columns are needed to produce an effective query.
     # Only meaningful criteria is chosen.
-    cols = ['country', 'date', 'name', 'org_name']
+    # cols = ['country', 'date', 'name', 'org_name']
 
     # Get a list database tables as strings
     insp = inspect(db.engine)
@@ -516,9 +574,9 @@ def machine():
             
         # If submit via query button
         # Then generate machine formats
-        if form1.query.data:
+        # if form1.query.data:
             
-            form1.previous.data = 'Table: {}; Column: {}; Value: {}; Format: {}'.format(w, x, y, z)
+        #     form1.previous.data = 'Table: {}; Column: {}; Value: {}; Format: {}'.format(w, x, y, z)
 
         if form1.generate.data:
             z = form1.formats.data   # Selected formats from dropdown
@@ -552,11 +610,10 @@ def preview(table, column, value, formats):
     y = value    # Selected values from dropdown
     z = formats   # Selected formats from dropdown
 
-    print(w,x,y,z)
     # If column and values selection are empty, then don't generate anything
     # Instead redirect to a fresh page
-    if x == None or y == None:
-        return redirect(url_for('machine'))
+    # if x == None or y == None:
+    #     return redirect(url_for('machine'))
 
     # Retrieve table's metadata to get column data
     meta_data = db.MetaData(bind=db.engine)
@@ -741,4 +798,5 @@ def test():
     # print("successful")
     # create_fac_image()
     # print("Test Completed")
+    # runrun()
     return render_template('test.html')

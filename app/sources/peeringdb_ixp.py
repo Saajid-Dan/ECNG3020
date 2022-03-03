@@ -3,8 +3,11 @@ import json
 import pandas as pd
 
 from app import db
+from app.email import email_exception
+import traceback
 from app.models import Pdb_ixp, Pdb_facility, Pdb_network
 from datetime import datetime, timezone, timedelta
+
 
 # Disable chained assignments warning on pandas.
 pd.options.mode.chained_assignment = None 
@@ -38,6 +41,10 @@ def peeringdb_ixp():
     # Used to filter extracted data for these country codes.
     cc = ['AG', 'AI', 'BS', 'BB', 'BZ', 'BM', 'VG', 'KY', 'DM', 'GD', 'GY', 'HT', 'JM', 'MS', 'LC', 'KN', 'VC', 'SR', 'TT', 'TC']
 
+
+    email_subject = 'peeringdb_ixp.py'
+
+
     source = 'https://www.peeringdb.com/'
 
     url_ix = 'https://www.peeringdb.com/api/ix'
@@ -59,11 +66,14 @@ def peeringdb_ixp():
 
     time = datetime.now(timezone(timedelta(seconds=-14400))).strftime("%Y-%m-%d %H:%M:%S %z")
 
-
-    # Open JSON from url.
-    response = urlopen(url_ix)
-    json_ix = json.loads(response.read())
-
+    try:
+        # Open JSON from url.
+        response = urlopen(url_ix)
+        json_ix = json.loads(response.read())
+    except Exception as e:
+        email_exception(e, url_ix, email_subject)
+        return
+        
     # Read JSON into a dataframe.
     df_ix = pd.json_normalize(json_ix['data'])
 
@@ -77,9 +87,13 @@ def peeringdb_ixp():
         # Extract org id from dataframe and convert into a string.
         org_id = str(df_ix.iloc[j]['org_id'])
 
-        # Open JSON from url.
-        response = urlopen(url_org + org_id)
-        json_org = json.loads(response.read())
+        try:
+            # Open JSON from url.
+            response = urlopen(url_org + org_id)
+            json_org = json.loads(response.read())
+        except Exception as e:
+            email_exception(e, url_org + org_id, email_subject)
+            return
 
         # Extract name of organisation.
         org_name = json_org['data'][0]['name']
@@ -90,17 +104,25 @@ def peeringdb_ixp():
         # Extract ix id from dataframe and convert into a string.
         ix_id = str(df_ix.iloc[j]['id'])
 
-        # Open JSON from url.
-        response = urlopen(url_ixlan + ix_id)
-        json_ixlan = json.loads(response.read())
+        try:
+            # Open JSON from url.
+            response = urlopen(url_ixlan + ix_id)
+            json_ixlan = json.loads(response.read())
+        except Exception as e:
+            email_exception(e, url_ixlan + ix_id, email_subject)
+            return
 
         # Extract ixlan id ixlan JSON and convert into a string.
         ixlan_id = str(json_ixlan['data'][0]['id'])
 
-        # Open JSON from url.
-        response = urlopen(url_ixpfx + ixlan_id)
-        json_ixpfx = json.loads(response.read())
-        
+        try:
+            # Open JSON from url.
+            response = urlopen(url_ixpfx + ixlan_id)
+            json_ixpfx = json.loads(response.read())
+        except Exception as e:
+            email_exception(e, url_ixpfx + ixlan_id, email_subject)
+            return
+
         ips = ''
         # Loop over indices in ixpfx JSON and extract IPs using ixlan ids.
         for k in json_ixpfx['data']:
@@ -110,10 +132,14 @@ def peeringdb_ixp():
         # Replace fac_set df_ix with the ips.
         df_ix.loc[j, 'ips'] = ips
 
-        # Open JSON from url.
-        response = urlopen(url_ixfac + '?ix_id=' + ix_id)
-        json_ixfac = json.loads(response.read())
-        
+        try:
+            # Open JSON from url.
+            response = urlopen(url_ixfac + '?ix_id=' + ix_id)
+            json_ixfac = json.loads(response.read())
+        except Exception as e:
+            email_exception(e, url_ixfac + '?ix_id=' + ix_id, email_subject)
+            return
+
         fac_ids = ''
         # Loop over indices in ixpfx JSON and extract IPs using ixlan ids.
         for k in json_ixfac['data']:
@@ -158,10 +184,13 @@ def peeringdb_ixp():
     # Remove outdated database entries.
     remove_outdated(Pdb_ixp, time)
 
-
-    # Open JSON from url.
-    response = urlopen(url_fac)
-    json_fac = json.loads(response.read())
+    try:
+        # Open JSON from url.
+        response = urlopen(url_fac)
+        json_fac = json.loads(response.read())
+    except Exception as e:
+        email_exception(e, url_fac, email_subject)
+        return
 
     # Read JSON into a dataframe.
     df_fac = pd.json_normalize(json_fac['data'])
@@ -178,10 +207,13 @@ def peeringdb_ixp():
     for j in range(len(df_fac)):
         #  Extract fac id from dataframe and convert into a string.
         fac_id = str(df_fac.iloc[j]['id'])
-
-        # Open JSON from url.
-        response = urlopen(url_ixfac + '?fac_id=' + fac_id)
-        json_ixfac = json.loads(response.read())
+        try:
+            # Open JSON from url.
+            response = urlopen(url_ixfac + '?fac_id=' + fac_id)
+            json_ixfac = json.loads(response.read())
+        except Exception as e:
+            email_exception(e, url_ixfac + '?fac_id=' + fac_id, email_subject)
+            return
 
         ix_ids = ''
         # Loop over indices in ixpfx JSON and extract IPs using ixlan ids.
@@ -191,10 +223,14 @@ def peeringdb_ixp():
         # Replace fac_set df_fac with the ix_ids.
         df_fac.loc[j, 'ix_id'] = ix_ids
 
-        # Open JSON from url.
-        response = urlopen(url_netfac + '?fac_id=' + fac_id)
-        json_netfac = json.loads(response.read())
-        
+        try:
+            # Open JSON from url.
+            response = urlopen(url_netfac + '?fac_id=' + fac_id)
+            json_netfac = json.loads(response.read())
+        except Exception as e:
+            email_exception(e, url_netfac + '?fac_id=' + fac_id, email_subject)
+            return
+
         net_ids = ''
         # Loop over indices in ixpfx JSON and extract IPs using ixlan ids.
         for k in json_netfac['data']:
@@ -248,10 +284,13 @@ def peeringdb_ixp():
     remove_outdated(Pdb_facility, time)
 
 
-
-    # Open JSON from url.
-    response = urlopen(url_net)
-    json_net = json.loads(response.read())
+    try:
+        # Open JSON from url.
+        response = urlopen(url_net)
+        json_net = json.loads(response.read())
+    except Exception as e:
+        email_exception(e, url_net, email_subject)
+        return
 
     # Read JSON into a dataframe.
     df_net = pd.json_normalize(json_net['data'])
@@ -266,9 +305,13 @@ def peeringdb_ixp():
         # Extract org id from dataframe and convert into a string.
         org_id = str(df_net.iloc[j]['org_id'])
 
-        # Open JSON from url.
-        response = urlopen(url_org + org_id)
-        json_org = json.loads(response.read())
+        try:
+            # Open JSON from url.
+            response = urlopen(url_org + org_id)
+            json_org = json.loads(response.read())
+        except Exception as e:
+            email_exception(e, url_org + org_id, email_subject)
+            return
 
         # Extract name of organisation.
         org_name = json_org['data'][0]['name']

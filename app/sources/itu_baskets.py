@@ -11,6 +11,8 @@ Project Title:
 import pandas as pd
 from urllib.request import urlopen
 from app import db
+from app.email import email_exception
+import traceback
 from app.models import Itu_basket_gni, Itu_basket_ppp, Itu_basket_usd
 from datetime import datetime, timezone, timedelta
 
@@ -30,6 +32,10 @@ def itu_baskets():
     # ---------------------------------------------------------------------------- #
     #                            ITU Price Basket Source                           #
     # ---------------------------------------------------------------------------- #
+
+
+    email_subject = 'itu_baskets.py'
+
 
     # 'url_ipb' = URL to ITU's Price Basket workbook.
     url_ipb = "https://www.itu.int/en/ITU-D/Statistics/Documents/publications/prices2020/ITU_ICTPriceBaskets_2008-2020.xlsx"
@@ -59,8 +65,8 @@ def itu_baskets():
             # dict(f.getheaders()) gives all headers.
             
     except Exception as e:
-        error = "Source: " + url_ipb + "\nError: " + str(e)
-        return error
+        email_exception(e, url_ipb, email_subject)
+        return
     
 
     # ---------------------------------------------------------------------------- #
@@ -125,8 +131,8 @@ def itu_baskets():
 
         
     except Exception as e:
-        error = "Error extracting Price Baskets Data.\nError: " + str(e)
-        return error
+        email_exception(e, '', email_subject)
+        return
 
 
     # ---------------------------------------------------------------------------- #

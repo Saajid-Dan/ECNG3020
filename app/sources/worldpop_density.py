@@ -11,6 +11,8 @@ Project Title:
 import pandas as pd
 from osgeo import gdal
 from app import db
+from app.email import email_exception
+import traceback
 from app.models import Wpop_density
 from datetime import datetime, timezone, timedelta
 
@@ -24,6 +26,10 @@ def worldpop_density():
     # ---------------------------------------------------------------------------- #
     #                                WorldPop Source                               #
     # ---------------------------------------------------------------------------- #
+
+
+    email_subject = 'worldpop_density.py'
+
 
     # 'url_root' = root directory of WorldPop's population density data for unconstrained individual countries.
     # For more info on the API: https://www.worldpop.org/sdi/introapi
@@ -97,8 +103,8 @@ def worldpop_density():
             # 'json_pop' = stores JSON from 'url'.
             json_pop = pd.read_json(url)
         except Exception as e:
-            error = "Source: " + url + "\nError: " + str(e)
-            return error
+            email_exception(e, url, email_subject)
+            return
 
 
         # ---------------------------------------------------------------------------- #
@@ -118,8 +124,8 @@ def worldpop_density():
             pop_yr = json_pop.iloc[-1]['data']['popyear']
 
         except Exception as e:
-            error = "Error Extracting TIF Data.\nError: " + str(e)
-            return error
+            email_exception(e, '', email_subject)
+            return
 
         try:
             # 'dataset' = Pass TIF URL from 'url_tif' to gdal.
@@ -129,8 +135,8 @@ def worldpop_density():
             band = dataset.GetRasterBand(1)
             arr = band.ReadAsArray()
         except Exception as e:
-            error = "Source: " + url_tif + "\nError: " + str(e)
-            return error
+            email_exception(e, url_tif, email_subject)
+            return
 
         # 'stats' = contains min, max and mean population densities in a list.
         # format: [min, max, mean]

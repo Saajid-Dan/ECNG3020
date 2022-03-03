@@ -6,12 +6,22 @@
         <div class="col-12" >
             <h5 class="md-10 text-center text-muted" style="margin-bottom: 15px;">Map of Caribbean ICT Infrastructure and Demographic Data</h5>
         </div>
-    </div>
+    
+    <!-- Map HTML file -->
+    <!-- <div class='row justify-content-center'> -->
+        <div class="col-10">
+            <iframe id='map' src='/static/html/map.html' width="100%" height="400px" style="border: thin solid rgb(200, 200, 200)"></iframe>
+        </div>
+    <!-- </div> -->
+    
+    <!-- <div class='row justify-content-center'> -->
+     
+    <!-- </div> -->
 
     
     <!-- Legend -->
-    <div class='row justify-content-center'>
-        <div class="col-10">
+    <!-- <div class='row justify-content-center'> -->
+        <div class="col-10" style="margin-top: 1em; margin-bottom: 1em;">
             <a class="btn btn-primary" data-bs-toggle="collapse" href="#Collapse1" role="button" aria-expanded="false" aria-controls="Collapse1" style="width: 100%;">Legend</a> 
         </div>
         
@@ -20,21 +30,12 @@
                 {% include '_legend.html' %}
             </div>
         </div>
-    </div>
+    <!-- </div> -->
 
-    <br>
-    
-    <!-- Map HTML file -->
-    <div class='row justify-content-center'>
-        <div class="col-10">
-            <iframe id='map' src='/static/html/map.html' width="100%" height="400px" style="border: thin solid rgb(200, 200, 200)"></iframe>
-        </div>
-    </div>
-    
-    <!-- Additional Map Attributions -->
+    <!-- Additional Map Attributions
     <div class="row justify-content-center" style="margin-top: 1em;">
         <div class="col-10">
-            <a class="btn btn-primary" data-bs-toggle="collapse" href="#Collapse2" role="button" aria-expanded="false" aria-controls="Collapse2" style="width: 100%;">Map Attributions</a> 
+            <a class="btn btn-secondary" data-bs-toggle="collapse" href="#Collapse2" role="button" aria-expanded="false" aria-controls="Collapse2" style="width: 100%;">Map Attributions</a> 
         </div>
         
         <div class="collapse col-10" id="Collapse2" style="margin-top: 0.5em;">
@@ -59,19 +60,19 @@
                 </p>
             </div>
         </div>
-    </div>
+    </div> -->
 
     <br>
     <hr>
 
     <!-- Toggle Countries Dropdowns -->
-    <div class='row justify-content-center'>
+    <!-- <div class='row justify-content-center'> -->
         <div class="col-12" >
             <h5 class="md-10 text-center text-muted" style="margin-bottom: 15px;">Country Comparisons</h5>
         </div>
-    </div>
+    <!-- </div> -->
 
-    <div class='row justify-content-center'>
+    <!-- <div class='row justify-content-center'> -->
         <div class="col-10" >
             <ul>
                 <li>
@@ -106,13 +107,13 @@
                 Data Listing can be found in the navigation toolbar.
             </p>
         </div>
-    </div>
+    <!-- </div> -->
     
     <hr>
 
     <!-- Iframe Count: 12 -->
 
-    <div class='row justify-content-center'>
+    <!-- <div class='row justify-content-center'> -->
         <div class="col-10">
             <select name="categories" class="form-select" id='categories' onchange="changeGraph('categories', 'iframe')" required>
                 <option value='0'>Internet Infrastructure</option>

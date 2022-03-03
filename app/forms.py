@@ -1,11 +1,12 @@
 from flask_wtf import FlaskForm
 from flask import flash, redirect, Response
 from flask_mail import Message
-from app import mail
+from app import app
 from wtforms import TextAreaField, SelectField, SubmitField, StringField
 from wtforms.validators import ValidationError, DataRequired, Length
 from wtforms.widgets import TextArea
 
+from app.email import send_email
 
 
 class Feedback(FlaskForm):
@@ -21,8 +22,10 @@ def form_validate(url, form):
         title = form.option.data
         body = form.comment.data
 
-        msg = Message(title, body=body, sender='SDan.Testing@gmail.com', recipients=['SDan.Testing@gmail.com'])
-        mail.send(msg)
+        # msg = Message(title, body=body, sender=app.config['SENDER'], recipients=app.config['ADMINS'])
+        # mail.send(msg)
+
+        send_email(title, body, app.config['SENDER'], app.config['ADMINS'])
 
         form.comment.data = ''
 
@@ -36,9 +39,9 @@ class Machine_format(FlaskForm):
     values = SelectField('values', choices=[])
     formats = SelectField('formats', choices=[('CSV', 'CSV'), ('JSON', 'JSON'), ('XML', 'XML')])
     comment = StringField(label='Output', widget=TextArea())
-    previous = StringField(label='Previous Selection', widget=TextArea())
+    # previous = StringField(label='Previous Selection', widget=TextArea())
     populate = SubmitField(label=('Reset Selection'))
-    query = SubmitField(label=('Preview Selection'))
+    # query = SubmitField(label=('Preview Selection'))
     generate = SubmitField(label=('Submit Selection'))
 
 class Report(FlaskForm):

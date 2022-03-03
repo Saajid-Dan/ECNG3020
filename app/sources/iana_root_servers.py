@@ -10,6 +10,8 @@ Project Title:
 from bs4 import BeautifulSoup
 import requests
 from app import db
+from app.email import email_exception
+import traceback
 from app.models import Iana_root_server
 from datetime import datetime, timezone, timedelta
 
@@ -23,6 +25,9 @@ def iana_root_servers():
     #                            IANA Root Server Source                           #
     # ---------------------------------------------------------------------------- #
     
+    email_subject = 'iana_root_servers.py'
+
+
     # Root Server Archives root directory in 'url_root'.
     url_root = 'https://root-servers.org/archives/'
 
@@ -41,8 +46,9 @@ def iana_root_servers():
         if soup.text.find('404 Not Found') != -1:
             raise Exception("HTTP Error 404: NOT FOUND")
     except Exception as e:
-        error = "Source: " + url_root + "\nError: " + str(e)
-        return error
+        email_exception(e, url_root, email_subject)
+        return
+        
 
     # Loop over <a> tags in 'soup' and store the text into 'sub'.
     # 'sub' = subdirectory of 'url_root'.
@@ -110,8 +116,8 @@ def iana_root_servers():
             if soup_server.text.find('404 Not Found') != -1:
                 raise Exception("HTTP Error 404: NOT FOUND")
         except Exception as e:
-            error = "Source: " + url_server + "\nError: " + str(e)
-            return error
+            email_exception(e, url_server, email_subject)
+            return
 
 
         # --------------------- Read Root Server Data --------------------- #

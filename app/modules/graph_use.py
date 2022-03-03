@@ -14,9 +14,17 @@ from bokeh.models import Range1d, FuncTickFormatter, HoverTool, Panel, Tabs, Leg
 from bokeh.events import ButtonClick
 from bokeh.io import export_png
 from math import pi
-from app import db
+from app import app, db
 from app.models import Itu_indicator
 import codecs
+from selenium import webdriver
+from selenium.webdriver.firefox.options import Options
+
+
+# Selenium headless mode.
+options = Options()
+options.headless = True
+
 
 
 # ---------------------------------------------------------------------------- #
@@ -306,8 +314,18 @@ def ict_indicators():
             p.sizing_mode = 'fixed'
             p.toolbar_location = None
 
+            browser = webdriver.Firefox(executable_path=app.config['WEB_DRIVER_PATH'], options=options)
+
             # Export figures as a PNG.
-            export_png(p, filename='./app/static/images/use/indicators/' + tab_lab[i] +' - ' + lkup[col_all[index]][1] + '.png')
+            export_png(
+                p, 
+                filename='./app/static/images/use/indicators/' + tab_lab[i] +' - ' + lkup[col_all[index]][1] + '.png', 
+                webdriver=browser
+                )
+
+            # Close the tab and browser to close all firefox sessions.
+            browser.close()
+            browser.quit()
 
             # Bokeh hovertool.
             hover = HoverTool(

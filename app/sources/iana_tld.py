@@ -11,6 +11,8 @@ Project Title:
 from bs4 import BeautifulSoup
 import requests
 from app import db
+from app.email import email_exception
+import traceback
 from app.models import Iana_tld
 from datetime import datetime, timezone, timedelta
 import pandas as pd
@@ -25,6 +27,9 @@ def iana_tld():
     # ---------------------------------------------------------------------------- #
     #                         IANA Top Level Domain Source                         #
     # ---------------------------------------------------------------------------- #
+
+    email_subject = 'iana_tld.py'
+
 
     # 'urls' contains the URLs of the IANA source per country to be scraped.
     urls = [
@@ -98,8 +103,8 @@ def iana_tld():
             if soup.text.find('This page does not exist.') != -1:
                 raise Exception("HTTP Error 404: NOT FOUND")
         except Exception as e:
-            error = "Source: " + url + "\nError: " + str(e)
-            return error
+            email_exception(e, url, email_subject)
+            return
 
         # 'x' = stores HTML in 'soup' as a string object.
         x = str(soup)

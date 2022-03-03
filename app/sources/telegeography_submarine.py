@@ -13,6 +13,8 @@ import geopandas as gpd
 from bs4 import BeautifulSoup
 import requests
 from app import db
+from app.email import email_exception
+import traceback
 from app.models import Telegeography_landing, Telegeography_submarine
 from datetime import datetime, timezone, timedelta
 
@@ -33,6 +35,10 @@ def telegeography_submarine():
     # ---------------------------------------------------------------------------- #
     #                             Telegeography Sources                            #
     # ---------------------------------------------------------------------------- #
+
+
+    email_subject = 'telegeography_submarine.py'
+
 
     source = 'https://github.com/telegeography/www.submarinecablemap.com/tree/master/web/public/api/v3'
 
@@ -90,8 +96,8 @@ def telegeography_submarine():
             x = pd.read_json(url_ctry + j + ".json", lines=True)
             df_ctry = df_ctry.append(x)
     except Exception as e:
-        error = "Source: " + url_ctry + j + ".json\nError: " + str(e)
-        return error
+        email_exception(e, url_ctry + j + ".json" , email_subject)
+        return
 
 
     # ------------------------- Read data from 'url_sub' ------------------------- #
@@ -112,8 +118,8 @@ def telegeography_submarine():
             x = pd.read_json(url_sub + j + ".json", lines=True)
             df_sub = df_sub.append(x)
     except Exception as e:
-        error = "Source: " + url_sub + j + ".json\nError: " + str(e)
-        return error
+        email_exception(e, url_sub + j + ".json" , email_subject)
+        return
 
 
     # ------------------------- Read data from 'json_sub' ------------------------ #
@@ -122,8 +128,8 @@ def telegeography_submarine():
     try:
         df_sub_ = gpd.read_file(json_sub)
     except Exception as e:
-        error = "Source: " + json_sub + "\nError: " + str(e)
-        return error
+        email_exception(e, json_sub, email_subject)
+        return
 
 
     # ------------------------ Read data from 'json_land' ------------------------ #
@@ -132,8 +138,8 @@ def telegeography_submarine():
     try:
         df_land = gpd.read_file(json_land)
     except Exception as e:
-        error = "Source: " + json_land + "\nError: " + str(e)
-        return error
+        email_exception(e, json_land, email_subject)
+        return
 
 
     # ---------------------------------------------------------------------------- #
@@ -179,8 +185,8 @@ def telegeography_submarine():
                     if 'Page not found' in soup.find('title').text:
                         raise Exception("HTTP Error 404: NOT FOUND")
                 except Exception as e:
-                    error = "Source: " + url_tel + "\nError: " + str(e)
-                    return error
+                    email_exception(e, url_tel, email_subject)
+                    return
 
                 # 'updt' = last updated data.
                 updt = soup.find('h2', class_='f5 text-normal').text
@@ -248,8 +254,8 @@ def telegeography_submarine():
         df_int = df_land.loc[ [ any(i) for i in zip(*[df_land['id'] == word for word in int_id])] ]
 
     except Exception as e:
-        error = "Error extracting Landing Points.\nError: " + str(e)
-        return error
+        email_exception(e, '', email_subject)
+        return
 
 
     # ----------------------------- Submarine Cables ----------------------------- #
@@ -387,8 +393,8 @@ def telegeography_submarine():
                 if 'Page not found' in soup.find('title').text:
                     raise Exception("HTTP Error 404: NOT FOUND")
             except Exception as e:
-                error = "Source: " + url_tel + "\nError: " + str(e)
-                return error
+                email_exception(e, url_tel, email_subject)
+                return
 
             # 'updt' = last updated data.
             updt = soup.find('h2', class_='f5 text-normal').text
@@ -426,8 +432,8 @@ def telegeography_submarine():
         remove_outdated(Telegeography_submarine, time)
 
     except Exception as e:
-        error = "Error extracting Submarine Cables Geometries or Details.\nError: " + str(e)
-        return error
+        email_exception(e, '', email_subject)
+        return
 
     # ---------------------------------------------------------------------------- #
     #                              Store Data into Database                             #

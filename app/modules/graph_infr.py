@@ -14,9 +14,16 @@ from bokeh.models import ColumnDataSource, FactorRange, HoverTool, Panel, Tabs, 
 from bokeh.events import ButtonClick
 from bokeh.io import export_png
 from math import pi
-from app import db
+from app import app, db
 from app.models import Ookla_mobile_bband, Ookla_fixed_bband
 import codecs
+from selenium import webdriver
+from selenium.webdriver.firefox.options import Options
+
+
+# Selenium headless mode.
+options = Options()
+options.headless = True
 
 
 # ---------------------------------------------------------------------------- #
@@ -249,8 +256,18 @@ def speed(cat, title):
             p.sizing_mode = 'fixed'
             p.toolbar_location = None
 
+            browser = webdriver.Firefox(executable_path=app.config['WEB_DRIVER_PATH'], options=options)
+
             # Export figure 'p' as a PNG.
-            export_png(p, filename='./app/static/images/infrastructure/speed/' + title + ' - ' + tab_lab[i] +' - ' + ctry_lst[index] + '.png')
+            export_png(
+                p, 
+                filename='./app/static/images/infrastructure/speed/' + title + ' - ' + tab_lab[i] +' - ' + ctry_lst[index] + '.png',
+                webdriver=browser
+                )
+
+            # Close the tab and browser to close all firefox sessions.
+            browser.close()
+            browser.quit()
 
             # Bokeh hovertool.
             hover = HoverTool(

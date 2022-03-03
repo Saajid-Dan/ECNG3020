@@ -9,6 +9,8 @@ Project Title:
 # ---------------------------------------------------------------------------- #
 import pandas as pd
 from app import db
+from app.email import email_exception
+import traceback
 from app.models import Pch_ixp_dir, Pch_ixp_sub, Pch_ixp_mem
 from datetime import datetime, timezone, timedelta
 
@@ -21,6 +23,10 @@ def pch_ixp():
     # ---------------------------------------------------------------------------- #
     #                         Packet Clearing House Source                         #
     # ---------------------------------------------------------------------------- #
+
+
+    email_subject = 'pch_ixp.py'
+
 
     # 'url_dir' = root directory for IXPs.
     # 'url_sub' = root directory for IXP subnets.
@@ -38,8 +44,8 @@ def pch_ixp():
         # 'df_dir' = Contains PCH's IXP directory
         df_dir = pd.read_json(url_dir)
     except Exception as e:
-        error = "Source: " + url_dir + "\nError: " + str(e)
-        return error
+        email_exception(e, url_dir, email_subject)
+        return
         
 
     # ---------------------------------------------------------------------------- #
@@ -111,14 +117,14 @@ def pch_ixp():
         try:
             json_sub = pd.read_json( url_sub + str(j) )
         except Exception as e:
-            error = "Source: " + url_sub + str(j) + "\nError: " + str(e)
-            return error
+            email_exception(e, url_sub + str(j), email_subject)
+            return
 
         try:
             json_mem = pd.read_json( url_mem + str(j) )
         except Exception as e:
-            error = "Source: " + url_mem + str(j) + "\nError: " + str(e)
-            return error
+            email_exception(e, url_mem + str(j), email_subject)
+            return
         
         try:
             # Checks for errored data in 'json_mem'
@@ -143,8 +149,8 @@ def pch_ixp():
             # Append subnets to 'df_sub'.
             df_sub = df_sub.append(json_sub)
         except Exception as e:
-            error = "Error extracting Subnet and Subnet Member data.\nError: " + str(e)
-            return error
+            email_exception(e, '', email_subject)
+            return
 
     # Remove columns with 'traffic_graph_url', or 'subnet_num' from 'df_sub'.
     df_sub = df_sub[df_sub.columns.drop(list(df_sub.filter(regex='traffic_graph_url')))]
@@ -206,8 +212,8 @@ def pch_ixp():
                     # Add 'row' data to 'df_det'.
                     df_det = df_det.append(pd.Series(row, index=['ctry', 'ip', 'fqdn', 'ping', 'asn', 'org', 'peer', 'prfs', 'version']), ignore_index=True)
     except Exception as e:
-        error = 'Error Cleaning Subnet Member Data\nError: ' + str(e)
-        return error
+        email_exception(e, '', email_subject)
+        return
 
 
     # ---------------------------------------------------------------------------- #

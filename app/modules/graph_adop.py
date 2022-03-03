@@ -14,9 +14,17 @@ from bokeh.models import Range1d, HoverTool, Panel, Tabs, Legend, LegendItem, Co
 from bokeh.events import ButtonClick
 from bokeh.io import export_png
 from math import pi
-from app import db
+from app import app, db
 from app.models import Itu_basket_gni, Itu_basket_ppp, Itu_basket_usd
 import codecs
+from selenium import webdriver
+from selenium.webdriver.firefox.options import Options
+
+
+# Selenium headless mode.
+options = Options()
+options.headless = True
+
 
 
 # ---------------------------------------------------------------------------- #
@@ -227,8 +235,18 @@ def baskets(cat, title, unit):
             p.sizing_mode = 'fixed'
             p.toolbar_location = None
 
+            browser = webdriver.Firefox(executable_path=app.config['WEB_DRIVER_PATH'], options=options)
+
             # Export figure 'p' as a PNG.
-            export_png(p, filename='./app/static/images/adoption/baskets/' + title_[i] + ' - ' +  title +' - ' + ctry_lst[index] + '.png')
+            export_png(
+                p, 
+                filename='./app/static/images/adoption/baskets/' + title_[i] + ' - ' +  title +' - ' + ctry_lst[index] + '.png', 
+                webdriver=browser
+                )
+
+            # Close the tab and browser to close all firefox sessions.
+            browser.close()
+            browser.quit()
 
             # Bokeh hovertool.
             hover = HoverTool(

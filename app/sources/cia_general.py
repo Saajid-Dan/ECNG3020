@@ -11,8 +11,11 @@ Project Title:
 from bs4 import BeautifulSoup
 import requests
 from app import db
+from app.email import email_exception
+import traceback
 from app.models import Cia_general
 from datetime import datetime, timezone, timedelta
+
 
 
 def cia_general():
@@ -24,6 +27,8 @@ def cia_general():
     # ---------------------------------------------------------------------------- #
     #                                  CIA Source                                  #
     # ---------------------------------------------------------------------------- #
+
+    email_subject = 'cia_general.py'
 
     # 'urls' contains the URLs of the CIA source per country to be scraped.
     urls = ['https://www.cia.gov/the-world-factbook/countries/anguilla/',
@@ -96,8 +101,8 @@ def cia_general():
             if soup.text.find('404 Error') != -1:
                 raise Exception("HTTP Error 404: NOT FOUND")
         except Exception as e:
-            error = "Source: " + url + "\nError: " + str(e)
-            return error
+            email_exception(e, url, email_subject)
+            return
 
         # 'x' = stores HTML in 'soup' as a string object.
         x = str(soup)

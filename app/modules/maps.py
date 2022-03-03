@@ -145,6 +145,11 @@ def create_map():
 
     # Add fac points to map 'm'.
     for j in fac:
+        # print((j.lat), type(j.lat), float(j.lat), type(float(j.lat)))
+        # print(float(j.lat) == float('nan'))
+        if j.lat == 'nan' or j.lon == 'nan':
+            continue
+        
         # Create fac marker.
         fac_pt = folium.Marker(
             location = [float(j.lat), float(j.lon)],
@@ -410,7 +415,7 @@ def create_map():
         gdf = gpd.GeoDataFrame(df_geo)
         # WKT object is now a shapely geometry object.
         geo = gdf.geometry[0]
-        print(j.status, type(j.status))
+        # print(j.status, type(j.status))
         if j.status == 'False':
             # If cable's status is 'False', then the cable is 'Active'.
             stat = 'Active'

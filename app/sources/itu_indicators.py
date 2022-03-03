@@ -11,8 +11,11 @@ Project Title:
 import pandas as pd
 from urllib.request import urlopen
 from app import db
+from app.email import email_exception
+import traceback
 from app.models import Itu_indicator
 from datetime import datetime, timezone, timedelta
+
 
 def itu_indicators():
     '''
@@ -22,6 +25,10 @@ def itu_indicators():
     # ---------------------------------------------------------------------------- #
     #                             ITU Indicators Source                            #
     # ---------------------------------------------------------------------------- #
+
+
+    email_subject = 'itu_indicators.py'
+
 
     source = "https://www.itu.int/en/ITU-D/Statistics/Pages/stat/default.aspx"
 
@@ -54,8 +61,8 @@ def itu_indicators():
             # dict(f.getheaders()) gives all headers.
 
     except Exception as e:
-        error = "Source: " + url_fix + "\nError: " + str(e)
-        return error
+        email_exception(e, url_fix, email_subject)
+        return
 
     try:
         df_mob = pd.read_excel(url_mob)
@@ -67,8 +74,8 @@ def itu_indicators():
         #     # dict(f.getheaders()) gives all headers.
             
     except Exception as e:
-        error = "Source: " + url_mob + "\nError: " + str(e)
-        return error
+        email_exception(e, url_mob, email_subject)
+        return
 
     try:
         df_per = pd.read_excel(url_per)
@@ -81,7 +88,8 @@ def itu_indicators():
 
     except Exception as e:
         error = "Source: " + url_per + "\nError: " + str(e)
-        return error
+        email_exception(e, url_per, email_subject)
+        return
 
     try:
         df_bw = pd.read_excel(url_bw)
@@ -94,7 +102,8 @@ def itu_indicators():
 
     except Exception as e:
         error = "Source: " + url_bw + "\nError: " + str(e)
-        return error
+        email_exception(e, url_bw, email_subject)
+        return
 
 
     # ---------------------------------------------------------------------------- #
@@ -162,8 +171,8 @@ def itu_indicators():
         
 
     except Exception as e:
-        error = "Error extracting Indicators Data.\nError: " + str(e)
-        return error
+        email_exception(e, '', email_subject)
+        return
 
 
     time = datetime.now(timezone(timedelta(seconds=-14400))).strftime("%Y-%m-%d %H:%M:%S %z")

@@ -16,7 +16,7 @@ from selenium import webdriver
 from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.firefox.options import Options
 import base64
-from app import db
+from app import app, db
 from app.models import Pch_ixp_dir
 
 
@@ -119,7 +119,7 @@ def create_ixp_image():
         html_bs64 = base64.b64encode(html_string.encode('utf-8')).decode()
         
         # Create and open a headless firefox browser session.
-        browser = webdriver.Firefox(options=options)
+        browser = webdriver.Firefox(executable_path=app.config['WEB_DRIVER_PATH'], options=options)
         # Set browser window size.
         browser.set_window_size(600, 400)
         # Pass base64 HTML of map with cable geometry to firefox simulated browser.

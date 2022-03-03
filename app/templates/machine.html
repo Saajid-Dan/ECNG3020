@@ -140,7 +140,7 @@
 
             fetch( '/machine/' + table + '/' + column + '/' + value + '/' + format).then(function(response) {
                 response.text().then(function(data) {
-                    let optionHTML = '<textarea class="form-control" id="previous" name="previous">' + response + '</textarea>';
+                    let optionHTML = '<textarea class="form-control" id="comment" name="comment">' + response + '</textarea>';
                     comment_select.innerHTML = data;
                 });
             });
