@@ -1,90 +1,83 @@
-from flask import render_template, url_for, send_from_directory, request, render_template_string, jsonify, Response, redirect
 from app import app, db
+from app.models import *
 from app.forms import Feedback, form_validate, Machine_format, Report
+from flask import render_template, url_for, request, render_template_string, jsonify, Response, redirect
 
-import geopandas as gpd
 import ast
 from bs4 import BeautifulSoup
-import requests
-import pdfkit
-
-from sqlalchemy import inspect, MetaData
-import pandas as pd
 from dicttoxml import dicttoxml
+import geopandas as gpd
 from json import loads
+import pandas as pd
+import requests
+from sqlalchemy import inspect, MetaData
 
-from app.models import *
+from app.modules.maps import create_map
+from app.sources.itu_indicators import itu_indicators 
 
-# from app.sources.cia_general import cia_general
-# from app.sources.iana_root_servers import iana_root_servers
-# from app.sources.iana_tld import iana_tld
-# from app.sources.itu_baskets import itu_baskets
-# from app.sources.itu_indicators import itu_indicators
-# from app.sources.ookla_speed_index import ookla_speed_index
-# from app.sources.pch_ixp import pch_ixp
-# from app.sources.peeringdb_ixp import peeringdb_ixp
-# from app.sources.telegeography_submarine import telegeography_submarine
-# from app.sources.worldpop_density import worldpop_density
+# ---------------------------- Landing Page Route ---------------------------- #
 
-# from app.modules.maps import create_map
-# from app.modules.graph_infr import graph_infr
-# from app.modules.graph_adop import graph_adop
-# from app.modules.graph_use import graph_use
-# from app.modules.landing_image import create_land_image
-# from app.modules.submarine_image import create_sub_image
-# from app.modules.ixp_image import create_ixp_image
-# from app.modules.root_image import create_root_image
-# from app.modules.density_image import create_density_image
-# from app.modules.facility_image import create_fac_image
-from app.modules.test import runrun
-
+# Index Page
 @app.route('/')
 @app.route('/index', methods=['GET', 'POST'])
 def index():
-    
-    url = url_for('index')
-    form = Feedback()
-    form_validate(url, form)
+    ''' Renders the landing page '''
+    url = url_for('index')          # Landing page route      
+    form = Feedback()               # Feedback form
+    form_validate(url, form)        # Feedback form validation
         
     return render_template('index.html', title='Home', form=form, url=url)
 
 
 # ------------------------------- Baskets Route ------------------------------ #
 
+# ICT Price Baskets Listing subpages
 @app.route('/basket/<path>', methods=['GET', 'POST'])
 def basket_page(path):
+    ''' Renders the ICT Price Basket subpages '''
+    # Database queries
     gni = Itu_basket_gni.query.filter_by(country=path).all()
     ppp = Itu_basket_ppp.query.filter_by(country=path).all()
     usd = Itu_basket_usd.query.filter_by(country=path).all()
 
     url = url_for('basket_page', path=path)
-    form = Feedback()
-    form_validate(url, form)
+    form = Feedback()               # Feedback form
+    form_validate(url, form)        # Feedback form validation
 
-    form_pdf = Report()
-    if form_pdf.save.data:
-        return redirect(url_for('pdf', path1='basket_page', path2=path))
+    form_pdf = Report()                 # Report form
+    if form_pdf.save.data:              # If the Report form's button if pressed
+        html = report('basket_page.html')  # Strip header/footer of webpage
+        # Render the webpage which is the report
+        return render_template_string(html, title=path, gni=gni, ppp=ppp, usd=usd)
 
     return render_template('basket_page.html', title=path, gni=gni, ppp=ppp, usd=usd, form=form, form_pdf=form_pdf, url=url)
 
+# ICT Price Baskets Listing
 @app.route('/basket', methods=['GET', 'POST'])
 def basket_list():
+    ''' Renders the ICT price basket listing page '''
+    # Database queries
     ctry = Itu_basket_gni.query.order_by(Itu_basket_gni.country).with_entities(Itu_basket_gni.country)
+    # Get a list of unique countries
     ctry_lst = list(dict.fromkeys([c for c, in ctry]))
 
     url = url_for('basket_list')
-    form = Feedback()
-    form_validate(url, form)
+    form = Feedback()               # Feedback form
+    form_validate(url, form)        # Feedback form validation
 
     return render_template('basket_list.html', title= 'ICT Price Basket Listing', bask = ctry_lst, form=form, url=url)
 
 
 # ------------------------------ Facility Route ------------------------------ #
 
+# Facility Listing
 @app.route('/facility/<path>', methods=['GET', 'POST'])
 def facility_page(path):
+    ''' Renders the Facilities subpages '''
+    # Database queries
     fac = Pdb_facility.query.order_by(Pdb_facility.lon).filter_by(country=path).all()
 
+    # Get a list of unique Networks
     nets = []
     for j in fac:
         for k in range(j.net_id.count(', ')):
@@ -93,107 +86,138 @@ def facility_page(path):
             nets.append(net_name[0])
 
     url = url_for('facility_page', path=path)
-    form = Feedback()
-    form_validate(url, form)
+    form = Feedback()               # Feedback form
+    form_validate(url, form)        # Feedback form validation
 
-    form_pdf = Report()
-    if form_pdf.save.data:
-        return redirect(url_for('pdf', path1='facility_page', path2=path))
+    form_pdf = Report()                 # Report form
+    if form_pdf.save.data:              # If the Report form's button if pressed
+        html = report('facility_page.html')  # Strip header/footer of webpage
+        # Render the webpage which is the report
+        return render_template_string(html, title=path, fac=fac, nets=nets)
 
     return render_template('facility_page.html', title=path, fac=fac, nets=nets, form=form, form_pdf=form_pdf, url=url)
 
+# Facility Listing subpages
 @app.route('/facility', methods=['GET', 'POST'])
 def facility_list():
+    ''' Renders the Facilities listing page '''
+    # Database queries
     fac = Pdb_facility.query.order_by(Pdb_facility.country).with_entities(Pdb_facility.country)
+    # Get a list of unique countries
     fac_lst = list(dict.fromkeys([f for f, in fac]))
     
     url = url_for('facility_list')
-    form = Feedback()
-    form_validate(url, form)
+    form = Feedback()               # Feedback form
+    form_validate(url, form)        # Feedback form validation
 
     return render_template('facility_list.html', title= 'Facility Listing', fac = fac_lst, form=form, url=url)
 
 
-# ------------------------- General Population Route ------------------------- #
+# ------------------------- General Country Information Route ------------------------- #
 
+# General Country Information Listing
 @app.route('/gen/<path>', methods=['GET', 'POST'])
 def gen_page(path):
+    ''' Renders the General Country Information subpages '''
+    # Database queries
     gen = Cia_general.query.filter_by(country=path).first_or_404()
     dens = Wpop_density.query.filter_by(country=path).first_or_404()
 
     url = url_for('gen_page', path=path)
-    form = Feedback()
-    form_validate(url, form)
+    form = Feedback()               # Feedback form
+    form_validate(url, form)        # Feedback form validation
 
-    form_pdf = Report()
-    if form_pdf.save.data:
-        return redirect(url_for('pdf', path1='gen_page', path2=path))
+    form_pdf = Report()                 # Report form
+    if form_pdf.save.data:              # If the Report form's button if pressed
+        html = report('gen_page.html')  # Strip header/footer of webpage
+        # Render the webpage which is the report
+        return render_template_string(html, title=path, gen=gen, dens=dens)
 
     return render_template('gen_page.html', title=path, gen=gen, dens=dens, form=form, form_pdf=form_pdf, url=url)
 
+# General Country Information Listing subpages
 @app.route('/gen', methods=['GET', 'POST'])
 def gen_list():
+    ''' Renders the General Country Information Listing page '''
+    # Database queries
     ctry = Cia_general.query.order_by(Cia_general.country).with_entities(Cia_general.country)
+    # Get a list of unique countries
     ctry_lst = [c for c, in ctry]
 
     url = url_for('gen_list')
-    form = Feedback()
-    form_validate(url, form)
+    form = Feedback()               # Feedback form
+    form_validate(url, form)        # Feedback form validation
 
     return render_template('gen_list.html', title= 'General Population Information Listing', gen = ctry_lst, form=form, url=url)
 
 
 # ----------------------------- Indicators Route ----------------------------- #
 
+# ICT Indicators Listing
 @app.route('/indicator/<path>', methods=['GET', 'POST'])
 def indicator_page(path):
-
+    ''' Renders the ICT Indicators subpages '''
+    # Database queries
     indic = Itu_indicator.query.filter_by(country=path).order_by(Itu_indicator.date).all()
 
     url = url_for('indicator_page', path=path)
-    form = Feedback()
-    form_validate(url, form)
+    form = Feedback()               # Feedback form
+    form_validate(url, form)        # Feedback form validation
 
-    form_pdf = Report()
-    if form_pdf.save.data:
-        return redirect(url_for('pdf', path1='indicator_page', path2=path))
+    form_pdf = Report()                 # Report form
+    if form_pdf.save.data:              # If the Report form's button if pressed
+        html = report('indicator_page.html')  # Strip header/footer of webpage
+        # Render the webpage which is the report
+        return render_template_string(html, title=path, indic=indic)
 
     return render_template('indicator_page.html', title=path, indic=indic, form=form, form_pdf=form_pdf, url=url)
 
+# ICT Indicators Listing subpages
 @app.route('/indicator', methods=['GET', 'POST'])
 def indicator_list():
+    ''' Renders the ICT Indicators Listing page '''
+    # Database queries
     indic = Itu_indicator.query.order_by(Itu_indicator.country).with_entities(Itu_indicator.country)
     ctry_lst = list(dict.fromkeys([c for c, in indic]))
 
     url = url_for('indicator_list')
-    form = Feedback()
-    form_validate(url, form)
+    form = Feedback()               # Feedback form
+    form_validate(url, form)        # Feedback form validation
 
     return render_template('indicator_list.html', title= 'ICT Indicators Listing', indic = ctry_lst, form=form, url=url)
 
 
 # --------------------------------- IXP Route -------------------------------- #
 
+# IXP Listing
 @app.route('/ixp/pch/<path>', methods=['GET', 'POST'])
 def ixp_page_pch(path):
+    ''' Renders the IXP subpages - PCH '''
+    # Database queries
     ixp_dir = Pch_ixp_dir.query.filter_by(country=path).all()
     ixp_sub = Pch_ixp_sub.query.filter_by(country=path).all()
     ixp_mem = Pch_ixp_mem.query.filter_by(country=path).all()
 
     url = url_for('ixp_page_pch', path=path)
-    form = Feedback()
-    form_validate(url, form)
+    form = Feedback()               # Feedback form
+    form_validate(url, form)        # Feedback form validation
 
-    form_pdf = Report()
-    if form_pdf.save.data:
-        return redirect(url_for('pdf', path1='ixp_page_pch', path2=path))
+    form_pdf = Report()                 # Report form
+    if form_pdf.save.data:              # If the Report form's button if pressed
+        html = report('ixp_page_pch.html')  # Strip header/footer of webpage
+        # Render the webpage which is the report
+        return render_template_string(html, title=path, ixp_dir=ixp_dir, ixp_sub=ixp_sub, ixp_mem=ixp_mem)
 
     return render_template('ixp_page_pch.html', title=path, ixp_dir=ixp_dir, ixp_sub=ixp_sub, ixp_mem=ixp_mem, form=form, form_pdf=form_pdf, url=url)
 
+# IXP Listing subpages - PeeringDB
 @app.route('/ixp/pdb/<path>', methods=['GET', 'POST'])
 def ixp_page_pdb(path):
+    ''' Renders the IXP subpages - PDB '''
+    # Database queries
     ixp = Pdb_ixp.query.filter_by(country=path).all()
 
+    # Get a list of unique facilities
     facs = []
     for j in ixp:
         for k in range(j.fac_id.count(', ')):
@@ -202,322 +226,312 @@ def ixp_page_pdb(path):
             facs.append(fac_name[0])
 
     url = url_for('ixp_page_pdb', path=path)
-    form = Feedback()
-    form_validate(url, form)
+    form = Feedback()               # Feedback form
+    form_validate(url, form)        # Feedback form validation
 
-    form_pdf = Report()
-    if form_pdf.save.data:
-        return redirect(url_for('pdf', path1='ixp_page_pdb', path2=path))
+    form_pdf = Report()                 # Report form
+    if form_pdf.save.data:              # If the Report form's button if pressed
+        html = report('ixp_page_pdb.html')  # Strip header/footer of webpage
+        # Render the webpage which is the report
+        return render_template_string(html, title=path, ixp=ixp, fac=facs)
 
     return render_template('ixp_page_pdb.html', title=path, ixp=ixp, fac=facs, form=form, form_pdf=form_pdf, url=url)
 
+# IXP Listing subpages - Packet Clearing House
 @app.route('/ixp', methods=['GET', 'POST'])
 def ixp_list():
+    ''' Renders the IXP listing page '''
+    # Database queries
     ctry = Pch_ixp_dir.query.order_by(Pch_ixp_dir.country).with_entities(Pch_ixp_dir.country)
-    ctry_pch = list(dict.fromkeys([c for c, in ctry]))
-
     ctry = Pdb_ixp.query.order_by(Pdb_ixp.country).with_entities(Pdb_ixp.country)
+    # Get a list of unique countries
+    ctry_pch = list(dict.fromkeys([c for c, in ctry]))
     ctry_pdb = list(dict.fromkeys([c for c, in ctry]))
 
     url = url_for('ixp_list')
-    form = Feedback()
-    form_validate(url, form)
+    form = Feedback()               # Feedback form
+    form_validate(url, form)        # Feedback form validation
 
     return render_template('ixp_list.html', title= 'IXP Listing', ixp1=ctry_pch, ixp2=ctry_pdb, form=form, url=url)
 
 
 # --------------------------- Landing Point Routes --------------------------- #
 
+# Landing point listing
 @app.route('/landing/<path>', methods=['GET', 'POST'])
 def land_page(path):
+    ''' Renders the Landing points subpages '''
+    # Database queries
     lan = Telegeography_landing
     land_uni = lan.query.order_by(lan.lon).filter_by(country=path).all()
+    # Get a list of submarine cables
     lst_cab = [ast.literal_eval(j.cables) for j in land_uni]
-    
+               
     url = url_for('land_page', path=path)
-    form = Feedback()
-    form_validate(url, form)
+    form = Feedback()               # Feedback form
+    form_validate(url, form)        # Feedback form validation
 
-    form_pdf = Report()
-    if form_pdf.save.data:
-        return redirect(url_for('pdf', path1='land_page', path2=path))
+    form_pdf = Report()                 # Report form
+    if form_pdf.save.data:              # If the Report form's button if pressed
+        html = report('land_page.html')  # Strip header/footer of webpage
+        # Render the webpage which is the report
+        return render_template_string(html, title=path, land=land_uni, cables=lst_cab)
 
+    # return html_string
     return render_template('land_page.html', title=path, land=land_uni, cables=lst_cab, form=form, form_pdf=form_pdf, url=url)
 
+# Landing point listing subpages
 @app.route('/landing', methods=['GET', 'POST'])
 def land_list():
+    ''' Renders the Landing Points Listing page '''
+    # Database queries
     lan = Telegeography_landing
     ctry = lan.query.order_by(lan.country).filter_by(in_caribbean='Yes').with_entities(lan.country)
+    # Get a list of unique countries
     ctry_lst = list(dict.fromkeys([c for c, in ctry]))
     
     url = url_for('land_list')
-    form = Feedback()
-    form_validate(url, form)
+    form = Feedback()               # Feedback form
+    form_validate(url, form)        # Feedback form validation
 
     return render_template('land_list.html', title= 'Landing Point Listing', land=ctry_lst, form=form, url=url)
 
 
 # ------------------------------- Network Route ------------------------------ #
 
+# Network Listing
 @app.route('/network/<path>', methods=['GET', 'POST'])
 def network_page(path):
+    ''' Renders the Networks subpage '''
+    # Database queries
     net = Pdb_network.query.filter_by(name=path).first_or_404()
 
     url = url_for('network_page', path=path)
-    form = Feedback()
-    form_validate(url, form)
+    form = Feedback()               # Feedback form
+    form_validate(url, form)        # Feedback form validation
 
-    form_pdf = Report()
-    if form_pdf.save.data:
-        return redirect(url_for('pdf', path1='network_page', path2=path))
+    form_pdf = Report()                 # Report form
+    if form_pdf.save.data:              # If the Report form's button if pressed
+        html = report('network_page.html')  # Strip header/footer of webpage
+        # Render the webpage which is the report
+        return render_template_string(html, title=path, net=net)
 
     return render_template('network_page.html', title=path, net=net, form=form, form_pdf=form_pdf, url=url)
 
+# Network Listing subpages
 @app.route('/network', methods=['GET', 'POST'])
 def network_list():
+    ''' Renders the Network listing page '''
+    # Database queries
     net = Pdb_network.query.order_by(Pdb_network.name).with_entities(Pdb_network.name)
+    # Get a list of unique networks
     net_lst = list(dict.fromkeys([n for n, in net]))
     
     url = url_for('network_list')
-    form = Feedback()
-    form_validate(url, form)
+    form = Feedback()               # Feedback form
+    form_validate(url, form)        # Feedback form validation
 
     return render_template('network_list.html', title= 'Network Listing', net=net_lst, form=form, url=url)
 
 
 # ----------------------------- Root Server Route ---------------------------- #
 
+# Root Server listing
 @app.route('/root/<path>', methods=['GET', 'POST'])
 def root_page(path):
+    ''' Renders the Root Server subpages '''
+    # Database queries
     root = Iana_root_server.query.filter_by(country=path).all()
 
     url = url_for('root_page', path=path)
-    form = Feedback()
-    form_validate(url, form)
+    form = Feedback()               # Feedback form
+    form_validate(url, form)        # Feedback form validation
 
-    form_pdf = Report()
-    if form_pdf.save.data:
-        return redirect(url_for('pdf', path1='root_page', path2=path))
+    form_pdf = Report()                 # Report form
+    if form_pdf.save.data:              # If the Report form's button if pressed
+        html = report('root_page.html')  # Strip header/footer of webpage
+        # Render the webpage which is the report
+        return render_template_string(html, title=path, root=root)
 
     return render_template('root_page.html', title=path, root=root, form=form, form_pdf=form_pdf, url=url)
 
+# Root Server listing subpages
 @app.route('/root', methods=['GET', 'POST'])
 def root_list():
+    ''' Renders the Root Server listing page '''
+    # Database queries
     ctry = Iana_root_server.query.order_by(Iana_root_server.country).with_entities(Iana_root_server.country)
+    # Get a list of unique countries
     ctry_lst = list(dict.fromkeys([c for c, in ctry]))
 
     url = url_for('root_list')
-    form = Feedback()
-    form_validate(url, form)
+    form = Feedback()               # Feedback form
+    form_validate(url, form)        # Feedback form validation
 
     return render_template('root_list.html', title= 'Root Server Listing', root = ctry_lst, form=form, url=url)
 
 
 # ------------------------------ Speedtest Route ----------------------------- #
 
+# Speed Index Listing
 @app.route('/speed/<path>', methods=['GET', 'POST'])
 def speed_page(path):
+    ''' Render the Speed Index subpage '''
+    # Database queries
     fix = Ookla_fixed_bband.query.filter_by(country=path).all()
     mob = Ookla_mobile_bband.query.filter_by(country=path).all()
 
     url = url_for('speed_page', path=path)
-    form = Feedback()
-    form_validate(url, form)
+    form = Feedback()               # Feedback form
+    form_validate(url, form)        # Feedback form validation
 
-    form_pdf = Report()
-    if form_pdf.save.data:
-        return redirect(url_for('pdf', path1='speed_page', path2=path))
+    form_pdf = Report()                 # Report form
+    if form_pdf.save.data:              # If the Report form's button if pressed
+        html = report('speed_page.html')  # Strip header/footer of webpage
+        # Render the webpage which is the report
+        return render_template_string(html, title=path, fix=fix, mob=mob)
 
     return render_template('speed_page.html', title=path, fix=fix, mob=mob, form=form, form_pdf=form_pdf, url=url)
 
+# Speed Index Listing subpages
 @app.route('/speed', methods=['GET', 'POST'])
 def speed_list():
+    ''' Renders the Speed Index Listing page '''
+    # Database queries
     ctry = Ookla_fixed_bband.query.order_by(Ookla_fixed_bband.country).with_entities(Ookla_fixed_bband.country)
+    # Get a list of unique countries
     ctry_lst = list(dict.fromkeys([c for c, in ctry]))
 
     url = url_for('speed_list')
-    form = Feedback()
-    form_validate(url, form)
+    form = Feedback()               # Feedback form
+    form_validate(url, form)        # Feedback form validation
 
     return render_template('speed_list.html', title= 'Speed Index Listing', speed = ctry_lst, form=form, url=url)
 
 
 # --------------------------- Submarine Cable Route -------------------------- #
 
+# Submarine Cable Listing
 @app.route('/submarine/<path>', methods=['GET', 'POST'])
 def sub_page(path):
+    ''' Renders the Submarine Cable subpages '''
+    # Database countries
     cab = Telegeography_submarine
     lan = Telegeography_landing
     cable = cab.query.filter_by(name=path).first_or_404()
+    # Get the landing points for the cable
     land_pts = cable.land_pts
+    # Converts string representation of dict to dict
     land_pts = ast.literal_eval(land_pts)
     
     car_lst = []
     int_lst = []
-
+    # Iterate over the land_pts dict
     for j in land_pts:
-        print(j['id'])
+        # Query Telegeography_landing database table for landing point IDs in land_pts dict
+        # Then extract the coordinates of the landing points from the db table in 'coords'
         in_caribbean = lan.query.filter_by(id_ref=j['id'], in_caribbean='Yes').first()
         coords = db.session.query(lan.lon, lan.name).filter_by(id_ref=j['id']).first()
         
+        # The database query above returns None if it is an international landing point
+        # International landing points coords are appended to the 'int_lst' list
+        # Caribbean landing points coords are appended to the 'car_lst' list
         int_lst.append(coords) if in_caribbean == None else car_lst.append(coords)
     
+    # Sort international landing points in ascending order
     int_lst.sort(key = lambda x: x[0])
-    print(int_lst)
     int_lst = dict(int_lst).values()
-    print(int_lst)
-
+    
+    # Sort Caribbean landing points in ascending order
     car_lst.sort(key = lambda x: x[0])
     car_lst = dict(car_lst).values()
 
     url = url_for('sub_page', path=path)
-    form = Feedback()
-    form_validate(url, form)
+    form = Feedback()               # Feedback form
+    form_validate(url, form)        # Feedback form validation
 
-    form_pdf = Report()
-    if form_pdf.save.data:
-        return redirect(url_for('pdf', path1='sub_page', path2=path))
+    form_pdf = Report()                 # Report form
+    if form_pdf.save.data:              # If the Report form's button if pressed
+        html = report('sub_page.html')  # Strip header/footer of webpage
+        # Render the webpage which is the report
+        return render_template_string(html, title=path, sub=cable, car=car_lst, int=int_lst)
 
     return render_template('sub_page.html', title=path, sub=cable, car=car_lst, int=int_lst, form=form, form_pdf=form_pdf, url=url)
 
+# Submarine Cable Listing subpages
 @app.route('/submarine', methods=['GET', 'POST'])
 def sub_list():
+    ''' Renders the Submarine Cable Listing page '''
+    # Database queries
     cable = Telegeography_submarine.query.order_by(Telegeography_submarine.name).with_entities(Telegeography_submarine.name)
+    # Get a unique list of cables
     cable_lst = [c for c, in cable]
 
     url = url_for('sub_list')
-    form = Feedback()
-    form_validate(url, form)
+    form = Feedback()               # Feedback form
+    form_validate(url, form)        # Feedback form validation
     
     return render_template('sub_list.html', title= 'Submarine Cable Listing', sub=cable_lst, form=form, url=url)
 
 
 # --------------------------------- TLD Route -------------------------------- #
 
+# TLD listing
 @app.route('/tld/<path>', methods=['GET', 'POST'])
 def tld_page(path):
+    ''' Render the TLD subpages '''
+    # Database queries
     tld = Iana_tld.query.filter_by(country=path).first_or_404()
 
     url = url_for('tld_page', path=path)
-    form = Feedback()
-    form_validate(url, form)
+    form = Feedback()               # Feedback form
+    form_validate(url, form)        # Feedback form validation
 
-    form_pdf = Report()
-    if form_pdf.save.data:
-        return redirect(url_for('pdf', path1='tld_page', path2=path))
+    form_pdf = Report()                 # Report form
+    if form_pdf.save.data:              # If the Report form's button if pressed
+        html = report('tld_page.html')  # Strip header/footer of webpage
+        # Render the webpage which is the report
+        return render_template_string(html, title=path, tld=tld)
 
     return render_template('tld_page.html', title=path, tld=tld, form=form, form_pdf=form_pdf, url=url)
 
+# TLD listing subpages
 @app.route('/tld', methods=['GET', 'POST'])
 def tld_list():
+    ''' Renders the TLD listing page '''
+    # Database queries
     ctry = Iana_tld.query.order_by(Iana_tld.country).with_entities(Iana_tld.country)
+    # Get a unique list of countries
     ctry_lst = [c for c, in ctry]
     
     url = url_for('tld_list')
-    form = Feedback()
-    form_validate(url, form)
+    form = Feedback()               # Feedback form
+    form_validate(url, form)        # Feedback form validation
 
     return render_template('tld_list.html', title= 'TLD Listing', tld = ctry_lst, form=form, url=url)
 
 
 # ------------------------------- Report Routes ------------------------------ #
 
-@app.route('/pdf2/<path1>/<path2>')
-def pdf2(path1, path2):
-    from selenium import webdriver
-    from selenium.webdriver.firefox.options import Options
-    from PIL import Image
-    import codecs
-
-    options = Options()
-    options.headless = True
-
-    head = request.headers['Host']
-    url = url_for('strip_base', path1=path1, path2=path2)
+def report(template):
+    ''' Strips a webpage's header and footer from the content and return as an HTML report '''
+    # Read the HTML template to be stripped
+    html = open(app.config['DIRECTORY'] + '/app/templates/{a}'.format(a=template), 'r').read()
+    # Locate start (a) and end (b) indices of the HTML's content
+    a = html.find('<!-- boundary -->')
+    b = html.find('<!-- boundary -->', a + 1)
+    # Extract the HTML's content
+    html = html[a:b]
     
-    #set chromodriver.exe path
-    driver = webdriver.Firefox(options=options)
-    driver.maximize_window()
-    #launch URL
-    driver.get('http://' + head + url)
-    #get window size
-    s = driver.get_window_size()
-    #obtain browser height and width
-    w = driver.execute_script('return document.body.parentNode.scrollWidth')
-    h = driver.execute_script('return document.body.parentNode.scrollHeight')
-    #set to new window size
-    driver.set_window_size(w, h)
-    #obtain screenshot of page within body tag
-    image = driver.find_element_by_tag_name('body').screenshot_as_base64
-    # image = driver.find_element_by_tag_name('body').screenshot('test.png')
-    
-
-    driver.set_window_size(s['width'], s['height'])
-    driver.quit()
-
-    html = f'''
-    <html>
-    <head>
-    </head>
-    <body>
-    <img src="data:image/png;base64, {image}" alt="Red dot" />
-    </body>
-    </html>
-
-    '''
-
-    # return html
-    # image = codecs.decode(image, "base64")
-    image = Image.open("data:image/png;base64, {}".format(image))
-    # print(type(image))
-    # print()
-    # image = Image.frombytes('RGB', data = image)
-    # image = Image.open(io.BytesIO(image))
-    # image = Image.open(image, 'rb')
-    image = image.convert('RGB')
-    # im.save("./tutorialspoint.pdf")
-    # return
-    return Response(image, mimetype='application/pdf', headers={'Content-Disposition':'attachment;filename={}.pdf'.format('report')})
-
-@app.route('/pdf/<path1>/<path2>')
-def pdf(path1, path2):
-    path_wkhtmltopdf = r'C:\Users\User\Documents\Python Scripts\ECNG3020\wkhtmltopdf\bin\wkhtmltopdf.exe'
-    config = pdfkit.configuration(wkhtmltopdf=path_wkhtmltopdf)
-    
-    head = request.headers['Host']
-    url = url_for('strip_base', path1=path1, path2=path2)
-    
-    options = {
-        'page-size': 'Letter',
-        'margin-top': '1in',
-        'margin-right': '1in',
-        'margin-bottom': '1in',
-        'margin-left': '1in',
-    }
-
-    report = pdfkit.from_url('http://' + head + url, options=options, configuration=config)
-    
-    return Response(report, mimetype='application/pdf', headers={'Content-Disposition':'attachment;filename={}.pdf'.format('report')})
-
-@app.route('/strip_base/<path1>/<path2>')
-def strip_base(path1, path2):
-    head = request.headers['Host']
-    sub = url_for(path1, path=path2)
-    source = requests.get('http://' + head + sub).text
-    soup = BeautifulSoup(source, 'lxml')
-
-    a = str(soup).find('<!-- boundary -->')
-    b = str(soup).find('<!-- boundary -->', a + 1)
-    
-    html = str(soup)[a:b]
-    html = html.replace('h5', 'h2')
+    # Format the webpage as an HTML report
+    html = html.replace('h5', 'h2')         # Report's title heading tag
     html = f'''
     <!doctype html>
     <head>
         <meta charset="UTF-8">
         <style>
-        body {{ 
-            font: normal Helvetica, Arial, sans-serif; 
+        body {{
+            font: normal Helvetica, Arial, sans-serif;
             letter-spacing: 1.5px;
         }}
         th, td {{
@@ -525,17 +539,19 @@ def strip_base(path1, path2):
             border: 1px solid whitesmoke;
         }}
         table {{
-            width: 100%;
             border-spacing: 0px;
             border: 1px solid whitesmoke;
         }}
         </style>
     </head>
     <body>
+    <div style="font-size:45px; transform:rotate(300deg); opacity: 0.15; color: GRAY; position: fixed; top: 50%;">
+    ECNG3020 Dashboard
+    </div>
     {html}
     </body>
     '''
-    return html
+    return html         # Return HTML report
 
 
 # --------------------------- Machine Format Routes -------------------------- #
@@ -566,7 +582,7 @@ def machine():
     if form1.is_submitted():
         # If submit via submit button
         # Then add options to table dropdown which is initially empty
-        if form1.populate.data:
+        if form1.reset.data:
             # Generates table options for table dropdown
             form1.tables.choices = [ (table, table) for table in table_names ]
             form1.tables.default = 'Select a Table'
@@ -578,19 +594,19 @@ def machine():
             
         #     form1.previous.data = 'Table: {}; Column: {}; Value: {}; Format: {}'.format(w, x, y, z)
 
-        if form1.generate.data:
+        if form1.query.data:
             z = form1.formats.data   # Selected formats from dropdown
 
             if z == 'CSV':
-                form_data = form1.comment.data
+                form_data = form1.preview.data
                 return Response(form_data, mimetype='application/csv', headers={'Content-Disposition':'attachment;filename={}.csv'.format('csv_format')})
 
             if z == 'JSON':
-                form_data = form1.comment.data
+                form_data = form1.preview.data
                 return Response(form_data, mimetype='text/json', headers={'Content-Disposition':'attachment;filename={}.json'.format('json_format')})
 
             if z == 'XML':
-                form_data = form1.comment.data
+                form_data = form1.preview.data
                 return Response(form_data, mimetype='text/xml', headers={'Content-Disposition':'attachment;filename={}.xml'.format('xml_format')})
 
             # Redirect to fresh page if any selections were not valid
@@ -605,6 +621,7 @@ def machine():
 
 @app.route('/machine/<table>/<column>/<value>/<formats>')
 def preview(table, column, value, formats):
+    ''' Update preview textbox on the Get Datasets webpage '''
     w = table    # Selected table from dropdown
     x = column   # Selected column from dropdown
     y = value    # Selected values from dropdown
@@ -754,49 +771,43 @@ def values(table, column):
     # jsonify converts and returns the dictionary as a JSON response
     return jsonify({'data' : lst})
 
+from app.sources.cia_general import cia_general
+from app.sources.iana_root_servers import iana_root_servers
+from app.sources.iana_tld import iana_tld
+from app.sources.itu_baskets import itu_baskets
+from app.sources.itu_indicators import itu_indicators
+from app.sources.ookla_speed_index import ookla_speed_index
+from app.sources.pch_ixp import pch_ixp
+from app.sources.peeringdb_ixp import peeringdb_ixp
+from app.sources.telegeography_submarine import telegeography_submarine
+from app.sources.worldpop_density import worldpop_density
 
-
-@app.route('/test')
+@app.route('/test', methods=['GET', 'POST'])
 def test():
     # print(cia_general())
-    # print("successful")
     # print(iana_root_servers())
-    # print("successful")
     # print(iana_tld())
-    # print("successful")
     # print(itu_baskets())
-    # print("successful")
     # print(itu_indicators())
-    # print("successful")
     # print(ookla_speed_index())
-    # print("successful")
     # print(pch_ixp())
-    # print("successful")
     # print(peeringdb_ixp())
-    # print("successful")
     # print(telegeography_submarine())
-    # print("successful")
     # print(worldpop_density())
-    # print("successful")
+    
     # create_map()
-    # print("successful")
     # graph_infr()
-    # print("successful")
     # graph_adop()
-    # print("successful")
     # graph_use()
-    # print("successful")
     # create_land_image()
-    # print("successful")
     # create_sub_image()
-    # print("successful")
     # create_ixp_image()
-    # print("successful")
     # create_root_image()
-    # print("successful")
     # create_density_image()
-    # print("successful")
     # create_fac_image()
-    # print("Test Completed")
-    # runrun()
-    return render_template('test.html')
+    
+    url = url_for('test')
+    form = Feedback()               # Feedback form
+    form_validate(url, form)        # Feedback form validation
+
+    return render_template('base.html',form=form, url=url)

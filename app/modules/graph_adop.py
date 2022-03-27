@@ -8,23 +8,14 @@ Project Title:
 #                                    Imports                                   #
 # ---------------------------------------------------------------------------- #
 
-import pandas as pd
-from bokeh.plotting import figure, show, output_file, save
-from bokeh.models import Range1d, HoverTool, Panel, Tabs, Legend, LegendItem, Column, Row, MultiChoice, CustomJS, Button
-from bokeh.events import ButtonClick
-from bokeh.io import export_png
-from math import pi
 from app import app, db
 from app.models import Itu_basket_gni, Itu_basket_ppp, Itu_basket_usd
+from bokeh.plotting import figure, show, output_file, save
+from bokeh.models import Range1d, HoverTool, Panel, Tabs, Legend, Column, MultiChoice, CustomJS, Button
+from bokeh.events import ButtonClick
 import codecs
-from selenium import webdriver
-from selenium.webdriver.firefox.options import Options
-
-
-# Selenium headless mode.
-options = Options()
-options.headless = True
-
+from math import pi
+import pandas as pd
 
 
 # ---------------------------------------------------------------------------- #
@@ -132,12 +123,12 @@ def graph_adop():
     # layout = gridplot([[row], [col]], merge_tools=False)
     layout.sizing_mode = 'stretch_width'
 
-    output_file('./app/static/html/graph_adop.html')
+    output_file(app.config['DIRECTORY'] + '/app/static/html/graph_adop.html')
     save(layout)
 
-    graph = codecs.open('./app/static/html/graph_adop.html', 'r').read()
+    graph = codecs.open(app.config['DIRECTORY'] + '/app/static/html/graph_adop.html', 'r').read()
     graph = graph.replace('</title>', '</title>\n<style>html {overflow-y: scroll;} .bk { justify-content: end;}</style>')
-    with open('./app/static/html/graph_adop.html', 'w') as f:
+    with open(app.config['DIRECTORY'] + '/app/static/html/graph_adop.html', 'w') as f:
         f.write(graph)
 
 def baskets(cat, title, unit):
@@ -230,24 +221,6 @@ def baskets(cat, title, unit):
             lst_glyph += [r1]
             lst_glyph += [r2]
 
-            # Makes figure 'p' fixed to export as PNG.
-            # Remove toolbar to export as PNG.
-            p.sizing_mode = 'fixed'
-            p.toolbar_location = None
-
-            browser = webdriver.Firefox(executable_path=app.config['WEB_DRIVER_PATH'], options=options)
-
-            # Export figure 'p' as a PNG.
-            export_png(
-                p, 
-                filename='./app/static/images/adoption/baskets/' + title_[i] + ' - ' +  title +' - ' + ctry_lst[index] + '.png', 
-                webdriver=browser
-                )
-
-            # Close the tab and browser to close all firefox sessions.
-            browser.close()
-            browser.quit()
-
             # Bokeh hovertool.
             hover = HoverTool(
                 tooltips=[ ("Country", "$name"), ("Date", "$x"), (unit[i], "$y{(0)}") ]
@@ -258,7 +231,6 @@ def baskets(cat, title, unit):
                 p.add_tools(hover)
             p.toolbar_location = 'right'
 
-            
             # Initially hide scatter plot.
             # Plots can be shown by selecting Legend properties.
             r1.visible = False

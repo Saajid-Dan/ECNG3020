@@ -1,119 +1,52 @@
 {% extends "base.html" %}
-
 {% block content %}
+
     <!-- Declaration of Map Title -->
     <div class='row justify-content-center'>
         <div class="col-12" >
             <h5 class="md-10 text-center text-muted" style="margin-bottom: 15px;">Map of Caribbean ICT Infrastructure and Demographic Data</h5>
         </div>
     
-    <!-- Map HTML file -->
-    <!-- <div class='row justify-content-center'> -->
+        <!-- Map HTML file -->
         <div class="col-10">
             <iframe id='map' src='/static/html/map.html' width="100%" height="400px" style="border: thin solid rgb(200, 200, 200)"></iframe>
         </div>
-    <!-- </div> -->
     
-    <!-- <div class='row justify-content-center'> -->
-     
-    <!-- </div> -->
-
-    
-    <!-- Legend -->
-    <!-- <div class='row justify-content-center'> -->
+        <!-- Legend -->
         <div class="col-10" style="margin-top: 1em; margin-bottom: 1em;">
             <a class="btn btn-primary" data-bs-toggle="collapse" href="#Collapse1" role="button" aria-expanded="false" aria-controls="Collapse1" style="width: 100%;">Legend</a> 
         </div>
-        
+
+        <!-- Legend Collapse -->
         <div class="collapse col-10" id="Collapse1" style="margin-top: 0.5em;">
             <div class="card card-body">
                 {% include '_legend.html' %}
             </div>
         </div>
-    <!-- </div> -->
 
-    <!-- Additional Map Attributions
-    <div class="row justify-content-center" style="margin-top: 1em;">
-        <div class="col-10">
-            <a class="btn btn-secondary" data-bs-toggle="collapse" href="#Collapse2" role="button" aria-expanded="false" aria-controls="Collapse2" style="width: 100%;">Map Attributions</a> 
-        </div>
-        
-        <div class="collapse col-10" id="Collapse2" style="margin-top: 0.5em;">
-            <div class="card card-body">
-                <p>
-                    <b>Submarine Cables and Landing Points</b><br>
-                    Source: <a href='https://git.io/JyPd4' target="_blank" rel="noopener noreferrer">Telegeography Submarine Cable Map</a><br>
-                    License: <a href='https://creativecommons.org/licenses/by-nc-sa/3.0/' target="_blank" rel="noopener noreferrer">Creative Commons License: Attribution-NonCommercial-ShareAlike 3.0 Unported (CC BY-NC-SA 3.0)</a><br>
-                    <br>
-                    <b>Internet Exchange Points</b><br>
-                    Source: <a href='https://www.pch.net/ixp/dir' target="_blank" rel="noopener noreferrer">Packet Clearing House Internet Exchange Directory</a><br>
-                    License: <a href='https://creativecommons.org/licenses/by-nc-sa/3.0/' target="_blank" rel="noopener noreferrer">Creative Commons License: Attribution-NonCommercial-ShareAlike 3.0 Unported (CC BY-NC-SA 3.0)</a><br>
-                    <br>
-                    <b>Top Level Domains</b><br>
-                    Source: <a href='https://www.iana.org/domains/root/db' target="_blank" rel="noopener noreferrer">Internet Assigned Numbers Authority Root Zone Database</a><br>                    <br>
-                    <b>Root Servers</b><br>
-                    Source: <a href='https://root-servers.org/' target="_blank" rel="noopener noreferrer">Root Server Technical Operations Association</a><br>
-                    <br>
-                    <b>Population Density</b><br>
-                    Source: <a href='https://www.worldpop.org/project/categories?id=18' target="_blank" rel="noopener noreferrer">WorldPop Population Density</a><br>
-                    License: <a href='https://creativecommons.org/licenses/by/4.0/' target="_blank" rel="noopener noreferrer">Creative Commons License: Attribution 4.0 International (CC BY 4.0)</a><br>
-                </p>
-            </div>
-        </div>
-    </div> -->
-
-    <br>
-    <hr>
+    <br><hr>
 
     <!-- Toggle Countries Dropdowns -->
-    <!-- <div class='row justify-content-center'> -->
         <div class="col-12" >
             <h5 class="md-10 text-center text-muted" style="margin-bottom: 15px;">Country Comparisons</h5>
         </div>
-    <!-- </div> -->
 
-    <!-- <div class='row justify-content-center'> -->
         <div class="col-10" >
-            <ul>
-                <li>
-                    Select the dropdown to access the graphs for Internet Infrastructure, Internet Adoption, and Internet Use categories.
-                    Internet Infrastructure is selected by default.
-                </li>
-                <li>
-                    There is a bar entitled <i>"Select a Country:"</i> below the dropdown.
-                    Clicking on the bar will reveal a list of countries.
-                    Selecting a country will add country-based data onto the graphs below the bar.
-                </li>
-                <li>
-                   There are two buttons under the bar - <i>"Clear Selection"</i>, and <i>"All Selection"</i>.
-                   Selecting <i>"Clear Selection"</i> will clear all selections in the bar.
-                   Selecting <i>"All Selection"</i> will add all available country selections to the bar.
-                </li>
-                <li>
-                    Multiple countries can be selected at a time.
-                </li>
-            </ul>
-            
             <p>
-                <b>Note 1: </b>Some graphs may have discontinuities as data was either inaccessible or unavailable.
+                Graphs are separated into categories of internet infrastructure, interent adoption and internet use.
+                Graph categories can be selected using the dropdown.<br><br>
+                <b>Plots</b> on graphs are <b>initially disabled</b>.
+                They can be <b>enabled</b> by selecting a country from the multichoice dropdown titled "Select a Country".<br><br>
+                <b>Plots</b> can be disabled using the <b>Clear Selection</b> button.
+                <b>All Plots</b> can be enabled using the <b>All Selection</b> button.
+                <b>Note: </b>
+                Some graphs are blank as there are no available data to plot.
+                Some graphs may have discontinuities because of missing data.<br><br>
+                <b><u>Check out the pages under the Data Listing dropdown (nav bar) to view all available data.</u></b>
             </p>
-
-            <p>
-                <b>Note 2: </b>Some country selections may not add a plot to the graph. This is due to no available data to plot.
-            </p>
-
-            <p>
-                For more detailed information, check out the pages under Data Lising.
-                Data Listing can be found in the navigation toolbar.
-            </p>
-        </div>
-    <!-- </div> -->
-    
+        </div>    
     <hr>
-
-    <!-- Iframe Count: 12 -->
-
-    <!-- <div class='row justify-content-center'> -->
+        <!-- Dropdown -->
         <div class="col-10">
             <select name="categories" class="form-select" id='categories' onchange="changeGraph('categories', 'iframe')" required>
                 <option value='0'>Internet Infrastructure</option>
@@ -122,13 +55,14 @@
             </select>
         </div>
 
+        <!-- Graph iframe -->
         <div class="col-10">
             <iframe id='iframe' src='/static/html/graph_infr.html' width="100%" height="500px"></iframe>
         </div>
     </div>
     
-    
     <script>
+        // Cycle between graph categories
         function changeGraph(dropdown, iframe) {
             var dropdown = document.getElementById(dropdown)
             var iframe = document.getElementById(iframe)
@@ -144,5 +78,4 @@
             }
         }
     </script>
-
 {% endblock %}

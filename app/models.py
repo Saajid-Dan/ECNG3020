@@ -1,7 +1,8 @@
 from app import db
 
-# ---------------------------- General-Population ---------------------------- #
+# ---------------------------- General-Country Information  ---------------------------- #
 
+# CIA World Factbook data source - general country information
 class Cia_general(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     country = db.Column(db.String, index=True)
@@ -22,9 +23,27 @@ class Cia_general(db.Model):
     updated = db.Column(db.String, index=True)
     stamp = db.Column(db.String, index=True)
 
+# WorldPop.org data source - population density
+class Wpop_density(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    country = db.Column(db.String, index=True)
+    url_tif = db.Column(db.String, index=True)
+    avg_dens = db.Column(db.String, index=True)
+    max_dens = db.Column(db.String, index=True)
+    min_dens = db.Column(db.String, index=True)
+    max_lat = db.Column(db.Float, index=True)
+    max_lon = db.Column(db.Float, index=True)
+    min_lat = db.Column(db.Float, index=True)
+    min_lon = db.Column(db.Float, index=True)
+    date = db.Column(db.Integer, index=True)
+    source = db.Column(db.String, index=True)
+    updated = db.Column(db.String, index=True)
+    stamp = db.Column(db.String, index=True)
 
-# -------------------------------- ICT-Baskets ------------------------------- #
 
+# -------------------------------- Internet Adoption ------------------------------- #
+
+# ITU Price baskets - GNI
 class Itu_basket_gni(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     country = db.Column(db.String, index=True)
@@ -37,6 +56,7 @@ class Itu_basket_gni(db.Model):
     updated = db.Column(db.String, index=True)
     stamp = db.Column(db.String, index=True)
 
+# ITU Price baskets - PPP
 class Itu_basket_ppp(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     country = db.Column(db.String, index=True)
@@ -49,6 +69,7 @@ class Itu_basket_ppp(db.Model):
     updated = db.Column(db.String, index=True)
     stamp = db.Column(db.String, index=True)
 
+# ITU Price baskets - USD
 class Itu_basket_usd(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     country = db.Column(db.String, index=True)
@@ -62,8 +83,9 @@ class Itu_basket_usd(db.Model):
     stamp = db.Column(db.String, index=True)
 
 
-# ------------------------------ ICT-Indicators ------------------------------ #
+# ------------------------------ ICT-Use ------------------------------ #
 
+# ITU's ICT Indicators
 class Itu_indicator(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     country = db.Column(db.String, index=True)
@@ -77,9 +99,9 @@ class Itu_indicator(db.Model):
     stamp = db.Column(db.String, index=True)
 
 
-# ------------------------- Internet Exchange Points: ------------------------ #
+# ------------------------- Internet Infrastructure ------------------------ #
 
-# Packet Clearing House
+# Packet Clearing House data source - IXP
 class Pch_ixp_dir(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     id_ref = db.Column(db.String, index=True)
@@ -100,6 +122,7 @@ class Pch_ixp_dir(db.Model):
     updated = db.Column(db.String, index=True)
     stamp = db.Column(db.String, index=True)
     
+# Packet Clearing House data source - IXP subnet details
 class Pch_ixp_sub(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     id_ref = db.Column(db.String, index=True)
@@ -116,6 +139,7 @@ class Pch_ixp_sub(db.Model):
     source = db.Column(db.String, index=True)
     stamp = db.Column(db.String, index=True)
 
+# Packet Clearing House data source - IXP subnet members
 class Pch_ixp_mem(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     country = db.Column(db.String, index=True)
@@ -130,8 +154,7 @@ class Pch_ixp_mem(db.Model):
     source = db.Column(db.String, index=True)
     stamp = db.Column(db.String, index=True)
 
-
-# PeeringDB
+# PeeringDB data source - IXP
 class Pdb_ixp(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     ix_id = db.Column(db.String, index=True)
@@ -160,6 +183,7 @@ class Pdb_ixp(db.Model):
     source = db.Column(db.String, index=True)
     stamp = db.Column(db.String, index=True)
 
+# PeeringDB data source - Network facilities
 class Pdb_facility(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     fac_id = db.Column(db.String, index=True)
@@ -185,6 +209,7 @@ class Pdb_facility(db.Model):
     updated = db.Column(db.String, index=True)
     stamp = db.Column(db.String, index=True)
 
+# PeeringDB data source - Networks
 class Pdb_network(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     net_id = db.Column(db.String, index=True)
@@ -215,24 +240,7 @@ class Pdb_network(db.Model):
     updated = db.Column(db.String, index=True)
     stamp = db.Column(db.String, index=True)
 
-
-# ---------------------------- Population-Density ---------------------------- #
-
-class Wpop_density(db.Model):
-    id = db.Column(db.Integer, primary_key=True)
-    country = db.Column(db.String, index=True)
-    url_tif = db.Column(db.String, index=True)
-    avg_dens = db.Column(db.String, index=True)
-    max_dens = db.Column(db.String, index=True)
-    min_dens = db.Column(db.String, index=True)
-    date = db.Column(db.Integer, index=True)
-    source = db.Column(db.String, index=True)
-    updated = db.Column(db.String, index=True)
-    stamp = db.Column(db.String, index=True)
-
-
-# ------------------------------- Root-Servers ------------------------------- #
-
+# IANA root name servers
 class Iana_root_server(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     country = db.Column(db.String, index=True)
@@ -256,9 +264,22 @@ class Iana_root_server(db.Model):
     source = db.Column(db.String, index=True)
     stamp = db.Column(db.String, index=True)
 
+# IANA top level domains
+class Iana_tld(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    country = db.Column(db.String, index=True)
+    country_code = db.Column(db.String, index=True)
+    tld_type = db.Column(db.String, index=True)
+    cctld = db.Column(db.String, index=True)
+    admin_contact = db.Column(db.String, index=True)
+    tech_contact = db.Column(db.String, index=True)
+    name_srv = db.Column(db.String, index=True)
+    info_registry = db.Column(db.String, index=True)
+    date = db.Column(db.String, index=True)
+    source = db.Column(db.String, index=True)
+    stamp = db.Column(db.String, index=True)
 
-# -------------------------------- Speed-Index ------------------------------- #
-
+# OOKLA global speed index - mobile broadband 
 class Ookla_mobile_bband(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     date = db.Column(db.String, index=True)
@@ -269,6 +290,7 @@ class Ookla_mobile_bband(db.Model):
     jitt = db.Column(db.Float, index=True)
     stamp = db.Column(db.String, index=True)
 
+# OOKLA global speed index - fixed broadband
 class Ookla_fixed_bband(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     date = db.Column(db.String, index=True)
@@ -279,9 +301,7 @@ class Ookla_fixed_bband(db.Model):
     jitt = db.Column(db.Float, index=True)
     stamp = db.Column(db.String, index=True)
 
-
-# ----------------------------- Submarine-Cables ----------------------------- #
-
+# Telegeography submarine cable map - landing points
 class Telegeography_landing(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     id_ref = db.Column(db.String, index=True)
@@ -295,6 +315,7 @@ class Telegeography_landing(db.Model):
     source = db.Column(db.String, index=True)
     stamp = db.Column(db.String, index=True)
 
+# Telegeography submarine cable map - submarine cables
 class Telegeography_submarine(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String, index=True)
@@ -307,22 +328,5 @@ class Telegeography_submarine(db.Model):
     url_home = db.Column(db.String, index=True)
     geometry = db.Column(db.String, index=True)
     updated = db.Column(db.String, index=True)
-    source = db.Column(db.String, index=True)
-    stamp = db.Column(db.String, index=True)
-
-
-# ----------------------------- Top-Level-Domains ---------------------------- #
-
-class Iana_tld(db.Model):
-    id = db.Column(db.Integer, primary_key=True)
-    country = db.Column(db.String, index=True)
-    country_code = db.Column(db.String, index=True)
-    tld_type = db.Column(db.String, index=True)
-    cctld = db.Column(db.String, index=True)
-    admin_contact = db.Column(db.String, index=True)
-    tech_contact = db.Column(db.String, index=True)
-    name_srv = db.Column(db.String, index=True)
-    info_registry = db.Column(db.String, index=True)
-    date = db.Column(db.String, index=True)
     source = db.Column(db.String, index=True)
     stamp = db.Column(db.String, index=True)

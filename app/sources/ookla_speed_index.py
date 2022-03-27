@@ -108,7 +108,7 @@ def ookla_speed_index():
                 up_spd = ups, 
                 ltcy = ltcy, 
                 jitt = jitt, 
-                stamp = datetime.now(timezone(timedelta(seconds=-14400))).strftime("%Y-%m-%d %H:%M:%S %z")
+                stamp = time
             )
 
             # Add entries to the database, and commit the changes.
@@ -141,7 +141,7 @@ def ookla_speed_index():
                 up_spd = ups, 
                 ltcy = ltcy, 
                 jitt = jitt, 
-                stamp = datetime.now(timezone(timedelta(seconds=-14400))).strftime("%Y-%m-%d %H:%M:%S %z")
+                stamp = time
             )
 
             # Add entries to the database, and commit the changes.

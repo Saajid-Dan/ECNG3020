@@ -1,12 +1,8 @@
 {% extends "base.html" %}
-
 {% block content %}
-
 {% include '_report.html' %}
 
 <!-- boundary -->
-
-    <!-- Declaration of Map Title -->
     <div class='row justify-content-center'>
         <div class="col-12" >
             <h5 class="md-10 text-center text-muted">Submarine Cables - {{ title }}</h5>
@@ -28,13 +24,11 @@
                             <th scope="col">Description</th>
                         </tr>
                     </thead>
-
                     <tbody>
                         <tr>
                             <td>Name</td>
                             <td>{{ sub.name }}</td>
                         </tr>
-                        
                         <tr>
                             <td>Status</td>
                             <td>
@@ -47,22 +41,18 @@
                                 {% endif %}
                             </td>
                         </tr>
-
                         <tr>
                             <td>Length</td>
                             <td>{{ sub.length }}</td>
                         </tr>
-
                         <tr>
                             <td>Ready for Service</td>
                             <td>{{ sub.rfs }}</td>
                         </tr>
-
                         <tr>
                             <td>Owners</td>
                             <td>{{ sub.owners }}</td>
                         </tr>
-
                         <tr>
                             <td>Suppliers</td>
                             <td>{{ sub.suppliers }}</td>
@@ -70,32 +60,24 @@
                     </tbody>
                 </table>
             </div>
-            
+        
             <br>
 
-            <p>
-                <b>{{ title }}'s landing points can be classified into two groups:</b>
-            </p>
-
-                
+            <p><b>{{ title }}'s landing points can be classified into two groups:</b></p>
             <ol class='list-group list-group-numbered list-group-flush'>
                 <li class='list-group-item'>
                     Caribbean landing points
                 </li>
-
                 <li class='list-group-item'>
                     International landing points
                 </li>
             </ol>
-
-            <br>
-            
+        <br>    
             <p>
                 Caribbean landing points are landing points associated with CARICOM member states and associate members.
-                International landing points are all other landing points not associated with CARICOM member states and associate members.<br>
-            </p>
-            <p>
-                <b>Note: </b>Not all countries may have international landing points.
+                International landing points are all other landing points not associated with CARICOM member states and associate members.<br><br>
+                <b>Note: </b>
+                Not all countries may have international landing points.
             </p>
             <p><b>List of Caribbean Landing Points</b></p>
             <ol class='list-group list-group-numbered'>
@@ -118,18 +100,7 @@
                     </li>
                 {% endfor %}
             </ol> 
-
-            <br>
-
-            <p>
-                The {{ title }} submarine cable is shown in the following map.
-                The Caribbean landing points and international landing points 
-                mentioned above are displayed from left to right using red and blue markers respectively.
-            </p>
-            <div>
-                <img class='img-fluid' src="/static/images/infrastructure/submarine/{{ title }}.png" alt="The Image may not exist or has not loaded.">
-            <p><u>Figure 1: {{ title }} submarine cable with Caribbean and international landing points</u></p>
-
+        <br>
             <p><i>
                 Source: Telegeography<br>
                 

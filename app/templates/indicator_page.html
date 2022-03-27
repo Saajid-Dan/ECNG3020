@@ -1,12 +1,8 @@
 {% extends "base.html" %}
-
 {% block content %}
-
 {% include '_report.html' %}
 
 <!-- boundary -->
-
-    <!-- Declaration of Map Title -->
     <div class='row '>
         <div class="col-1" ></div>
         <div class="col-10" >
@@ -17,18 +13,12 @@
     <div class='row justify-content-center'>
         <div class='col-10'>
             <p>
-                Tables 1, 2, 3, and 4 displays ICT indicators data on fixed and mobile broadband total subscriptions, percentage of individuals using the internet, and total bandwidth usage (in Mbps) respectively for {{ title }}.
-            </p>
-            
-            <p>
-                <b>Note 1: </b>Some data fields are missing due to inaccessibility or unavailability of the data.
-                This is identified as 'None' in the tables.
-            </p>
-            <p>
-                <b>Note 2: </b>Some figures may be blank as there was no data to plot.
+                Data on {{ title }}'s ICT indicators are listed on this page.<br>
+                <b>Note: </b>
+                Data in tables may be missing.
             </p>
 
-            <p><u>Table 1: Fixed Broadband Total Subscriptions - {{ title }}</u></p>
+            <p><u>Table 1: Fixed Broadband Total Subscriptions</u></p>
             <div class="table-responsive">
                 <table class='table table-sm table-hover table-bordered'>
                     <thead>
@@ -37,7 +27,6 @@
                             <th>Subscribers</th>
                         </tr>
                     </thead>
-                    
                     <tbody>
                         {% for item in indic %}
                             <tr>
@@ -53,20 +42,9 @@
                 </table>
             </div>
             <p><i>Last Updated: {{ indic[0].updated }}</i></p>
-            <br>
-            <p>Data from Table 1 can be graphically depicted in Figure 1a.</p>
         </div>
     </div>
-    
-    <div class='row justify-content-center'>
-        <div class="col-10">
-            <img class='img-fluid' src="/static/images/use/indicators/Fixed - {{ title }}.png" alt="The Image may not exist or has not loaded.">
-            <p><u>Figure 1a: Fixed Broadband Total Subscriptions - {{ title }}</u></p>
-        </div>
-    </div>
-    
-    <br>
-
+<br>
     <div class='row justify-content-center'>
         <div class='col-10'>
             <p><u>Table 2: Mobile Broadband Total Subscriptions - {{ title }}</u></p>
@@ -77,8 +55,7 @@
                             <th>Year</th>
                             <th>Subscribers</th>
                         </tr>
-                    </thead>
-                    
+                    </thead>                 
                     <tbody>
                         {% for item in indic %}
                             <tr>
@@ -94,20 +71,9 @@
                 </table>
             </div>
             <p><i>Last Updated: {{ indic[0].updated }}</i></p>
-            <br>
-            <p>Data from Table 2 can be graphically depicted in Figure 2a.</p>
         </div>
     </div>
-    
-    <div class='row justify-content-center'>
-        <div class="col-10">
-            <img class='img-fluid' src="/static/images/use/indicators/Mobile - {{ title }}.png" alt="The Image may not exist or has not loaded.">
-            <p><u>Figure 2a: Mobile Broadband Total Subscriptions - {{ title }}</u></p>
-        </div>
-    </div>
-
-    <br>
-
+<br>
     <div class='row justify-content-center'>
         <div class='col-10'>
             <p><u>Table 3: Percent of Internet Users - {{ title }}</u></p>
@@ -119,7 +85,6 @@
                             <th>Percent/ %</th>
                         </tr>
                     </thead>
-                    
                     <tbody>
                         {% for item in indic %}
                             <tr>
@@ -135,20 +100,9 @@
                 </table>
             </div>
             <p><i>Last Updated: {{ indic[0].updated }}</i></p>
-            <br>
-            <p>Data from Table 3 can be graphically depicted in Figure 3a.</p>
         </div>
     </div>
-    
-    <div class='row justify-content-center'>
-        <div class="col-10">
-            <img class='img-fluid' src="/static/images/use/indicators/Percent - {{ title }}.png" alt="The Image may not exist or has not loaded.">
-            <p><u>Figure 3a: Percent of Internet Users - {{ title }}</u></p>
-        </div>
-    </div>
-
-    <br>
-
+<br>
     <div class='row justify-content-center'>
         <div class='col-10'>
             <p><u>Table 4: Total Bandwidth Usage - {{ title }}</u></p>
@@ -160,7 +114,6 @@
                             <th>Usage/ Mbps</th>
                         </tr>
                     </thead>
-                    
                     <tbody>
                         {% for item in indic %}
                             <tr>
@@ -176,18 +129,9 @@
                 </table>
             </div>
             <p><i>Last Updated: {{ indic[0].updated }}</i></p>
-            <br>
-            <p>Data from Table 4 can be graphically depicted in Figure 4a.</p>
         </div>
     </div>
-    
-    <div class='row justify-content-center'>
-        <div class="col-10">
-            <img class='img-fluid' src="/static/images/use/indicators/Bandwidth - {{ title }}.png" alt="The Image may not exist or has not loaded.">
-            <p><u>Figure 4a: Total Bandwidth Usage - {{ title }}</u></p>
-        </div>
-    </div>
-
+<br>
     <div class='row justify-content-center'>
         <div class='col-10'>
             <p><i>
@@ -196,7 +140,5 @@
             </i></p>
         </div>
     </div>
-
 <!-- boundary -->
-
 {% endblock %}

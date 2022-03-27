@@ -43,90 +43,77 @@ def pch_ixp():
     try:
         # 'df_dir' = Contains PCH's IXP directory
         df_dir = pd.read_json(url_dir)
-    except Exception as e:
-        email_exception(e, url_dir, email_subject)
-        return
         
 
-    # ---------------------------------------------------------------------------- #
-    #                            Filter and Extract Data                           #
-    # ---------------------------------------------------------------------------- #
+        # ---------------------------------------------------------------------------- #
+        #                            Filter and Extract Data                           #
+        # ---------------------------------------------------------------------------- #
 
 
-    # 'ctry' = Contains a list of Caribbean countries for filtering.
-    # Note that countries marked with a * are not on PCH's database.
-    # Assumed that no IXP data is available.
-    ctry = [
-        'Anguilla',                     # *
-        'Antigua and Barbuda',          # *
-        'Bahamas',                      # *
-        'Barbados',
-        'Belize',
-        'Bermuda',                      # *
-        'British Virgin Islands',
-        'Cayman Islands',               # *
-        'Dominica',
-        'Grenada',
-        'Guyana',                       # *
-        'Haiti',
-        'Jamaica',
-        'Montserrat',                   # *
-        'Saint Kitts and Nevis',
-        'Saint Lucia',
-        'Saint Vincent and the Grenadines', # *
-        'Suriname',                     # *
-        'Trinidad and Tobago',
-        'Turks & Caicos Is.'            # *
-    ]
+        # 'ctry' = Contains a list of Caribbean countries for filtering.
+        # Note that countries marked with a * are not on PCH's database.
+        # Assumed that no IXP data is available.
+        ctry = [
+            'Anguilla',                     # *
+            'Antigua and Barbuda',          # *
+            'Bahamas',                      # *
+            'Barbados',
+            'Belize',
+            'Bermuda',                      # *
+            'British Virgin Islands',
+            'Cayman Islands',               # *
+            'Dominica',
+            'Grenada',
+            'Guyana',                       # *
+            'Haiti',
+            'Jamaica',
+            'Montserrat',                   # *
+            'Saint Kitts and Nevis',
+            'Saint Lucia',
+            'Saint Vincent and the Grenadines', # *
+            'Suriname',                     # *
+            'Trinidad and Tobago',
+            'Turks & Caicos Is.'            # *
+        ]
 
-    # Filter 'df_dir' for Caribbean countries in 'ctry'.
-    # Not interested in Dominican Republic.
-    df_dir = df_dir.loc[ [ any(i) for i in zip(*[df_dir['ctry'].str.contains(word) for word in ctry])] ]
-    df_dir = df_dir[df_dir['ctry'] != 'Dominican Republic']
+        # Filter 'df_dir' for Caribbean countries in 'ctry'.
+        # Not interested in Dominican Republic.
+        df_dir = df_dir.loc[ [ any(i) for i in zip(*[df_dir['ctry'].str.contains(word) for word in ctry])] ]
+        df_dir = df_dir[df_dir['ctry'] != 'Dominican Republic']
 
-    # Removal of unnecessary columns in 'df_dir'
-    df_dir = df_dir[df_dir.columns.drop(list(df_dir.filter(regex='reg')))]
-    df_dir = df_dir[df_dir.columns.drop(list(df_dir.filter(regex='pch')))]
-    df_dir = df_dir[df_dir.columns.drop(list(df_dir.filter(regex='tc_rank')))]
-    df_dir = df_dir[df_dir.columns.drop(list(df_dir.filter(regex='tw_rank')))]
-    df_dir = df_dir[df_dir.columns.drop(list(df_dir.filter(regex='pc_rank')))]
-    df_dir = df_dir[df_dir.columns.drop(list(df_dir.filter(regex='pr_rank')))]
-    df_dir = df_dir[df_dir.columns.drop(list(df_dir.filter(regex='pw_rank')))]
-    df_dir = df_dir[df_dir.columns.drop(list(df_dir.filter(regex='tr_rank')))]
-    df_dir = df_dir[df_dir.columns.drop(list(df_dir.filter(regex='q9')))]
-    df_dir = df_dir[df_dir.columns.drop(list(df_dir.filter(regex='iata')))]
-    df_dir = df_dir[df_dir.columns.drop(list(df_dir.filter(regex='regct')))]
-    df_dir = df_dir[df_dir.columns.drop(list(df_dir.filter(regex='traf')))]
+        # Removal of unnecessary columns in 'df_dir'
+        df_dir = df_dir[df_dir.columns.drop(list(df_dir.filter(regex='reg')))]
+        df_dir = df_dir[df_dir.columns.drop(list(df_dir.filter(regex='pch')))]
+        df_dir = df_dir[df_dir.columns.drop(list(df_dir.filter(regex='tc_rank')))]
+        df_dir = df_dir[df_dir.columns.drop(list(df_dir.filter(regex='tw_rank')))]
+        df_dir = df_dir[df_dir.columns.drop(list(df_dir.filter(regex='pc_rank')))]
+        df_dir = df_dir[df_dir.columns.drop(list(df_dir.filter(regex='pr_rank')))]
+        df_dir = df_dir[df_dir.columns.drop(list(df_dir.filter(regex='pw_rank')))]
+        df_dir = df_dir[df_dir.columns.drop(list(df_dir.filter(regex='tr_rank')))]
+        df_dir = df_dir[df_dir.columns.drop(list(df_dir.filter(regex='q9')))]
+        df_dir = df_dir[df_dir.columns.drop(list(df_dir.filter(regex='iata')))]
+        df_dir = df_dir[df_dir.columns.drop(list(df_dir.filter(regex='regct')))]
+        df_dir = df_dir[df_dir.columns.drop(list(df_dir.filter(regex='traf')))]
 
 
-    # ---------------------------------------------------------------------------- #
-    #                       Reading Subnet and Subnet Members                      #
-    # ---------------------------------------------------------------------------- #
+        # ---------------------------------------------------------------------------- #
+        #                       Reading Subnet and Subnet Members                      #
+        # ---------------------------------------------------------------------------- #
 
-    # 'df_sub' stores IXP subnets.
-    # 'df_mem' stores IXP subnet member details.
-    df_sub = pd.DataFrame()
-    df_mem = pd.DataFrame()
+        # 'df_sub' stores IXP subnets.
+        # 'df_mem' stores IXP subnet member details.
+        df_sub = pd.DataFrame()
+        df_mem = pd.DataFrame()
 
-    # Loops over 'df_dir' to extract IDs in j.
-    # These IDs are the subdirectories for 'url_sub' and 'url_mem'.
-    for i, j in enumerate(df_dir['id']):
-        # 'json_sub' = reads JSON file at directory - 'url_sub' + 'j'.
-        # 'json_mem' = reads JSON file at directory - 'url_mem' + 'j'. 
-        
-        try:
+        # Loops over 'df_dir' to extract IDs in j.
+        # These IDs are the subdirectories for 'url_sub' and 'url_mem'.
+        for i, j in enumerate(df_dir['id']):
+            # 'json_sub' = reads JSON file at directory - 'url_sub' + 'j'.
+            # 'json_mem' = reads JSON file at directory - 'url_mem' + 'j'. 
+            
             json_sub = pd.read_json( url_sub + str(j) )
-        except Exception as e:
-            email_exception(e, url_sub + str(j), email_subject)
-            return
-
-        try:
             json_mem = pd.read_json( url_mem + str(j) )
-        except Exception as e:
-            email_exception(e, url_mem + str(j), email_subject)
-            return
-        
-        try:
+    
             # Checks for errored data in 'json_mem'
             if 'error' not in json_mem:
                 # Add column and 'ctry' to 'json_mem' dataframe.
@@ -148,22 +135,19 @@ def pch_ixp():
 
             # Append subnets to 'df_sub'.
             df_sub = df_sub.append(json_sub)
-        except Exception as e:
-            email_exception(e, '', email_subject)
-            return
-
-    # Remove columns with 'traffic_graph_url', or 'subnet_num' from 'df_sub'.
-    df_sub = df_sub[df_sub.columns.drop(list(df_sub.filter(regex='traffic_graph_url')))]
-    df_sub = df_sub[df_sub.columns.drop(list(df_sub.filter(regex='subnet_num')))]
 
 
-    # ------------------------- Cleaning IXP Member Details ------------------------ #
+        # Remove columns with 'traffic_graph_url', or 'subnet_num' from 'df_sub'.
+        df_sub = df_sub[df_sub.columns.drop(list(df_sub.filter(regex='traffic_graph_url')))]
+        df_sub = df_sub[df_sub.columns.drop(list(df_sub.filter(regex='subnet_num')))]
 
-    # 'df_mem' stores data under IPv4 and IPv6 headers as a dictionary of data with same keys.
-    # The database cannot store data as a dict object.
-    # The values in these dicts must be extracted as strings to create a cleaner table (or dataframe).
 
-    try:
+        # ------------------------- Cleaning IXP Member Details ------------------------ #
+
+        # 'df_mem' stores data under IPv4 and IPv6 headers as a dictionary of data with same keys.
+        # The database cannot store data as a dict object.
+        # The values in these dicts must be extracted as strings to create a cleaner table (or dataframe).
+
         # 'df_det' = New dataframe with column headers to match the keys in 'df_mem' dict objects.
         df_det = pd.DataFrame(columns=['ctry', 'ip', 'fqdn', 'ping', 'asn', 'org', 'peer', 'prfs', 'ipv4', 'ipv6'])
         
@@ -211,8 +195,9 @@ def pch_ixp():
                     
                     # Add 'row' data to 'df_det'.
                     df_det = df_det.append(pd.Series(row, index=['ctry', 'ip', 'fqdn', 'ping', 'asn', 'org', 'peer', 'prfs', 'version']), ignore_index=True)
+        
     except Exception as e:
-        email_exception(e, '', email_subject)
+        email_exception(e, email_subject)
         return
 
 
@@ -267,7 +252,7 @@ def pch_ixp():
             ipv6_avg = ipv6_avg,
             updated = updt,
             source = url_dir,
-            stamp = datetime.now(timezone(timedelta(seconds=-14400))).strftime("%Y-%m-%d %H:%M:%S %z")
+            stamp = time
         )
 
         # Add entries to the database, and commit the changes.
@@ -318,7 +303,7 @@ def pch_ixp():
             num_prts = prts,
             url_traf = url_traf,
             source = url_sub,
-            stamp = datetime.now(timezone(timedelta(seconds=-14400))).strftime("%Y-%m-%d %H:%M:%S %z")
+            stamp = time
         )
 
         # Add entries to the database, and commit the changes.
@@ -364,7 +349,7 @@ def pch_ixp():
             num_prfs = prfs,
             version = version,
             source = url_mem,
-            stamp = datetime.now(timezone(timedelta(seconds=-14400))).strftime("%Y-%m-%d %H:%M:%S %z")
+            stamp = time
         )
 
         # Add entries to the database, and commit the changes.

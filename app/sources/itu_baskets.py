@@ -64,40 +64,35 @@ def itu_baskets():
             updt = updt[5:16]
             # dict(f.getheaders()) gives all headers.
             
-    except Exception as e:
-        email_exception(e, url_ipb, email_subject)
-        return
-    
 
-    # ---------------------------------------------------------------------------- #
-    #                            Filter and Extract Data                           #
-    # ---------------------------------------------------------------------------- #
+        # ---------------------------------------------------------------------------- #
+        #                            Filter and Extract Data                           #
+        # ---------------------------------------------------------------------------- #
 
-    # 'ctry' = contains a list of Caribbean countries to filter the data.
-    ctry = [
-        'Anguilla',
-        'Antigua and Barbuda',
-        'Bahamas',
-        'Barbados',
-        'Belize',
-        'Bermuda',
-        'British Virgin Islands',
-        'Cayman Islands',
-        'Dominica',
-        'Grenada',
-        'Guyana',
-        'Haiti',
-        'Jamaica',
-        'Montserrat',
-        'Saint Kitts and Nevis',
-        'Saint Lucia',
-        'Saint Vincent and the Grenadines',
-        'Suriname',
-        'Trinidad and Tobago',
-        'Turks & Caicos Is.'
-    ]
+        # 'ctry' = contains a list of Caribbean countries to filter the data.
+        ctry = [
+            'Anguilla',
+            'Antigua and Barbuda',
+            'Bahamas',
+            'Barbados',
+            'Belize',
+            'Bermuda',
+            'British Virgin Islands',
+            'Cayman Islands',
+            'Dominica',
+            'Grenada',
+            'Guyana',
+            'Haiti',
+            'Jamaica',
+            'Montserrat',
+            'Saint Kitts and Nevis',
+            'Saint Lucia',
+            'Saint Vincent and the Grenadines',
+            'Suriname',
+            'Trinidad and Tobago',
+            'Turks & Caicos Is.'
+        ]
 
-    try:
         # Filter 'df_s1' for Caribbean countries.
         # Filter 'df_s2' for Caribbean countries.
         # 'EntityName' is a header that contains countries.
@@ -129,9 +124,10 @@ def itu_baskets():
         ppp = merge("PPP", "USD", "GNIpc", df_s1, df_s2)
         usd = merge("USD", "GNIpc", "PPP", df_s1, df_s2)
 
-        
+
+    # Catch and email exception
     except Exception as e:
-        email_exception(e, '', email_subject)
+        email_exception(e, email_subject)
         return
 
 
@@ -170,7 +166,7 @@ def itu_baskets():
             high = high, 
             updated = updt, 
             source = url_ipb,
-            stamp = datetime.now(timezone(timedelta(seconds=-14400))).strftime("%Y-%m-%d %H:%M:%S %z")
+            stamp = time
         )
         
         # Add entries to the database, and commit the changes.
@@ -212,7 +208,7 @@ def itu_baskets():
             high = high, 
             updated = updt,
             source = url_ipb,
-            stamp = datetime.now(timezone(timedelta(seconds=-14400))).strftime("%Y-%m-%d %H:%M:%S %z")
+            stamp = time
         )
 
         # Add entries to the database, and commit the changes.
@@ -254,7 +250,7 @@ def itu_baskets():
             high = high, 
             updated = updt,
             source = url_ipb,
-            stamp = datetime.now(timezone(timedelta(seconds=-14400))).strftime("%Y-%m-%d %H:%M:%S %z")
+            stamp = time
         )
 
         # Add entries to the database, and commit the changes.

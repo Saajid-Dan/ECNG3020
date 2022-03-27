@@ -71,7 +71,7 @@ def peeringdb_ixp():
         response = urlopen(url_ix)
         json_ix = json.loads(response.read())
     except Exception as e:
-        email_exception(e, url_ix, email_subject)
+        email_exception(e, email_subject)
         return
         
     # Read JSON into a dataframe.
@@ -92,7 +92,7 @@ def peeringdb_ixp():
             response = urlopen(url_org + org_id)
             json_org = json.loads(response.read())
         except Exception as e:
-            email_exception(e, url_org + org_id, email_subject)
+            email_exception(e, email_subject)
             return
 
         # Extract name of organisation.
@@ -109,7 +109,7 @@ def peeringdb_ixp():
             response = urlopen(url_ixlan + ix_id)
             json_ixlan = json.loads(response.read())
         except Exception as e:
-            email_exception(e, url_ixlan + ix_id, email_subject)
+            email_exception(e, email_subject)
             return
 
         # Extract ixlan id ixlan JSON and convert into a string.
@@ -120,7 +120,7 @@ def peeringdb_ixp():
             response = urlopen(url_ixpfx + ixlan_id)
             json_ixpfx = json.loads(response.read())
         except Exception as e:
-            email_exception(e, url_ixpfx + ixlan_id, email_subject)
+            email_exception(e, email_subject)
             return
 
         ips = ''
@@ -137,7 +137,7 @@ def peeringdb_ixp():
             response = urlopen(url_ixfac + '?ix_id=' + ix_id)
             json_ixfac = json.loads(response.read())
         except Exception as e:
-            email_exception(e, url_ixfac + '?ix_id=' + ix_id, email_subject)
+            email_exception(e, email_subject)
             return
 
         fac_ids = ''
@@ -175,7 +175,7 @@ def peeringdb_ixp():
             updated = str(df_ix.iloc[j]['updated']),
             status = str(df_ix.iloc[j]['status']),
             source = source,
-            stamp = datetime.now(timezone(timedelta(seconds=-14400))).strftime("%Y-%m-%d %H:%M:%S %z")
+            stamp = time
         )
         # Add entries to the database, and commit the changes.
         db.session.add(u)
@@ -189,7 +189,7 @@ def peeringdb_ixp():
         response = urlopen(url_fac)
         json_fac = json.loads(response.read())
     except Exception as e:
-        email_exception(e, url_fac, email_subject)
+        email_exception(e, email_subject)
         return
 
     # Read JSON into a dataframe.
@@ -212,7 +212,7 @@ def peeringdb_ixp():
             response = urlopen(url_ixfac + '?fac_id=' + fac_id)
             json_ixfac = json.loads(response.read())
         except Exception as e:
-            email_exception(e, url_ixfac + '?fac_id=' + fac_id, email_subject)
+            email_exception(e, email_subject)
             return
 
         ix_ids = ''
@@ -228,7 +228,7 @@ def peeringdb_ixp():
             response = urlopen(url_netfac + '?fac_id=' + fac_id)
             json_netfac = json.loads(response.read())
         except Exception as e:
-            email_exception(e, url_netfac + '?fac_id=' + fac_id, email_subject)
+            email_exception(e, email_subject)
             return
 
         net_ids = ''
@@ -274,7 +274,7 @@ def peeringdb_ixp():
             lat = str(lat),
             lon = str(lon),
             source = source,
-            stamp = datetime.now(timezone(timedelta(seconds=-14400))).strftime("%Y-%m-%d %H:%M:%S %z")
+            stamp = time
         )
         # Add entries to the database, and commit the changes.
         db.session.add(u)
@@ -289,7 +289,7 @@ def peeringdb_ixp():
         response = urlopen(url_net)
         json_net = json.loads(response.read())
     except Exception as e:
-        email_exception(e, url_net, email_subject)
+        email_exception(e, email_subject)
         return
 
     # Read JSON into a dataframe.
@@ -310,7 +310,7 @@ def peeringdb_ixp():
             response = urlopen(url_org + org_id)
             json_org = json.loads(response.read())
         except Exception as e:
-            email_exception(e, url_org + org_id, email_subject)
+            email_exception(e, email_subject)
             return
 
         # Extract name of organisation.
@@ -348,7 +348,7 @@ def peeringdb_ixp():
             updated = str(df_net.iloc[j]['updated']),
             status = str(df_net.iloc[j]['status']),
             source = source,
-            stamp = datetime.now(timezone(timedelta(seconds=-14400))).strftime("%Y-%m-%d %H:%M:%S %z")
+            stamp = time
         )
         # Add entries to the database, and commit the changes.
         db.session.add(u)

@@ -96,7 +96,7 @@ def telegeography_submarine():
             x = pd.read_json(url_ctry + j + ".json", lines=True)
             df_ctry = df_ctry.append(x)
     except Exception as e:
-        email_exception(e, url_ctry + j + ".json" , email_subject)
+        email_exception(e, email_subject)
         return
 
 
@@ -118,7 +118,7 @@ def telegeography_submarine():
             x = pd.read_json(url_sub + j + ".json", lines=True)
             df_sub = df_sub.append(x)
     except Exception as e:
-        email_exception(e, url_sub + j + ".json" , email_subject)
+        email_exception(e, email_subject)
         return
 
 
@@ -128,7 +128,7 @@ def telegeography_submarine():
     try:
         df_sub_ = gpd.read_file(json_sub)
     except Exception as e:
-        email_exception(e, json_sub, email_subject)
+        email_exception(e, email_subject)
         return
 
 
@@ -138,7 +138,7 @@ def telegeography_submarine():
     try:
         df_land = gpd.read_file(json_land)
     except Exception as e:
-        email_exception(e, json_land, email_subject)
+        email_exception(e, email_subject)
         return
 
 
@@ -185,7 +185,7 @@ def telegeography_submarine():
                     if 'Page not found' in soup.find('title').text:
                         raise Exception("HTTP Error 404: NOT FOUND")
                 except Exception as e:
-                    email_exception(e, url_tel, email_subject)
+                    email_exception(e, email_subject)
                     return
 
                 # 'updt' = last updated data.
@@ -254,7 +254,7 @@ def telegeography_submarine():
         df_int = df_land.loc[ [ any(i) for i in zip(*[df_land['id'] == word for word in int_id])] ]
 
     except Exception as e:
-        email_exception(e, '', email_subject)
+        email_exception(e, email_subject)
         return
 
 
@@ -267,27 +267,6 @@ def telegeography_submarine():
             [any(i) for i in zip(* [df_sub_['id'] == word for word in id_]) ]
             ].sort_values("id")
 
-
-        # -------------------------- Submarine JSON Creation ------------------------- #
-        
-        # 'df_crd' has 4 headers that corresponds to a JSON format.
-        # One column is called 'geometry' which stores MULTILINESTRING classes.
-        # 'geometry' must remain as a MULTILINESTRING to be read properly.
-        # Storing 'geometry' into a spreadsheet or text file changes the data type to string which is undesirable.
-        # The logical goal remains to create a JSON file.
-        # Main issues is that 'df_crd' has multiple IDs of same name, but different geometries.
-        # The goal is to merge the geometries under one ID.
-        # It is difficult to merge MULTILINESTRING classes.
-        # Instead, convert them into a string and merge using string operations which can be added to a JSON format.
-        
-        # This process has 4 parts:
-        # 1. Extracting geometry from 'df_crd'.
-        # 2. Extracting geometry details from 'df_sub'.
-        # 3. Merging Steps 1 and 2 into a JSON format.
-        # 4. Writing JSON file.
-        
-        
-        # ---------------------------------- Step 1 ---------------------------------- #
 
         # 'geo_id' = Stores MULTILINESTRINGs for unique geometry IDs in 'df_crd'.
         # 'j' = index interator.
@@ -302,7 +281,6 @@ def telegeography_submarine():
         # Instead, replace the value of the first index value with a new value.
         # This new value comprises of the MULTILINESTRING of the first index and the second index joined together.
         # The second index value will not get added to the 'geo_id' list as it will already be merged to the first index value.
-        # 'geo_id' will be used to create the geometry part of the JSON file shown below.
         while (True):
             # If 'tog' == 0 (values are different), then add first index [j-1] values to 'geo_id'.
             if tog == 0:
@@ -346,25 +324,7 @@ def telegeography_submarine():
             j += 1
 
 
-        # ---------------------------------- Step 2 ---------------------------------- #
-
-        # Step 2 deals with extracting cable geometry details from 'df_sub' to add to JSON file with
-        # geometries from 'df_crd'. Unlike 'df_crd', 'df_sub' contains unique IDs without repitition.
-        # This means little string manipulation will be required.
-        # Firstly, loop over 'df_sub' and to extract geometry details.
-        # Then format MULTILINESTRING in 'geo_id' in a JSON array format.
-        # Pandas store as a MULTILINESTRING instead of an array format so string manipulation is required.
-        # Finally, format geometry details into JSON format.
-
-        # 'feat' = stores JSON features of all cable details and geometries.
-        feat = ''
         # Loop over 'df_sub' and extract details.
-        # The manipulate format of 'geo_id' into JSON format.
-        # Format geometry details into JSON format.
-        # Add both formats above into a JSON properties ('prop').
-        # Add all JSON features to together in 'feat'.
-        # Add JSON features into a feature collection ('coll').
-        # Write feature collection to a JSON file.
         for j in range(len(df_sub)):
             # Extracting geometry details.
             src_id = df_sub.iloc[j]['id']
@@ -393,7 +353,7 @@ def telegeography_submarine():
                 if 'Page not found' in soup.find('title').text:
                     raise Exception("HTTP Error 404: NOT FOUND")
             except Exception as e:
-                email_exception(e, url_tel, email_subject)
+                email_exception(e, email_subject)
                 return
 
             # 'updt' = last updated data.
@@ -404,11 +364,11 @@ def telegeography_submarine():
             geo = geo_id[j]
 
 
-            # ---------------------------------- Step 3 ---------------------------------- #
-
+            # database timestamp at the time of writing
             if j == 0:
                 time = datetime.now(timezone(timedelta(seconds=-14400))).strftime("%Y-%m-%d %H:%M:%S %z")
 
+            # Add data to the database entity
             u = Telegeography_submarine(
                 name = name,
                 status = str(stat),
@@ -421,7 +381,7 @@ def telegeography_submarine():
                 geometry = geo,
                 updated = updt,
                 source = source,
-                stamp = datetime.now(timezone(timedelta(seconds=-14400))).strftime("%Y-%m-%d %H:%M:%S %z")
+                stamp = time
             )
 
             # Add entries to the database, and commit the changes.
@@ -432,7 +392,7 @@ def telegeography_submarine():
         remove_outdated(Telegeography_submarine, time)
 
     except Exception as e:
-        email_exception(e, '', email_subject)
+        email_exception(e, email_subject)
         return
 
     # ---------------------------------------------------------------------------- #
@@ -467,6 +427,7 @@ def telegeography_submarine():
         
         # -------------------- Store data to 'Land' database table ------------------- #
         
+        # Add data to the database entity
         u = Telegeography_landing(
             id_ref = uni,
             country = ctry, 
@@ -477,7 +438,7 @@ def telegeography_submarine():
             cables = cab,
             updated = updt,
             source = source,
-            stamp = datetime.now(timezone(timedelta(seconds=-14400))).strftime("%Y-%m-%d %H:%M:%S %z")
+            stamp = time
         )
 
         # Add entries to the database, and commit the changes.
@@ -500,6 +461,7 @@ def telegeography_submarine():
       
         # -------------------- Store data to 'Land' database table ------------------- #
         
+        # Add data to the database entity
         u = Telegeography_landing(
             id_ref = uni,
             country = ctry, 
@@ -510,7 +472,7 @@ def telegeography_submarine():
             cables = cab,
             updated = updt,
             source = source,
-            stamp = datetime.now(timezone(timedelta(seconds=-14400))).strftime("%Y-%m-%d %H:%M:%S %z")
+            stamp = time
         )
 
         # Add entries to the database, and commit the changes.

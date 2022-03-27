@@ -1,12 +1,8 @@
 {% extends "base.html" %}
-
 {% block content %}
-
 {% include '_report.html' %}
 
 <!-- boundary -->
-
-    <!-- Declaration of Map Title -->
     <div class='row justify-content-center'>
         <div class="col-12" >
             <h5 class="md-10 text-center text-muted">Root Servers - {{ title }}</h5>
@@ -16,16 +12,13 @@
     <div class='row justify-content-center'>
         <div class='col-10'>
             <p>
-                The following table(s) display information on the root server(s) in {{ title }}.
+                Data on {{ title }}'s root name servers are listed on this page.<br>
+                <b>Note: </b>
+                'NA' means Not Applicable. Tables may have missing data.
             </p>
             
-            <p>
-                <b>Note: </b>'NA' means Not Applicable.
-            </p>
-
             {% for item in root %}
                 <p><u>Table {{ loop.index }}: Properties of {{ item.name }}-Root</u></p>
-
                 <div class="table-responsive">
                     <table class='table table-sm table-hover'>
                         <thead>
@@ -33,88 +26,71 @@
                                 <th colspan="2">Root Server {{ loop.index }}</th>
                             </tr>
                         </thead>
-
                         <tbody>
                             <tr>
                                 <td>Server Name</td>
                                 <td>{{ item.name }}-Root</td>
                             </tr>
-
                             <tr>
                                 <td>Location</td>
                                 <td>{{ item.location}}</td>
                             </tr>
-
                             <tr>
                                 <td>Latitude/°</td>
                                 <td>{{ '%0.3f' | format(item.lat | float) }}</td>
                             </tr>
-
                             <tr>
                                 <td>Longitude/°</td>
                                 <td>{{ '%0.3f' | format(item.lon | float) }}</td>
                             </tr>
-                            
                             <tr>
                                 <td>Operator</td>
                                 <td>{{ item.srv_operator }}</td>
                             </tr>
-                            
                             <tr>
                                 <td>Type</td>
                                 <td>{{ item.srv_type }}</td>
                             </tr>
-
                             <tr>
                                 <td>ASN</td>
                                 <td>{{ item.asn }}</td>
                             </tr>
-
                             <tr>
                                 <td>IPv6 Address</td>
                                 <td>{{ item.ipv4 }}</td>
                             </tr>
-
                             <tr>
                                 <td>IPv4 Address</td>
                                 <td>{{ item.ipv6 }}</td>
                             </tr>
-
                             <tr>
                                 <td>No. of Instances</td>
                                 <td>{{ item.num_inst }}</td>
                             </tr>
-
                             <tr>
                                 <td>RSSAC</td>
                                 <td>{{ item.rssac | safe }}</td>
                             </tr>
-
                             <tr>
                                 <td>Contact</td>
                                 <td>{{ item.srv_contact }}</td>
                             </tr>
-
                             <tr>
                                 <td>Peering Policy</td>
                                 <td>{{ item.peer_pol | safe }}</td>
                             </tr>
-
                             <tr>
                                 <td>Identifiers</td>
                                 <td>{{ item.id_root }}</td>
                             </tr>
-
                             <tr>
                                 <td>Identifer Naming Convention</td>
                                 <td>{{ item.id_nc }}</td>
                             </tr>
-
                             <tr>
                                 <td>Last Updated</td>
                                 <td>{{ item.updated }}</td>
                             </tr>
-
                             <tr>
                                 <td>Server Homepage</td>
                                 <td><a href={{ item.url_home }} target="_blank" rel="noopener noreferrer">{{ item.url }}</a></td>
@@ -125,14 +101,6 @@
                 <br>
             {% endfor %}  
                     
-            <p><b>Root Server Locations</b></p>
-            <p>
-                The root server(s) in {{ title }} are displayed in the following map using red markers.
-            </p>
-            <div>
-                <img class='img-fluid' src="/static/images/infrastructure/root/{{ title }}.png" alt="The Image may not exist or has not loaded.">
-            <p><u>Figure 1: Root Servers in {{ title }}</u></p>
-
             <p><i>
                 Source: Root Server Technical Operations Association<br>
                 URL: <a href='https://root-servers.org/' target="_blank" rel="noopener noreferrer">https://root-servers.org/</a><br>

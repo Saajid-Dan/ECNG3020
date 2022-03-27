@@ -1,12 +1,8 @@
 {% extends "base.html" %}
-
 {% block content %}
-
 {% include '_report.html' %}
 
 <!-- boundary -->
-
-    <!-- Declaration of Map Title -->
     <div class='row justify-content-center'>
         <div class="col-12" >
             <h5 class="md-10 text-center text-muted">Landing Points - {{ title }}</h5>
@@ -33,7 +29,6 @@
                                 <th>Submarine Cables</th>
                             </tr>
                         </thead>
-
                         <tbody>
                             {% for item in land %}
                                 <tr>
@@ -52,17 +47,7 @@
                     </table>
                 </div>
             </div>
-
-            <br>
-
-            <p>
-                The Landing Points in Table 1 are displayed on the following map from left to right using red markers.
-            </p>
-            <div>
-                <img class='img-fluid' src="/static/images/infrastructure/landing/{{ title }}.png" alt="The Image may not exist or has not loaded.">
-            <p><u>Figure 1: Landing Points in {{ title }}</u></p>
-            <p><b>Note: </b>Some markers may share the same longitude/latitude pairs.</p>
-
+        
             <p><i>
                 Source: Telegeography<br>
                 

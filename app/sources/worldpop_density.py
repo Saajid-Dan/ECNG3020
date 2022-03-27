@@ -9,7 +9,6 @@ Project Title:
 # ---------------------------------------------------------------------------- #
 
 import pandas as pd
-from osgeo import gdal
 from app import db
 from app.email import email_exception
 import traceback
@@ -43,52 +42,20 @@ def worldpop_density():
     # 'cc' = ISO-3 Country codes.
     # Subdirectories of 'url_root'
     cc = [
-        'AIA',
-        'ATG', 
-        'BHS', 
-        'BRB', 
-        'BLZ', 
-        'BMU', 
-        'VGB', 
-        'CYM', 
-        'DMA', 
-        'GRD', 
-        'GUY', 
-        'HTI', 
-        'JAM', 
-        'MSR', 
-        'KNA', 
-        'LCA', 
-        'VCT', 
-        'SUR', 
-        'TTO', 
-        'TCA'
+        'AIA', 'ATG', 'BHS', 'BRB', 'BLZ', 'BMU', 'VGB', 'CYM', 'DMA', 'GRD', 
+        'GUY', 'HTI', 'JAM', 'MSR', 'KNA', 'LCA', 'VCT', 'SUR', 'TTO', 'TCA'
     ]
 
+    # A dictionary with key as ISO3 country codes, and value as full country name
     dict_ctry = {
-        'AIA':'Anguilla',
-        'ATG':'Antigua and Barbuda',
-        'BHS':'Bahamas',
-        'BRB':'Barbados',
-        'BLZ':'Belize',
-        'BMU':'Bermuda',
-        'VGB':'British Virgin Islands',
-        'CYM':'Cayman Islands',
-        'DMA':'Dominica',
-        'GRD':'Grenada',
-        'GUY':'Guyana',
-        'HTI':'Haiti',
-        'JAM':'Jamaica',
-        'MSR':'Montserrat',
-        'KNA':'Saint Kitts and Nevis',
-        'LCA':'Saint Lucia',
-        'VCT':'Saint Vincent and the Grenadines',
-        'SUR':'Suriname',
-        'TTO':'Trinidad and Tobago',
-        'TCA':'Turks & Caicos Is.'
+        'AIA':'Anguilla', 'ATG':'Antigua and Barbuda', 'BHS':'Bahamas',
+        'BRB':'Barbados', 'BLZ':'Belize', 'BMU':'Bermuda',
+        'VGB':'British Virgin Islands', 'CYM':'Cayman Islands',
+        'DMA':'Dominica', 'GRD':'Grenada', 'GUY':'Guyana', 'HTI':'Haiti',
+        'JAM':'Jamaica', 'MSR':'Montserrat', 'KNA':'Saint Kitts and Nevis',
+        'LCA':'Saint Lucia', 'VCT':'Saint Vincent and the Grenadines',
+        'SUR':'Suriname', 'TTO':'Trinidad and Tobago', 'TCA':'Turks & Caicos Is.'
     }
-
-    to_json = ''
 
     # Loop over 'cc' to append subdirectories to 'url_root' to read data.
     for index, j in enumerate(cc):
@@ -103,10 +70,10 @@ def worldpop_density():
             # 'json_pop' = stores JSON from 'url'.
             json_pop = pd.read_json(url)
         except Exception as e:
-            email_exception(e, url, email_subject)
+            email_exception(e, email_subject)
             return
 
-
+        
         # ---------------------------------------------------------------------------- #
         #                                 Extract Data                                 #
         # ---------------------------------------------------------------------------- #
@@ -120,50 +87,29 @@ def worldpop_density():
             for link in urls:
                 if link.find('.tif') != -1:
                     url_tif = link
+                elif link.find('.zip') != -1:
+                    url_zip = link
             updt = json_pop.iloc[-1]['data']['date']
             pop_yr = json_pop.iloc[-1]['data']['popyear']
 
         except Exception as e:
-            email_exception(e, '', email_subject)
+            email_exception(e, email_subject)
             return
 
         try:
-            # 'dataset' = Pass TIF URL from 'url_tif' to gdal.
-            dataset = gdal.Open(url_tif, 1)
-            
-            # Read TIF file as an array of RGBA values.
-            band = dataset.GetRasterBand(1)
-            arr = band.ReadAsArray()
+            df_zip = pd.read_csv(url_zip)
+            max_dens = df_zip['Z'].max()
+            min_dens = df_zip['Z'].min()
+            avg_dens = df_zip['Z'].mean()
+            max_lon = df_zip['X'].max()
+            max_lat = df_zip['Y'].max()
+            min_lon = df_zip['X'].min()
+            min_lat = df_zip['Y'].min()
+         
+
         except Exception as e:
-            email_exception(e, url_tif, email_subject)
+            email_exception(e, email_subject)
             return
-
-        # 'stats' = contains min, max and mean population densities in a list.
-        # format: [min, max, mean]
-        stats = band.GetStatistics(True, True)
-
-        # Store mean population density into 'dens'.
-        # Store max population density into 'max_'
-        # Store min population density into 'min_'
-        dens = stats[2]
-        max_ = stats[1]
-        min_ = stats[0]
-        
-
-        # ---------------------------------------------------------------------------- #
-        #                                Convert to CSV                                #
-        # ---------------------------------------------------------------------------- #
-
-        entry = f'''"{dict_ctry[j]}": {{
-                "updt": "{updt}",
-                "pop_yr": "{pop_yr}",
-                "url": "{url_tif}",
-                "dens": "{dens}",
-                "max_": "{max_}",
-                "min_": "{min_}"
-            }}'''
-
-        to_json += entry + ','
 
 
         # ---------------------------------------------------------------------------- #
@@ -177,17 +123,22 @@ def worldpop_density():
         # This is used to ensure only recent data is stored into the database. 
         if index == 0:
             time = datetime.now(timezone(timedelta(seconds=-14400))).strftime("%Y-%m-%d %H:%M:%S %z")
-
+        
+        # Add data to the database entity
         u = Wpop_density(
             country = dict_ctry[j],
             date = pop_yr,
             url_tif = url_tif,
-            avg_dens = dens,
-            max_dens = max_,
-            min_dens = min_,
+            avg_dens = avg_dens,
+            max_dens = max_dens,
+            min_dens = min_dens,
+            max_lat = max_lat,
+            max_lon = max_lon,
+            min_lat = min_lat,
+            min_lon = min_lon,
             updated = updt,
             source = url,
-            stamp = datetime.now(timezone(timedelta(seconds=-14400))).strftime("%Y-%m-%d %H:%M:%S %z")
+            stamp = time
         )
         # Add entries to the database, and commit the changes.
         db.session.add(u)

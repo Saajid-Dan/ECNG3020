@@ -1,12 +1,8 @@
 {% extends "base.html" %}
-
 {% block content %}
-
 {% include '_report.html' %}
 
 <!-- boundary -->
-
-    <!-- Declaration of Map Title -->
     <div class='row justify-content-center'>
         <div class="col-12" >
             <h5 class="md-10 text-center text-muted">Facilities - {{ title }}</h5>
@@ -16,16 +12,13 @@
     <div class='row justify-content-center'>
         <div class='col-10'>
             <p>
-                The following table(s) display information on the facilities in {{ title }}.
+                Details on {{ title }}'s Network facilities and are listed on this page.<br>
+                <b>Note:</b>
+                Tables may have missing data.
             </p>
             
-            <p>
-                <b>Note: </b>Some data could not be obtained due to inaccessibility or unavailability. This will present itself as blank entries in the following tables.
-            </p>
-
             {% for item in fac %}
                 <p><u>Table {{ loop.index }}a: Facility {{ loop.index }} - {{ item.name }}</u></p>
-
                 <div class="table-responsive">
                     <table class='table table-sm table-hover'>
                         <thead>
@@ -33,99 +26,79 @@
                                 <th colspan="2">Facility {{ loop.index }}</th>
                             </tr>
                         </thead>
-
                         <tbody>
                             <tr>
                                 <td>Short Name</td>
                                 <td>{{ item.name }}</td>
                             </tr>
-
                             <tr>
                                 <td>Long Name</td>
                                 <td>{{ item.name_long }}</td>
                             </tr>
-
                             <tr>
                                 <td>Organisation</td>
                                 <td>{{ item.org_name }}</td>
                             </tr>
-
                             <tr>
                                 <td>Status</td>
                                 <td>{{ item.status }}</td>
                             </tr>
-                            
                             <tr>
                                 <td>City</td>
                                 <td>{{ item.city }}</td>
                             </tr>
-
                             <tr>
                                 <td>Address Line 1</td>
                                 <td>{{ item.address1 }}</td>
                             </tr>
-
                             <tr>
                                 <td>Address Line 2</td>
                                 <td>{{ item.address2 }}</td>
                             </tr>
-
                             <tr>
                                 <td>State</td>
                                 <td>{{ item.state }}</td>
                             </tr>
-
                             <tr>
                                 <td>Zip Code</td>
                                 <td>{{ item.zipcode }}</td>
                             </tr>
-
                             <tr>
                                 <td>Latitude/°</td>
                                 <td>{{ '%0.3f' | format(item.lat | float) }}</td>
                             </tr>
-
                             <tr>
                                 <td>Longitude/°</td>
                                 <td>{{ '%0.3f' | format(item.lon | float) }}</td>
                             </tr>
-                            
                             <tr>
                                 <td>Technical Email</td>
                                 <td>{{ item.tech_email }}</td>
                             </tr>
-                            
                             <tr>
                                 <td>Technical Phone</td>
                                 <td>{{ item.tech_phone }}</td>
                             </tr>
-
                             <tr>
                                 <td>Sales Email</td>
                                 <td>{{ item.sale_email }}</td>
                             </tr>
-
                             <tr>
                                 <td>Sales Phone</td>
                                 <td>{{ item.sale_phone }}</td>
                             </tr>
-
                             <tr>
                                 <td>Networks</td>
-                                
                                 <td>
                                     {% for network in nets %}
                                         <a href={{ url_for('network_page', path=network) }}>{{ network }}</a>, 
                                     {% endfor %}
                                 </td>
-                                
                             </tr>
-
                             <tr>
                                 <td>Last Updated</td>
                                 <td>{{ item.updated }}</td>
                             </tr>
-
                             <tr>
                                 <td>Facility Homepage</td>
                                 <td><a href={{ item.url_home }} target="_blank" rel="noopener noreferrer">{{ item.url_home }}</a></td>
@@ -135,19 +108,9 @@
                 </div>
                 <br>
             {% endfor %}
-            
-            <p><b>Facility Locations</b></p>
-            <p>
-                The facilities in {{ title }} above are displayed in the following map using red markers from left to right.
-            </p>
-            <div>
-                <img class='img-fluid' src="/static/images/infrastructure/facility/{{ title }}.png" alt="The Image may not exist or has not loaded.">
-            <p><u>Figure 1: Facilities in {{ title }}</u></p>
-
 
             <p><i>
                 Source: PeeringDB<br>
-                
                 URL: <a href={{ fac[-1].source }} target="_blank" rel="noopener noreferrer">{{ fac[-1].source }}</a><br>
             </i></p>
         </div>

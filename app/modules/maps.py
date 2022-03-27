@@ -8,23 +8,29 @@ Project Title:
 #                                    Imports                                   #
 # ---------------------------------------------------------------------------- #
 
+from app import app, db
+from app.models import *
 import folium
 from folium.plugins import MarkerCluster, Fullscreen, FeatureGroupSubGroup
-import codecs
-import pandas as pd
-import geopandas as gpd
-from osgeo import gdal
-from shapely import wkt
 import ast
-from app import db
-from app.models import Pch_ixp_dir, Pdb_facility, Wpop_density, Iana_root_server, Telegeography_landing, Telegeography_submarine
+import codecs
+import geopandas as gpd
+import numpy
+import pandas as pd
+from PIL import Image
+import requests
+from shapely import wkt
 
 
 def create_map():
-
+    ''' Create a folium map with map tiles, features, and layer/zoom controls '''
     # ---------------------------------------------------------------------------- #
     #                          Map and Layer Instantiation                         #
     # ---------------------------------------------------------------------------- #
+    min_lon = ''
+    min_lat = ''
+    max_lon = ''
+    max_lat = ''
 
     # Instantiate a map into 'm'.
     m = folium.Map(
@@ -199,33 +205,16 @@ def create_map():
     
     # Loops over data in 'dens'.
     for j in dens:
-        # 'dataset' = Pass TIF URL from 'j.url' to gdal.
-        # 'width' and 'height' store width and height of image in the TIF file.
-        # 'gt' = Extracts geospatial coordinates from the TIF file.
-        dataset = gdal.Open(j.url_tif, 1)
-        width = dataset.RasterXSize
-        height = dataset.RasterYSize
-        gt = dataset.GetGeoTransform()
-
-        # Geospatial lat/long coordinates of TIF file.
-        # Used to determine where on the map the density overlay is.
-        lon_min = gt[0]
-        lat_min = gt[3] + width*gt[4] + height*gt[5]
-        lon_max = gt[0] + width*gt[1] + height*gt[2]
-        lat_max = gt[3]
-
-        # Read TIF file as an array of RGBA values.
-        band = dataset.GetRasterBand(1)
-        arr = band.ReadAsArray()
-
-        # 'stats' = contains min, max and mean population densities in a list.
-        # format: [min, max, mean]
-        stats = band.GetStatistics(True, True)
-
-        # If 'stat[1]' > 'max_pop', then 'max_pop' = 'stat[1]'.TimeoutError()
-        if stats[1] > max_pop:
-            max_pop = int(stats[1])
-
+        # Read the TIFF file from the URL - url_tif
+        image = requests.get(j.url_tif, stream=True).raw
+        im = Image.open(image)                  # Open the TIFF file in memory
+        arr = numpy.array(im)                   # Extract the RGBA binary
+       
+        lon_min = j.min_lon                     # Min bounding longitude
+        lat_min = j.min_lat                     # Min bounding latitude
+        lon_max = j.max_lon                     # Max bounding longitude
+        lat_max = j.max_lat                     # Max bounding latitude
+       
         # 'image' - Converts TIF file array as a raster to overlay onto map.
         image = folium.raster_layers.ImageOverlay(
                 image = arr, 
@@ -247,7 +236,7 @@ def create_map():
     # ----------------------- Add Suriname-Guyana boundary ----------------------- #
     
     # 'f' = opens text file with boundary coordinates.
-    f = open('./app/static/txt/boundary.txt', 'r')
+    f = open(app.config['DIRECTORY'] + '/app/static/txt/boundary.txt', 'r')
     
     # The coordinates in the text file is a string representation of a list of lat/long pairs.
     # These lists are comma delimited.
@@ -380,16 +369,6 @@ def create_map():
 
     # ---------------------- Add Submarine Cables to the Map --------------------- #
 
-    # 'dir' = location of submarine cable JSON file within project directory.
-    dir = './app/static/json/submarine.json'
-
-    # Opens JSON in 'dir' into 'file_sub.
-    file_sub = open(dir, 'r')
-    
-    # Add data in 'sub' to a GeoPandas dataframe 'gdf_sub'.
-    gdf_sub = gpd.read_file(file_sub)
-
-
     # Submarine Cable Visual Styles.
     # Colour Sample = https://colorbrewer2.org/#type=sequential&scheme=OrRd&n=3
     style1 = {'color':'#756bb1', 'opacity':0.5, 'weight':2.25}
@@ -402,6 +381,15 @@ def create_map():
     # Read submarine cable data from database to 'sub'.
     sub = Telegeography_submarine.query.all()
 
+    # 'min_lon' = minimum longitude coordinate
+    # 'min_lat' = minimum latitude coordinate
+    # 'max_lon' = maximum longitude coordinate
+    # 'max_lat' = maximum latitude coordinate
+    min_lon = 999
+    min_lat = 999
+    max_lon = -999
+    max_lat = -999
+    
     # Add cable geometries to map 'm'.
     for j in sub:
         # String representation of cable geometry.
@@ -488,19 +476,23 @@ def create_map():
         )
         # Add marker to map 'm'.
         cable.add_to(feature_sub)
+
+        # Returns a list with of min/max lat/long coordinates.
+        # Form: [min lon, min lat, max lon, max lat]
+        map_bounds = geo.bounds
     
-    # Returns a list with of min/max lat/long coordinates.
-    # Form: [min lon, min lat, max lon, max lat]
-    map_bounds = gdf_sub.total_bounds
-    
-    # 'min_lon' = minimum longitude coordinate
-    # 'min_lat' = minimum latitude coordinate
-    # 'max_lon' = maximum longitude coordinate
-    # 'max_lat' = maximum latitude coordinate
-    min_lon = map_bounds[0]
-    min_lat = map_bounds[1]
-    max_lon = map_bounds[2]
-    max_lat = map_bounds[3]
+        # 'min_lon' = minimum longitude coordinate
+        # 'min_lat' = minimum latitude coordinate
+        # 'max_lon' = maximum longitude coordinate
+        # 'max_lat' = maximum latitude coordinate
+        if map_bounds[0] < min_lon:
+            min_lon = map_bounds[0]
+        if map_bounds[1] < min_lat:
+            min_lat = map_bounds[1]
+        if map_bounds[2] > max_lon:
+            max_lon = map_bounds[2]
+        if map_bounds[3] > max_lat:
+            max_lat = map_bounds[3]
 
 
     # ---------------------------------------------------------------------------- #
@@ -514,7 +506,7 @@ def create_map():
     Fullscreen().add_to(m)
 
     # Save map to map.html
-    m.save("./app/static/html/map.html")
+    m.save(app.config['DIRECTORY'] + "/app/static/html/map.html")
 
 
     # ---------------------------------------------------------------------------- #
@@ -533,23 +525,24 @@ def create_map():
     # ------------------------------- Open Map File ------------------------------ #
 
     # Read map.html contents into m_file.
-    m_file = codecs.open('./app/static/html/map.html', 'r').read()
+    m_file = codecs.open(app.config['DIRECTORY'] + '/app/static/html/map.html', 'r').read()
 
 
     # -------------------------------- Map Bounds -------------------------------- #
 
-    # Read indices for maxBounds limits in 'm_file'.
-    m_start = m_file.find('maxBounds')
-    m_end = m_file.find(']],') + 2
+    if  min_lon != '' or min_lat != '' or max_lon != '' or max_lat != '':
+        # Read indices for maxBounds limits in 'm_file'.
+        m_start = m_file.find('maxBounds')
+        m_end = m_file.find(']],') + 2
 
-    # 'map_m' = Stores the maxbounds code from 'm_file'.
-    map_m = m_file[m_start:m_end]
-    
-    # 'limits' = Store Leaflet code to replace maxbounds coords in with 'min_lat', 'min_lon', 'max_lat', 'max_lon'.
-    limits = f'''maxBounds: [[{min_lat - 6}, {min_lon - 7}], [{max_lat + 6}, {max_lon + 7}]]'''
+        # 'map_m' = Stores the maxbounds code from 'm_file'.
+        map_m = m_file[m_start:m_end]
+        
+        # 'limits' = Store Leaflet code to replace maxbounds coords in with 'min_lat', 'min_lon', 'max_lat', 'max_lon'.
+        limits = f'''maxBounds: [[{min_lat - 6}, {min_lon - 7}], [{max_lat + 8}, {max_lon + 7}]]'''
 
-    # Replace 'map_m' in 'm_file' with 'limits'.
-    m_file = m_file.replace(map_m, limits)
+        # Replace 'map_m' in 'm_file' with 'limits'.
+        m_file = m_file.replace(map_m, limits)
 
 
     # ---------------------------- Max Height in Popup --------------------------- #
@@ -561,5 +554,5 @@ def create_map():
     # ------------------------- Write Changes to the Map ------------------------- #
 
     # Write m_file contents to map.html
-    with open('./app/static/html/map.html', 'w') as f:
+    with open(app.config['DIRECTORY'] + '/app/static/html/map.html', 'w') as f:
         f.write(m_file)
