@@ -1,50 +1,48 @@
-from flask_wtf import FlaskForm
-from flask import flash, redirect, Response
-from flask_mail import Message
 from app import app
+from flask import flash, redirect, Response
+from flask_wtf import FlaskForm
 from wtforms import TextAreaField, SelectField, SubmitField, StringField
 from wtforms.validators import ValidationError, DataRequired, Length
 from wtforms.widgets import TextArea
 
+# Import the send_email function
 from app.email import send_email
 
-
 class Feedback(FlaskForm):
+    ''' Feedback form class '''
+    # Feedback text box with length validation and data required validation
     comment = TextAreaField(label=('What are your thoughts?'), validators=[DataRequired(), Length(min=1, max=250, message='Comment must be between %(min)d and %(max)d characters')])
+    # Feedback dropdown
     option = SelectField('Feedback Topics (in Dropdown)', choices=['Data Displayed', 'Site\'s Performance', 'Site\'s Appearance', 'Other'])
+    # Submit button
     submit = SubmitField(label=('Submit'))
 
 def form_validate(url, form):
+    ''' This function validates the data entered into the form class and emails it to an auth account '''
+    # If submit button pressed and validation successful
     if form.submit.data and form.validate_on_submit():
-
+        # Flash message
         flash('Feedback Sent Successfully.')
             
-        title = form.option.data
-        body = form.comment.data
+        title = form.option.data        # Email title
+        body = form.comment.data        # Email body
+        send_email(title, body)         # Send feedback via email
 
-        # msg = Message(title, body=body, sender=app.config['SENDER'], recipients=app.config['ADMINS'])
-        # mail.send(msg)
+        form.comment.data = ''          # Reset feedback textbox
 
-        send_email(title, body, app.config['SENDER'], app.config['ADMINS'])
-
-        form.comment.data = ''
-
-    return redirect(url + "#anchor")
-
-
+    return redirect(url + "#anchor")    # Redirect page to the feedback form
 
 class Machine_format(FlaskForm):
-    tables = SelectField('tables', choices=[])
-    columns = SelectField('columns', choices=[])
-    values = SelectField('values', choices=[])
+    ''' Form class to query a machine format and generate/download a preview '''
+    tables = SelectField('tables', choices=[])          # Database tables dropdown
+    columns = SelectField('columns', choices=[])        # Database columns dropdown
+    values = SelectField('values', choices=[])          # Database values dropdown
+    # Available machine formats
     formats = SelectField('formats', choices=[('CSV', 'CSV'), ('JSON', 'JSON'), ('XML', 'XML')])
-    comment = StringField(label='Output', widget=TextArea())
-    # previous = StringField(label='Previous Selection', widget=TextArea())
-    populate = SubmitField(label=('Reset Selection'))
-    # query = SubmitField(label=('Preview Selection'))
-    generate = SubmitField(label=('Submit Selection'))
+    preview = StringField(label='Preview', widget=TextArea())   # Database query preview
+    reset = SubmitField(label=('Reset Selection'))      # Reset dropdowns button
+    query = SubmitField(label=('Submit Selection'))     # Download query button
 
 class Report(FlaskForm):
-    save = SubmitField(label=('Save as a PDF'))
-
-
+    ''' Form class to download a report '''
+    save = SubmitField(label=('Create a Report'))       # button

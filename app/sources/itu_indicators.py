@@ -36,7 +36,7 @@ def itu_indicators():
     # 'url_mob' = mobile broadband subscription.
     # 'url_per' = percent of individuals using the internet.
     # 'url_bw' = international bandwidth in Mbits per second.
-    url_fix = "https://www.itu.int/en/ITU-D/Statistics/Documents/statistics/2021/July/FixedBroadbandSubscriptions_2000-2020.xlsx"
+    url_fix = "https://www.itu.int/en/IT132U-D/Statistics/Documents/statistics/2021/July/FixedBroadbandSubscriptions_2000-2020.xlsx"
     url_mob = "https://www.itu.int/en/ITU-D/Statistics/Documents/statistics/2021/July/MobileBroadbandSubscriptions_2007-2020.xlsx"
     url_per = "https://www.itu.int/en/ITU-D/Statistics/Documents/statistics/2021/PercentIndividualsUsingInternet_Nov2021.xlsx"
     url_bw = "https://www.itu.int/en/ITU-D/Statistics/Documents/statistics/2021/July/InternationalBandwidthInMbits_2007-2020.xlsx"
@@ -45,14 +45,16 @@ def itu_indicators():
     # ---------------------------------------------------------------------------- #
     #                                  Read Source                                 #
     # ---------------------------------------------------------------------------- #
-
-    # 'df_fix' = read URL at 'url_fix' into 'df_fix' dataframe.
-    # 'df_mob' = read URL at 'url_mob' into 'df_mob' dataframe.
-    # 'df_per' = read URL at 'url_per' into 'df_per' dataframe.
-    # 'df_bw' = read URL at 'url_bw' into 'df_bw' dataframe.
-    
     try:
+        # 'df_fix' = read URL at 'url_fix' into 'df_fix' dataframe.
+        # 'df_mob' = read URL at 'url_mob' into 'df_mob' dataframe.
+        # 'df_per' = read URL at 'url_per' into 'df_per' dataframe.
+        # 'df_bw' = read URL at 'url_bw' into 'df_bw' dataframe.
+        
         df_fix = pd.read_excel(url_fix)
+        df_mob = pd.read_excel(url_mob)
+        df_per = pd.read_excel(url_per)
+        df_bw = pd.read_excel(url_bw)
 
         # Opens 'url_fix' to retrieve last modified date to 'updt_fix'.
         with urlopen(url_fix) as f:
@@ -60,81 +62,35 @@ def itu_indicators():
             updt_fix = updt_fix[5:16]
             # dict(f.getheaders()) gives all headers.
 
-    except Exception as e:
-        email_exception(e, url_fix, email_subject)
-        return
 
-    try:
-        df_mob = pd.read_excel(url_mob)
+        # ---------------------------------------------------------------------------- #
+        #                            Filter and Extract Data                           #
+        # ---------------------------------------------------------------------------- #
 
-        # # Opens 'url_mob' to retrieve last modified date to 'updt_mob'.
-        # with urlopen(url_mob) as f:
-        #     updt_mob = dict(f.getheaders())['Last-Modified']
-        #     updt_mob = updt_mob[5:16]
-        #     # dict(f.getheaders()) gives all headers.
-            
-    except Exception as e:
-        email_exception(e, url_mob, email_subject)
-        return
+        # 'ctry' = List of Caribbean countries to filter data.
+        ctry = [
+            'Anguilla',
+            'Antigua and Barbuda',
+            'Bahamas',
+            'Barbados',
+            'Belize',
+            'Bermuda',
+            'British Virgin Islands',
+            'Cayman Islands',
+            'Dominica',
+            'Grenada',
+            'Guyana',
+            'Haiti',
+            'Jamaica',
+            'Montserrat',
+            'Saint Kitts and Nevis',
+            'Saint Lucia',
+            'Saint Vincent and the Grenadines',
+            'Suriname',
+            'Trinidad and Tobago',
+            'Turks & Caicos Is.'
+        ]
 
-    try:
-        df_per = pd.read_excel(url_per)
-
-        # # Opens 'url_per' to retrieve last modified date to 'updt_per'.
-        # with urlopen(url_per) as f:
-        #     updt_per = dict(f.getheaders())['Last-Modified']
-        #     updt_per = updt_per[5:16]
-        #     # dict(f.getheaders()) gives all headers.
-
-    except Exception as e:
-        error = "Source: " + url_per + "\nError: " + str(e)
-        email_exception(e, url_per, email_subject)
-        return
-
-    try:
-        df_bw = pd.read_excel(url_bw)
-
-        # # Opens 'url_bw' to retrieve last modified date to 'updt_bw'.
-        # with urlopen(url_bw) as f:
-        #     updt_bw = dict(f.getheaders())['Last-Modified']
-        #     updt_bw = updt_bw[5:16]
-        #     # dict(f.getheaders()) gives all headers.
-
-    except Exception as e:
-        error = "Source: " + url_bw + "\nError: " + str(e)
-        email_exception(e, url_bw, email_subject)
-        return
-
-
-    # ---------------------------------------------------------------------------- #
-    #                            Filter and Extract Data                           #
-    # ---------------------------------------------------------------------------- #
-
-    # 'ctry' = List of Caribbean countries to filter data.
-    ctry = [
-        'Anguilla',
-        'Antigua and Barbuda',
-        'Bahamas',
-        'Barbados',
-        'Belize',
-        'Bermuda',
-        'British Virgin Islands',
-        'Cayman Islands',
-        'Dominica',
-        'Grenada',
-        'Guyana',
-        'Haiti',
-        'Jamaica',
-        'Montserrat',
-        'Saint Kitts and Nevis',
-        'Saint Lucia',
-        'Saint Vincent and the Grenadines',
-        'Suriname',
-        'Trinidad and Tobago',
-        'Turks & Caicos Is.'
-    ]
-
-    try:
         # Filter 'df_fix', 'df_mob', 'df_per', and 'df_bw' for Caribbean countries in 'ctry'.
         df_fix = df_fix.loc[ [ any(i) for i in zip(*[df_fix['Country'] == word for word in ctry])] ]
         df_mob = df_mob.loc[ [ any(i) for i in zip(*[df_mob['Country'] == word for word in ctry])] ]
@@ -167,25 +123,29 @@ def itu_indicators():
         yrs_per = [int(i) for i in list(df_per.columns[1:].values)]
         yrs_bw = [int(i) for i in list(df_bw.columns[1:].values)]
 
+        # Add 'yrs_fix', 'yrs_mob', 'yrs_per', and 'yrs_bw' to a list - yrs
         yrs = list(set(yrs_fix + yrs_mob + yrs_per + yrs_bw))
         
-
+    # Catch and email exception
     except Exception as e:
-        email_exception(e, '', email_subject)
+        email_exception(e, email_subject)
         return
 
-
+    # database timestamp at the moment of writing to the database
     time = datetime.now(timezone(timedelta(seconds=-14400))).strftime("%Y-%m-%d %H:%M:%S %z")
     
+    # Iterate over 'yrs'
     for j in range(len(yrs)):
         yr = str(yrs[j])
-
+        # Iterate over 20 as their are 20 CARICOM countries
         for k in range(20):
+            # 'fix', 'mob', 'per' and 'bw' are y coordinates
             fix = df_fix.iloc[k][yr] if yr in df_fix.columns else float('nan')
             mob = df_mob.iloc[k][yr] if yr in df_mob.columns else float('nan')
             per = df_per.iloc[k][yr] if yr in df_per.columns else float('nan')
             bw = df_bw.iloc[k][yr] if yr in df_bw.columns else float('nan')
 
+            # Add data to the entity model
             u = Itu_indicator(
                 date = yrs[j],
                 country = df_fix.iloc[k]['Country'],
@@ -195,7 +155,7 @@ def itu_indicators():
                 bw = bw,
                 updated = updt_fix,
                 source = source,
-                stamp = datetime.now(timezone(timedelta(seconds=-14400))).strftime("%Y-%m-%d %H:%M:%S %z")
+                stamp = time
             )
             # Add entries to the database, and commit the changes.
             db.session.add(u)

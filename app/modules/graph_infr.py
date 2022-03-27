@@ -8,22 +8,14 @@ Project Title:
 #                                    Imports                                   #
 # ---------------------------------------------------------------------------- #
 
-import pandas as pd
-from bokeh.plotting import figure, show, output_file, save
-from bokeh.models import ColumnDataSource, FactorRange, HoverTool, Panel, Tabs, Legend, LegendItem, Column, Row, MultiChoice, CustomJS, Button
-from bokeh.events import ButtonClick
-from bokeh.io import export_png
-from math import pi
 from app import app, db
 from app.models import Ookla_mobile_bband, Ookla_fixed_bband
+from bokeh.plotting import figure, show, output_file, save
+from bokeh.models import FactorRange, HoverTool, Panel, Tabs, Legend, Column, MultiChoice, CustomJS, Button
+from bokeh.events import ButtonClick
 import codecs
-from selenium import webdriver
-from selenium.webdriver.firefox.options import Options
-
-
-# Selenium headless mode.
-options = Options()
-options.headless = True
+from math import pi
+import pandas as pd
 
 
 # ---------------------------------------------------------------------------- #
@@ -68,9 +60,6 @@ lkup = {
 lst_glyph = []
 
 
-lst = []
-
-
 # ---------------------------------------------------------------------------- #
 #                            Plot ICT Infrastructure Graphs                    #
 # ---------------------------------------------------------------------------- #
@@ -80,7 +69,6 @@ def graph_infr():
     Adds a unified legend to all graphs.
     '''
     global lst_glyph            # Global variable.
-    global lst
 
 
     # ---------------------------------- Graphs ---------------------------------- #
@@ -118,7 +106,7 @@ def graph_infr():
     btn_clr.js_on_event(ButtonClick, callback_clr)
     btn_all.js_on_event(ButtonClick, callback_all)
 
-    callback = CustomJS(args=dict(lst_glyph=lst_glyph, lst=lst, multi_choice=multi_choice, lkup=lkup), code="""
+    callback = CustomJS(args=dict(lst_glyph=lst_glyph, multi_choice=multi_choice, lkup=lkup), code="""
     for (let i = 0; i < lst_glyph.length; i++) {
         if (multi_choice.value.includes(lst_glyph[i].name)) {
             lst_glyph[i].visible = multi_choice.value.includes(lst_glyph[i].name);
@@ -136,12 +124,12 @@ def graph_infr():
     # layout = gridplot([[row], [col]], merge_tools=False)
     layout.sizing_mode = 'stretch_width'
 
-    output_file('./app/static/html/graph_infr.html')
+    output_file(app.config['DIRECTORY'] + '/app/static/html/graph_infr.html')
     save(layout)
 
-    graph = codecs.open('./app/static/html/graph_infr.html', 'r').read()
+    graph = codecs.open(app.config['DIRECTORY'] + '/app/static/html/graph_infr.html', 'r').read()
     graph = graph.replace('</title>', '</title>\n<style>html {overflow-y: scroll;} .bk { justify-content: end;}</style>')
-    with open('./app/static/html/graph_infr.html', 'w') as f:
+    with open(app.config['DIRECTORY'] + '/app/static/html/graph_infr.html', 'w') as f:
         f.write(graph)
 
 
@@ -150,7 +138,6 @@ def speed(cat, title):
     Plots Bokeh figures for download, upload, latency, and jitter vs date and add to a bokeh tabs group.
     '''
     global lst_glyph            # Global variable.
-    global lst
 
     # 'mnth' is a dictionary that relates numerical month (key) to three letter abbreviated month (value).
     mnth = {'01':'Jan', '02':'Feb', '03':'Mar',
@@ -249,33 +236,12 @@ def speed(cat, title):
             lst_glyph += [r1]
             lst_glyph += [r2]
 
-            lst += [ctry_lst[index]]
-            lst += [ctry_lst[index]]
-
-            # Remove toolbar to export as PNG.
-            p.sizing_mode = 'fixed'
-            p.toolbar_location = None
-
-            browser = webdriver.Firefox(executable_path=app.config['WEB_DRIVER_PATH'], options=options)
-
-            # Export figure 'p' as a PNG.
-            export_png(
-                p, 
-                filename='./app/static/images/infrastructure/speed/' + title + ' - ' + tab_lab[i] +' - ' + ctry_lst[index] + '.png',
-                webdriver=browser
-                )
-
-            # Close the tab and browser to close all firefox sessions.
-            browser.close()
-            browser.quit()
-
             # Bokeh hovertool.
             hover = HoverTool(
                 tooltips=[ ("Country", "$name"), ("Date", "$x"), (unit[i], "$y{(0)}") ]
             )
 
             # Add tools on the right of figure 'p'.
-            
             if index == 0:
                 p.add_tools(hover)
             p.toolbar_location = 'right'

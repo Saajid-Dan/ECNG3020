@@ -1,12 +1,8 @@
 {% extends "base.html" %}
-
 {% block content %}
-
 {% include '_report.html' %}
 
 <!-- boundary -->
-
-    <!-- Declaration of Map Title -->
     <div class='row justify-content-center'>
         <div class="col-12" >
             <h5 class="md-10 text-center text-muted">Speed Index - {{ title }}</h5>
@@ -16,13 +12,11 @@
     <div class='row justify-content-center'>
         <div class='col-10'>
             <p>
-                Table 1 and 2 displays speed index data on fixed and mobile broadband services respectively for {{ title }}.
+                Table 1 and 2 displays speed index data on fixed and mobile broadband services respectively for {{ title }}.<br>
+                <b>Note: </b>
+                Dates are formatted as Year-Month-Day.
             </p>
             
-            <p>
-                <b>Note: </b>The dates are specified in the format of YYYY-MM-DD.
-            </p>
-
             <p><u>Table 1: Fixed Broadband Data</u></p>
             <div class="table-responsive">
                 <table class='table table-sm table-hover table-bordered'>
@@ -35,7 +29,6 @@
                             <th>Jitter/ ms</th>
                         </tr>
                     </thead>
-
                     <tbody>
                         {% for item in fix %}
                             <tr>
@@ -48,50 +41,11 @@
                         {% endfor %} 
                     </tbody>
                 </table>
+                <p>Used with permission from Ookla, LLC – Copyright 20__. All Rights Reserved.<br><br></p>
             </div>
-            <br>
-            <p>Data from Table 1 can be graphically depicted in Figures 1a, 1b, 1c, and 1d.</p>
         </div>
     </div>
     
-    <div class='row justify-content-center'>
-        <div class="col-md-5 col-10 text-center">
-            <img class='img-fluid' src="/static/images/infrastructure/speed/Fixed Broadband - Download - {{ title }}.png" alt="The Image may not exist or has not loaded.">
-            <p>
-                <u>Figure 1a: Fixed Broadband Download Speed - {{ title }}</u><br>
-                <p>Used with permission from Ookla, LLC – Copyright 20__. All Rights Reserved.<br><br></p>
-            </p>
-        </div>
-
-        <div class="col-md-5 col-10 text-center">
-            <img class='img-fluid' src="/static/images/infrastructure/speed/Fixed Broadband - Upload - {{ title }}.png" alt="The Image may not exist or has not loaded.">
-            <p>
-                <u>Figure 1b: Fixed Broadband Download Speed - {{ title }}</u><br>
-                <p>Used with permission from Ookla, LLC – Copyright 20__. All Rights Reserved.<br><br></p>
-            </p>
-        </div>
-    </div>
-
-    <div class='row justify-content-center'>
-        <div class="col-md-5 col-10 text-center">
-            <img class='img-fluid' src="/static/images/infrastructure/speed/Fixed Broadband - Latency - {{ title }}.png" alt="The Image may not exist or has not loaded.">
-            <p>
-                <u>Figure 1c: Fixed Broadband Download Speed - {{ title }}</u><br>
-                <p>Used with permission from Ookla, LLC – Copyright 20__. All Rights Reserved.<br><br></p>
-            </p>
-        </div>
-
-        <div class="col-md-5 col-10 text-center">
-            <img class='img-fluid' src="/static/images/infrastructure/speed/Fixed Broadband - Jitter - {{ title }}.png" alt="The Image may not exist or has not loaded.">
-            <p>
-                <u>Figure 1d: Fixed Broadband Download Speed - {{ title }}</u><br>
-                <p>Used with permission from Ookla, LLC – Copyright 20__. All Rights Reserved.<br><br></p>
-            </p>
-        </div>
-    </div>
-    
-    <br>
-
     <div class='row justify-content-center'>
         <div class="col-10">
             <p><u>Table 2: Mobile Broadband Data</u></p>
@@ -106,7 +60,6 @@
                             <th>Jitter/ ms</th>
                         </tr>
                     </thead>
-
                     <tbody>
                         {% for item in mob %}
                             <tr>
@@ -119,46 +72,9 @@
                         {% endfor %} 
                     </tbody>
                 </table>
+                <p>Used with permission from Ookla, LLC – Copyright 20__. All Rights Reserved.<br><br></p>
             </div>
-            <br>
-            <p>Data from Table 2 can be graphically depicted in Figures 2a, 2b, 2c, and 2d.</p>
         </div>
-    </div>
-
-    <div class='row justify-content-center'>
-        <div class="col-md-5 col-10 text-center">
-            <img class='img-fluid' src="/static/images/infrastructure/speed/Mobile Broadband - Download - {{ title }}.png" alt="The Image may not exist or has not loaded.">
-            <p>
-                <u>Figure 2a: Mobile Broadband Download Speed - {{ title }}</u><br>
-                <p>Used with permission from Ookla, LLC – Copyright 20__. All Rights Reserved.<br><br></p>
-            </p>
-        </div>
-
-        <div class="col-md-5 col-10 text-center">
-            <img class='img-fluid' src="/static/images/infrastructure/speed/Mobile Broadband - Upload - {{ title }}.png" alt="The Image may not exist or has not loaded.">
-            <p>
-                <u>Figure 2b: Mobile Broadband Download Speed - {{ title }}</u><br>
-                <p>Used with permission from Ookla, LLC – Copyright 20__. All Rights Reserved.<br><br></p>
-            </p>
-        </div>
-    </div>
-
-    <div class='row justify-content-center'>
-        <div class="col-md-5 col-10 text-center">
-            <img class='img-fluid' src="/static/images/infrastructure/speed/Mobile Broadband - Latency - {{ title }}.png" alt="The Image may not exist or has not loaded.">
-            <p>
-                <u>Figure 2c: Mobile Broadband Download Speed - {{ title }}</u><br>
-                <p>Used with permission from Ookla, LLC – Copyright 20__. All Rights Reserved.<br><br></p>
-            </p>
-        </div>
-
-        <div class="col-md-5 col-10 text-center">
-            <img class='img-fluid' src="/static/images/infrastructure/speed/Mobile Broadband - Jitter - {{ title }}.png" alt="The Image may not exist or has not loaded.">
-            <p>
-                <u>Figure 2d: Mobile Broadband Download Speed - {{ title }}</u><br>
-                <p>Used with permission from Ookla, LLC – Copyright 20__. All Rights Reserved.<br><br></p>
-            </p>
-        </div>   
     </div>
 
     <div class='row justify-content-center'>

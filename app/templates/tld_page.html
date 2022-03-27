@@ -1,12 +1,8 @@
 {% extends "base.html" %}
-
 {% block content %}
-
 {% include '_report.html' %}
 
 <!-- boundary -->
-
-    <!-- Declaration of Map Title -->
     <div class='row justify-content-center'>
         <div class="col-12" >
             <h5 class="md-10 text-center text-muted">Top Level Domains - {{ title }}</h5>
@@ -18,7 +14,7 @@
             <p>
                 {{ title }} has a domain name of {{ tld.country_code }} which is a {{ tld.tld_type }}.
             </p>
-            
+
             <p style="font-size: 105%;"><b>ccTLD Manager</b></p>
             <span>
                 {{ tld.cctld | safe }}
@@ -38,9 +34,7 @@
             <span>
                 {{ tld.name_srv | safe }}
             </span>
-
-            <br>
-            
+        <br>    
             <p style="font-size: 105%;"><b>Registry Information</b></p>
             <span>
                 {{ tld.info_registry | safe }} 
@@ -51,7 +45,6 @@
                 URL: <a href='https://www.iana.org/domains/root/db' target="_blank" rel="noopener noreferrer">https://www.iana.org/domains/root/db</a><br>
                 {{ tld.date | safe }}
             </i></p>
-            
         </div>
     </div>
 <!-- boundary -->
